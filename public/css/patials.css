@@ -1,0 +1,703 @@
+/* ======= ESTILOS DO HEADER ======= */
+/* Definição de variáveis para facilitar manutenção e personalização */
+:root {
+  --primary-color: #3b82f6; /* Azul principal */
+  --secondary-color: #1e3a8a; /* Azul escuro para hover */
+  --text-color: #333; /* Cor de texto principal */
+  --text-light: #666; /* Cor de texto secundária */
+  --background-color: #fff; /* Fundo branco */
+  --border-color: #e5e7eb; /* Cor de borda */
+  --shadow-color: rgba(0, 0, 0, 0.1); /* Cor da sombra */
+  --header-height: 70px; /* Altura do header */
+  --transition-speed: 0.3s; /* Velocidade das transições */
+}
+
+/* Estilos gerais do header */
+.site-header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--background-color);
+  box-shadow: 0 2px 10px var(--shadow-color);
+  z-index: 1000;
+  font-family: 'Roboto', 'Open Sans', sans-serif;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: var(--header-height);
+  padding: 0 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Estilos do logo */
+.logo a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--text-color);
+  transition: color var(--transition-speed);
+}
+
+.logo a:hover, .logo a:focus {
+  color: var(--primary-color);
+}
+
+.logo i {
+  font-size: 24px;
+  margin-right: 10px;
+  color: var(--primary-color);
+}
+
+.logo h1 {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Estilos do menu de navegação */
+.main-nav {
+  display: flex;
+  align-items: center;
+}
+
+.nav-list {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all var(--transition-speed);
+  border-radius: 4px;
+}
+
+.nav-link i {
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+.nav-link:hover, .nav-link:focus {
+  color: var(--primary-color);
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+/* Estilos para o botão de login */
+.login-btn {
+  background-color: var(--primary-color);
+  color: white !important;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: background-color var(--transition-speed);
+}
+
+.login-btn:hover, .login-btn:focus {
+  background-color: var(--secondary-color) !important;
+  color: white !important;
+}
+
+.login-btn i {
+  margin-right: 8px;
+}
+
+/* Estilos do menu dropdown */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dropdown-toggle .fa-chevron-down {
+  font-size: 12px;
+  transition: transform var(--transition-speed);
+}
+
+.dropdown:hover .fa-chevron-down {
+  transform: rotate(180deg);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 200px;
+  background-color: var(--background-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  margin-top: 8px;
+  padding: 8px 0;
+  list-style: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all var(--transition-speed);
+  z-index: 1001;
+}
+
+.dropdown:hover .dropdown-menu, 
+.dropdown:focus-within .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-menu li a {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 14px;
+  transition: all var(--transition-speed);
+}
+
+.dropdown-menu li a i {
+  margin-right: 10px;
+  width: 16px;
+  text-align: center;
+  color: var(--text-light);
+}
+
+.dropdown-menu li a:hover, 
+.dropdown-menu li a:focus {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: var(--primary-color);
+}
+
+.dropdown-menu li a:hover i,
+.dropdown-menu li a:focus i {
+  color: var(--primary-color);
+}
+
+.dropdown-menu .divider {
+  height: 1px;
+  background-color: var(--border-color);
+  margin: 8px 0;
+}
+
+.logout-btn {
+  color: #dc2626 !important;
+}
+
+.logout-btn:hover, .logout-btn:focus {
+  background-color: rgba(220, 38, 38, 0.1) !important;
+}
+
+/* Estilos da imagem de perfil do usuário */
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border-color);
+}
+
+/* Estilos do botão de menu mobile */
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text-color);
+  padding: 8px;
+  border-radius: 4px;
+  transition: all var(--transition-speed);
+}
+
+.mobile-menu-btn:hover, .mobile-menu-btn:focus {
+  color: var(--primary-color);
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+/* Media queries para responsividade */
+@media (max-width: 1024px) {
+  .nav-link {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+  
+  .logo h1 {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-container {
+    padding: 0 15px;
+  }
+  
+  .mobile-menu-btn {
+    display: block;
+    margin-left: auto;
+    margin-right: 15px;
+  }
+  
+  .main-nav {
+    position: fixed;
+    top: var(--header-height);
+    right: -280px;
+    width: 270px;
+    height: calc(100vh - var(--header-height));
+    background-color: var(--background-color);
+    box-shadow: -2px 0 10px var(--shadow-color);
+    transition: right var(--transition-speed);
+    padding: 20px 0;
+    overflow-y: auto;
+    z-index: 1000;
+  }
+  
+  .main-nav.active {
+    right: 0;
+  }
+  
+  .nav-list {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+  
+  .nav-list li {
+    width: 100%;
+  }
+  
+  .nav-link {
+    padding: 12px 20px;
+    width: 100%;
+    border-radius: 0;
+  }
+  
+  .dropdown {
+    width: 100%;
+  }
+  
+  .dropdown-menu {
+    position: static;
+    box-shadow: none;
+    width: 100%;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    display: none;
+    margin-top: 0;
+    padding-left: 20px;
+  }
+  
+  .dropdown.open .dropdown-menu {
+    display: block;
+  }
+  
+  .dropdown-toggle {
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .login-btn {
+    width: calc(100% - 40px);
+    margin: 10px 20px;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-container {
+    padding: 0 10px;
+  }
+  
+  .logo h1 {
+    font-size: 18px;
+  }
+  
+  .logo i {
+    font-size: 20px;
+  }
+}
+/* ======= ESTILOS DO FOOTER ======= */
+/* Aproveitando as variáveis definidas anteriormente e adicionando novas */
+:root {
+  /* Cores principais (mantidas do header) */
+  --primary-color: #3b82f6;
+  --secondary-color: #1e3a8a;
+  --text-color: #333;
+  --text-light: #666;
+  --background-color: #fff;
+  --border-color: #e5e7eb;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  
+  /* Cores específicas do footer */
+  --footer-bg: #f8fafc;
+  --footer-text: #4b5563;
+  --footer-heading: #1f2937;
+  --footer-link: #6b7280;
+  --footer-link-hover: #3b82f6;
+  --footer-border: #e2e8f0;
+  --social-hover: #3b82f6;
+  --newsletter-bg: #fff;
+  --copyright-bg: #f1f5f9;
+  
+  /* Dimensões e espaçamentos */
+  --footer-padding: 60px 0 0 0;
+  --section-margin: 0 30px 30px 0;
+  --transition-speed: 0.3s;
+}
+
+/* Estilos básicos do footer */
+.site-footer {
+  background-color: var(--footer-bg);
+  color: var(--footer-text);
+  padding: var(--footer-padding);
+  font-family: 'Roboto', 'Open Sans', sans-serif;
+  border-top: 1px solid var(--footer-border);
+}
+
+.footer-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+
+/* Estilos para cada seção do footer */
+.footer-section {
+  flex: 1 1 300px;
+  margin: var(--section-margin);
+}
+
+.footer-section h3 {
+  color: var(--footer-heading);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.footer-section h3::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 40px;
+  height: 3px;
+  background-color: var(--primary-color);
+  border-radius: 2px;
+}
+
+.footer-section p {
+  margin-bottom: 20px;
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+/* Estilo para a seção "Sobre" */
+.footer-section.about {
+  flex: 1.2 1 320px;
+}
+
+/* Links de mídias sociais */
+.social-links {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #fff;
+  border: 1px solid var(--border-color);
+  color: var(--footer-link);
+  text-decoration: none;
+  transition: all var(--transition-speed);
+  box-shadow: 0 2px 5px var(--shadow-color);
+}
+
+.social-link:hover, 
+.social-link:focus {
+  background-color: var(--social-hover);
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+}
+
+/* Estilo para a seção "Links Rápidos" */
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links li {
+  margin-bottom: 10px;
+}
+
+.footer-links a {
+  color: var(--footer-link);
+  text-decoration: none;
+  display: block;
+  padding: 5px 0;
+  transition: all var(--transition-speed);
+  position: relative;
+  padding-left: 15px;
+}
+
+.footer-links a::before {
+  content: '›';
+  position: absolute;
+  left: 0;
+  color: var(--primary-color);
+  font-size: 18px;
+  line-height: 1;
+  transition: transform var(--transition-speed);
+}
+
+.footer-links a:hover,
+.footer-links a:focus {
+  color: var(--footer-link-hover);
+  transform: translateX(5px);
+}
+
+.footer-links a:hover::before,
+.footer-links a:focus::before {
+  transform: translateX(3px);
+}
+
+/* Estilo para a seção "Newsletter" */
+.footer-section.newsletter {
+  flex: 1 1 320px;
+}
+
+.newsletter-form {
+  margin-top: 15px;
+}
+
+.form-group {
+  position: relative;
+  display: flex;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.newsletter-input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px 0 0 5px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color var(--transition-speed);
+}
+
+.newsletter-input:focus {
+  border-color: var(--primary-color);
+}
+
+.newsletter-btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0 20px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color var(--transition-speed);
+  white-space: nowrap;
+  border-radius: 0 5px 5px 0;
+  font-size: 14px;
+}
+
+.newsletter-btn:hover,
+.newsletter-btn:focus {
+  background-color: var(--secondary-color);
+}
+
+/* Copyright section */
+.copyright {
+  background-color: var(--copyright-bg);
+  padding: 20px 0;
+  text-align: center;
+  font-size: 14px;
+  border-top: 1px solid var(--footer-border);
+}
+
+/* Media queries para responsividade */
+@media (max-width: 992px) {
+  .footer-content {
+    flex-direction: column;
+  }
+  
+  .footer-section {
+    margin-right: 0;
+    margin-bottom: 40px;
+  }
+  
+  .footer-section:last-child {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .site-footer {
+    padding-top: 40px;
+  }
+  
+  .footer-section h3 {
+    font-size: 17px;
+  }
+  
+  .form-group {
+    flex-direction: column;
+  }
+  
+  .newsletter-input {
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .newsletter-btn {
+    width: 100%;
+    border-radius: 5px;
+    padding: 12px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-section {
+    flex-basis: 100%;
+  }
+  
+  .social-links {
+    justify-content: center;
+  }
+  
+  .footer-links {
+    text-align: center;
+  }
+  
+  .footer-links a {
+    padding-left: 0;
+  }
+  
+  .footer-links a::before {
+    display: none;
+  }
+  
+  .footer-section h3::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .footer-section h3,
+  .footer-section p {
+    text-align: center;
+  }
+}
+/* ======= ESTILOS DE FEEDBACK E ACESSIBILIDADE ======= */
+
+/* Estilo para texto de ajuda no formulário */
+.form-text {
+  display: block;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+/* Estilos para estados de foco - acessibilidade */
+.footer-links a:focus,
+.social-link:focus,
+.newsletter-input:focus,
+.newsletter-btn:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Animação de feedback para o botão de newsletter */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.newsletter-btn:active {
+  animation: pulse 0.3s ease-in-out;
+}
+
+/* Estilos para mensagens de feedback */
+.newsletter-feedback {
+  padding: 8px 12px;
+  border-radius: 4px;
+  background-color: rgba(16, 185, 129, 0.1);
+  border-left: 3px solid #10b981;
+  margin-top: 12px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.newsletter-error {
+  background-color: rgba(239, 68, 68, 0.1);
+  border-left: 3px solid #ef4444;
+  color: #ef4444;
+}
+
+/* Melhorias de usabilidade para versão mobile */
+@media (max-width: 480px) {
+  .newsletter-input, 
+  .newsletter-btn {
+    height: 44px; /* Altura maior para facilitar toque em mobile */
+  }
+  
+  .social-link {
+    width: 42px;
+    height: 42px;
+  }
+  
+  /* Espaçamento melhorado para os links no mobile */
+  .footer-links li {
+    margin-bottom: 15px;
+  }
+  
+  .footer-links a {
+    padding: 8px 0;
+  }
+}
+
+/* Estilo para marcar a página atual no menu do footer */
+.footer-links a.current {
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+/* Melhoria no contraste da seção de copyright para acessibilidade */
+.copyright {
+  color: #4b5563; /* Cor mais escura para melhor contraste */
+}

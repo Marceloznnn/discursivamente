@@ -1,0 +1,15 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Se o arquivo ou diretório solicitado existir, não faça reescrita
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Redireciona todas as requisições para a pasta public, se a URL não começar com /public/
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ /public/$1 [L,R=301]
+
+    # Bloqueia o acesso direto a diretórios sensíveis
+    RewriteRule ^(src|vendor|config|logs|storage|private|cache|tmp)/ - [F,L]
+</IfModule>

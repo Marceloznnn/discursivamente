@@ -1,0 +1,469 @@
+/* Estilo avançado para a página de registro */
+:root {
+    --primary-color: #4361ee;
+    --primary-hover: #3a56d4;
+    --secondary-color: #3f37c9;
+    --accent-color: #4cc9f0;
+    --text-color: #333;
+    --light-text: #f8f9fa;
+    --background-color: #f0f2f5;
+    --card-bg: #ffffff;
+    --error-color: #e63946;
+    --success-color: #2ecc71;
+    --border-radius: 12px;
+    --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+  }
+  
+  body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  
+  main {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    perspective: 1000px;
+  }
+  
+  /* Container principal dividido em duas partes */
+  section {
+    display: flex;
+    width: 100%;
+    max-width: 1200px;
+    min-height: 600px;
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    position: relative;
+    transform-style: preserve-3d;
+    animation: entryAnimation 1.2s ease-out forwards;
+  }
+  
+  /* Lado esquerdo - Formulário */
+  .form-side {
+    flex: 1;
+    padding: 3rem;
+    position: relative;
+    z-index: 2;
+    background: var(--card-bg);
+    clip-path: polygon(0 0, 100% 0, 93% 100%, 0% 100%);
+  }
+  
+  /* Lado direito - Imagem e mensagem de boas-vindas */
+  .image-side {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: var(--light-text);
+    clip-path: polygon(7% 0, 100% 0, 100% 100%, 0% 100%);
+  }
+  
+  .image-side::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('https://source.unsplash.com/random/1200x900/?digital,technology');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.15;
+    z-index: -1;
+    animation: zoomBackground 30s infinite alternate ease-in-out;
+  }
+  
+  .welcome-content {
+    text-align: center;
+    max-width: 90%;
+    animation: floatIn 1s ease-out 0.5s forwards;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  
+  .welcome-content h3 {
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .welcome-content p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    line-height: 1.7;
+    text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  .welcome-content .login-btn {
+    display: inline-block;
+    padding: 0.9rem 2.2rem;
+    background-color: transparent;
+    color: var(--light-text);
+    border: 2px solid var(--light-text);
+    border-radius: 50px;
+    font-weight: 600;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition);
+    z-index: 1;
+  }
+  
+  .welcome-content .login-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.6s;
+    z-index: -1;
+  }
+  
+  .welcome-content .login-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .welcome-content .login-btn:hover::before {
+    left: 100%;
+  }
+  
+  /* Estilos do formulário */
+  h2 {
+    color: var(--primary-color);
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    position: relative;
+    padding-bottom: 1rem;
+  }
+  
+  h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    border-radius: 2px;
+    animation: widthGrow 1.2s ease-out 0.5s forwards;
+  }
+  
+  form {
+    margin-top: 2rem;
+  }
+  
+  .input-group {
+    position: relative;
+    margin-bottom: 1.8rem;
+  }
+  
+  .input-group label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    color: #777;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+  
+  .input-group input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    border: none;
+    border-bottom: 2px solid #ddd;
+    background-color: transparent;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+  
+  .input-group input:focus,
+  .input-group input:valid {
+    border-bottom-color: var(--primary-color);
+  }
+  
+  .input-group input:focus + label,
+  .input-group input:valid + label {
+    top: -1.5rem;
+    left: 0;
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    font-weight: 600;
+  }
+  
+  input[type="submit"] {
+    width: 100%;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-top: 1.5rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+  }
+  
+  input[type="submit"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: all 0.6s;
+    z-index: -1;
+  }
+  
+  input[type="submit"]:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  input[type="submit"]:hover::before {
+    left: 100%;
+  }
+  
+  .form-footer {
+    margin-top: 2rem;
+    text-align: center;
+    color: #666;
+    font-size: 0.95rem;
+  }
+  
+  .form-footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    position: relative;
+    transition: var(--transition);
+  }
+  
+  .form-footer a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    transition: var(--transition);
+  }
+  
+  .form-footer a:hover {
+    color: var(--secondary-color);
+  }
+  
+  .form-footer a:hover::after {
+    width: 100%;
+  }
+  
+  p[style*="color:red"] {
+    color: var(--error-color) !important;
+    background-color: rgba(230, 57, 70, 0.08);
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    animation: shake 0.5s ease;
+    font-weight: 500;
+    border-left: 4px solid var(--error-color);
+  }
+  
+  /* Animações */
+  @keyframes entryAnimation {
+    0% {
+      opacity: 0;
+      transform: translateY(50px) rotateX(10deg);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) rotateX(0);
+    }
+  }
+  
+  @keyframes floatIn {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes widthGrow {
+    0% {
+      width: 0;
+    }
+    100% {
+      width: 80px;
+    }
+  }
+  
+  @keyframes shake {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    20%, 60% {
+      transform: translateX(-5px);
+    }
+    40%, 80% {
+      transform: translateX(5px);
+    }
+  }
+  
+  @keyframes zoomBackground {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(1.2);
+    }
+  }
+  
+  @keyframes wave {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  
+  /* Partículas decorativas */
+  .particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0;
+  }
+  
+  .particle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+  }
+  
+  .particle:nth-child(1) {
+    width: 100px;
+    height: 100px;
+    top: 10%;
+    left: 80%;
+    animation: float 15s infinite ease-in-out;
+  }
+  
+  .particle:nth-child(2) {
+    width: 150px;
+    height: 150px;
+    top: 70%;
+    left: 10%;
+    animation: float 20s infinite ease-in-out reverse;
+  }
+  
+  .particle:nth-child(3) {
+    width: 70px;
+    height: 70px;
+    top: 40%;
+    left: 60%;
+    animation: float 12s infinite ease-in-out;
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translate(0, 0) scale(1);
+    }
+    25% {
+      transform: translate(10px, 15px) scale(1.05);
+    }
+    50% {
+      transform: translate(-5px, 20px) scale(1);
+    }
+    75% {
+      transform: translate(-15px, -10px) scale(0.95);
+    }
+  }
+  
+  /* Responsividade */
+  @media (max-width: 992px) {
+    section {
+      flex-direction: column;
+      max-width: 600px;
+    }
+    
+    .form-side, .image-side {
+      clip-path: none;
+      padding: 2rem;
+    }
+    
+    .image-side {
+      min-height: 300px;
+    }
+    
+    .welcome-content h3 {
+      font-size: 1.8rem;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .form-side, .image-side {
+      padding: 1.5rem;
+    }
+    
+    h2 {
+      font-size: 1.6rem;
+    }
+    
+    .welcome-content h3 {
+      font-size: 1.5rem;
+    }
+    
+    .welcome-content p {
+      font-size: 0.95rem;
+    }
+  }
+  
+  /* HTML Modificado para Implementação */
+  /* Adicione estas classes ao seu HTML para implementar o novo design */

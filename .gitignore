@@ -1,0 +1,19 @@
+# Composer vendor directory
+/vendor/
+
+# Configurações de ambiente
+.env
+.env.*
+
+# Logs e caches
+*.log
+/cache/
+/tmp/
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# IDEs e editores de código
+/.idea/
+/.vscode/
