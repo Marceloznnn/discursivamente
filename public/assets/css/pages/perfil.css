@@ -1,0 +1,608 @@
+/* Variáveis globais e configuração de cores */
+:root {
+    --cor-primaria: #4a6fa5;
+    --cor-secundaria: #f5f7fa;
+    --cor-terciaria: #c2cfe3;
+    --cor-quaternaria: #edf2f7;
+    --cor-texto: #2d3748;
+    --cor-texto-claro: #4a5568;
+    --cor-borda: #e2e8f0;
+    --cor-destaque: #5b76a7;
+    --cor-destaque-hover: #3c5a8a;
+    --cor-sucesso: #48bb78;
+    --sombra-suave: 0 2px 10px rgba(0, 0, 0, 0.05);
+    --sombra-media: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --borda-arredondada: 12px;
+    --transicao-padrao: all 0.3s ease;
+    --fonte-principal: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  /* Reset e estilos base */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--fonte-principal);
+  }
+  
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+    color: var(--cor-texto);
+    line-height: 1.6;
+  }
+  
+  /* Tipografia */
+  h1, h2, h3 {
+    color: var(--cor-texto);
+    margin-bottom: 0.8rem;
+    letter-spacing: -0.02em;
+  }
+  
+  h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    position: relative;
+    padding-bottom: 10px;
+    margin-top: 1rem;
+    display: inline-block;
+  }
+  
+  h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(to right, var(--cor-destaque), var(--cor-terciaria));
+    border-radius: 3px;
+  }
+  
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--cor-texto-claro);
+  }
+  
+  a {
+    text-decoration: none;
+    color: var(--cor-destaque);
+    transition: var(--transicao-padrao);
+    position: relative;
+  }
+  
+  a:hover {
+    color: var(--cor-destaque-hover);
+  }
+  
+  a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: -2px;
+    left: 0;
+    background-color: var(--cor-destaque-hover);
+    transition: var(--transicao-padrao);
+  }
+  
+  a:hover::after {
+    width: 100%;
+  }
+  
+  /* Layout principal */
+  header {
+    position: fixed;
+    width: 260px;
+    height: 100vh;
+    background-color: var(--cor-primaria);
+    box-shadow: var(--sombra-media);
+    z-index: 1000;
+  }
+  
+  main {
+    margin-left: 260px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: calc(100% - 260px);
+    margin-bottom: 40px;
+  }
+  
+  /* Estilos da barra lateral e navegação */
+  .sidebar-header {
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    text-align: center;
+  }
+  
+  header h1 {
+    color: white;
+    font-size: 1.6rem;
+    margin-bottom: 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Foto de perfil */
+  .foto-perfil {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+  }
+  
+  .foto-perfil img {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    box-shadow: var(--sombra-suave);
+    transition: var(--transicao-padrao);
+  }
+  
+  .foto-perfil img:hover {
+    transform: scale(1.05);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+  
+  .foto-perfil button {
+    margin-top: 12px;
+    padding: 8px 16px;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: var(--transicao-padrao);
+    font-size: 0.9rem;
+  }
+  
+  .foto-perfil button:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+  }
+  
+  /* Menu de navegação */
+  header nav {
+    margin-top: 20px;
+  }
+  
+  header nav ul {
+    list-style: none;
+    width: 100%;
+  }
+  
+  header nav ul li {
+    width: 100%;
+    margin-bottom: 2px;
+  }
+  
+  header nav ul li a {
+    display: flex;
+    align-items: center;
+    padding: 12px 25px;
+    color: rgba(255, 255, 255, 0.8);
+    border-left: 4px solid transparent;
+    transition: var(--transicao-padrao);
+    font-weight: 500;
+  }
+  
+  header nav ul li a::after {
+    content: none;
+  }
+  
+  header nav ul li a:hover,
+  header nav ul li a.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left: 4px solid white;
+    color: white;
+    padding-left: 30px;
+  }
+  
+  /* Ícones de menu (usando pseudo-elementos para demonstração) */
+  header nav ul li a::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+  }
+  
+  /* Seções do conteúdo principal */
+  section {
+    background-color: white;
+    border-radius: var(--borda-arredondada);
+    padding: 25px;
+    box-shadow: var(--sombra-suave);
+    transition: var(--transicao-padrao);
+    margin-bottom: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 4px;
+    width: 100%;
+    background: linear-gradient(to right, var(--cor-destaque), var(--cor-terciaria));
+  }
+  
+  section:hover {
+    box-shadow: var(--sombra-media);
+    transform: translateY(-3px);
+  }
+  
+  /* Informações Pessoais */
+  #info-perfil {
+    background-color: white;
+  }
+  
+  .dados-pessoais {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 25px;
+  }
+  
+  .dados-pessoais div {
+    background-color: var(--cor-secundaria);
+    padding: 18px;
+    border-radius: var(--borda-arredondada);
+    box-shadow: var(--sombra-suave);
+    transition: var(--transicao-padrao);
+    border: 1px solid var(--cor-borda);
+  }
+  
+  .dados-pessoais div:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--sombra-media);
+    border-color: var(--cor-terciaria);
+  }
+  
+  .dados-pessoais h3 {
+    color: var(--cor-texto-claro);
+    font-size: 0.85rem;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .dados-pessoais p {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--cor-texto);
+  }
+  
+  /* Estatísticas do usuário */
+  #estatisticas {
+    background: linear-gradient(to bottom right, var(--cor-secundaria), white);
+  }
+  
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+  
+  .card {
+    background-color: white;
+    padding: 25px 20px;
+    border-radius: var(--borda-arredondada);
+    text-align: center;
+    box-shadow: var(--sombra-suave);
+    transition: var(--transicao-padrao);
+    border: 1px solid var(--cor-borda);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background-color: var(--cor-destaque);
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--sombra-media);
+    border-color: var(--cor-terciaria);
+  }
+  
+  .card h3 {
+    font-size: 0.9rem;
+    color: var(--cor-texto-claro);
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .card p {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--cor-destaque);
+    line-height: 1;
+  }
+  
+  /* Progress bar */
+  progress {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+  }
+  
+  progress::-webkit-progress-bar {
+    background-color: var(--cor-secundaria);
+    border-radius: 5px;
+  }
+  
+  progress::-webkit-progress-value {
+    background-color: var(--cor-destaque);
+    border-radius: 5px;
+    transition: width 0.3s ease;
+  }
+  
+  progress::-moz-progress-bar {
+    background-color: var(--cor-destaque);
+    border-radius: 5px;
+  }
+  
+  /* Livros em progresso */
+  #livros-progresso {
+    background-color: white;
+  }
+  
+  .lista-livros {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  .livro {
+    display: flex;
+    background-color: var(--cor-secundaria);
+    border-radius: var(--borda-arredondada);
+    overflow: hidden;
+    box-shadow: var(--sombra-suave);
+    transition: var(--transicao-padrao);
+    border: 1px solid var(--cor-borda);
+  }
+  
+  .livro:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--sombra-media);
+    border-color: var(--cor-terciaria);
+  }
+  
+  .livro img {
+    width: 90px;
+    height: 130px;
+    object-fit: cover;
+  }
+  
+  .info-livro {
+    padding: 15px;
+    flex: 1;
+  }
+  
+  .info-livro h3 {
+    font-size: 1rem;
+    margin-bottom: 5px;
+    color: var(--cor-texto);
+  }
+  
+  .info-livro p {
+    font-size: 0.9rem;
+    color: var(--cor-texto-claro);
+    margin-bottom: 10px;
+  }
+  
+  .info-livro .progresso-texto {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--cor-texto-claro);
+    margin-top: 5px;
+  }
+  
+  /* Footer */
+  footer {
+    margin-left: 260px;
+    background-color: var(--cor-primaria);
+    padding: 20px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  footer nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  
+  footer nav ul li a {
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  footer nav ul li a:hover {
+    color: white;
+  }
+  
+  /* Animações */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes slideIn {
+    from { transform: translateX(-20px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  
+  /* Aplicando animações */
+  section {
+    animation: fadeIn 0.6s ease forwards;
+  }
+  
+  .card {
+    animation: fadeIn 0.5s ease forwards;
+    animation-delay: calc(var(--animation-order) * 0.1s);
+  }
+  
+  .dados-pessoais div {
+    animation: fadeIn 0.5s ease forwards;
+    animation-delay: calc(var(--animation-order) * 0.1s);
+  }
+  
+  /* Responsividade */
+  @media (max-width: 1200px) {
+    .dados-pessoais {
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+    
+    .cards {
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+  }
+  
+  @media (max-width: 992px) {
+    header {
+      width: 220px;
+    }
+    
+    main, footer {
+      margin-left: 220px;
+      width: calc(100% - 220px);
+    }
+    
+    .foto-perfil img {
+      width: 120px;
+      height: 120px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    header {
+      width: 80px;
+    }
+    
+    .sidebar-header h1 {
+      font-size: 0;
+    }
+    
+    .sidebar-header h1::first-letter {
+      font-size: 1.8rem;
+    }
+    
+    .foto-perfil img {
+      width: 60px;
+      height: 60px;
+    }
+    
+    .foto-perfil button {
+      font-size: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .foto-perfil button::after {
+      content: '+';
+      font-size: 1.2rem;
+    }
+    
+    header nav ul li a {
+      padding: 15px 0;
+      justify-content: center;
+    }
+    
+    header nav ul li a span {
+      display: none;
+    }
+    
+    header nav ul li a::before {
+      margin-right: 0;
+    }
+    
+    main, footer {
+      margin-left: 80px;
+      width: calc(100% - 80px);
+      padding: 20px;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    header {
+      width: 100%;
+      height: auto;
+      position: fixed;
+      bottom: 0;
+      top: auto;
+      left: 0;
+    }
+    
+    .sidebar-header, .foto-perfil {
+      display: none;
+    }
+    
+    header nav {
+      margin-top: 0;
+    }
+    
+    header nav ul {
+      display: flex;
+      justify-content: space-around;
+    }
+    
+    header nav ul li {
+      width: auto;
+    }
+    
+    header nav ul li a {
+      padding: 15px 0;
+      width: 60px;
+    }
+    
+    main, footer {
+      margin-left: 0;
+      width: 100%;
+      padding: 15px;
+      margin-bottom: 60px;
+    }
+    
+    .dados-pessoais, .cards, .lista-livros {
+      grid-template-columns: 1fr;
+    }
+    
+    section {
+      padding: 20px 15px;
+    }
+  }

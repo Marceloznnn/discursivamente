@@ -1,127 +1,135 @@
-<?php 
-// Incluir os controladores necessários
-require_once BASE_PATH . '/src/controllers/LoginController.php';
-require_once BASE_PATH . '/src/controllers/RegisterController.php';
-require_once BASE_PATH . '/src/controllers/HomeController.php';
-require_once BASE_PATH . '/src/controllers/LogoutController.php';
-require_once BASE_PATH . '/src/controllers/BibliotecaController.php';
-require_once BASE_PATH . '/src/controllers/QuemSomosController.php';
-require_once BASE_PATH . '/src/controllers/PerfilController.php';
-require_once BASE_PATH . '/src/controllers/CommunicationController.php';
-require_once BASE_PATH . '/src/controllers/CompromissosController.php';
-require_once BASE_PATH . '/src/controllers/SearchController.php';              // Pesquisa de Livros
-require_once BASE_PATH . '/src/controllers/CommunitySearchController.php';     // Pesquisa de Comunidades
+<?php
+if (!defined('BASE_PATH')) {
+    define('BASE_PATH', dirname(__DIR__, 2));
+}
 
-// Utilize a variável $requestUri definida no index.php
+require_once BASE_PATH . '/vendor/autoload.php';
+require_once BASE_PATH . '/src/config/database.php';
+
+use Discursivamente\Controllers\{
+    Auth\LoginController,
+    Auth\RegisterController,
+    Auth\LogoutController,
+    Auth\VerifyCodeController,
+    Core\HomeController,
+    Community\BibliotecaController,
+    Core\QuemSomosController,
+    Profile\ProfileController,
+    Community\CommunityController,
+    Community\CompromissoController,
+    Core\SearchController,
+    Community\CommunitySearchController
+};
+
+$requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
 switch ($requestUri) {
     case '/':
     case '/home':
-        $homeController = new HomeController();
-        $homeController->index();
+        (new HomeController())->index();
         break;
+        
     case '/login':
-        $loginController = new LoginController($pdo);
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $loginController->login();
-        } else {
-            $loginController->showLoginForm();
-        }
+        $controller = new LoginController();
+        $_SERVER['REQUEST_METHOD'] === 'POST' ? $controller->autenticar() : $controller->index();
         break;
+        
     case '/register':
-        $registerController = new RegisterController($pdo);
+        $controller = new RegisterController();
+        $_SERVER['REQUEST_METHOD'] === 'POST' ? $controller->registrar() : $controller->index();
+        break;
+        
+    case '/verify-code':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $registerController->register();
+            (new VerifyCodeController())->verify();
         } else {
-            $registerController->showRegisterForm();
+            (new VerifyCodeController())->index();
         }
         break;
+        
+    case '/resend-code':
+         (new VerifyCodeController())->resend();
+         break;
+         
     case '/logout':
-        $logoutController = new LogoutController();
-        $logoutController->logout();
+        (new LogoutController())->logout();
         break;
+        
     case '/biblioteca':
-        $bibliotecaController = new BibliotecaController($pdo);
-        $bibliotecaController->index();
+        (new BibliotecaController($pdo))->index();
         break;
+        
     case '/quem-somos':
-        $quemSomosController = new QuemSomosController();
-        $quemSomosController->index();
+        (new QuemSomosController())->index();
         break;
-    // Rotas para a comunidade/ comunicação
+        
     case '/comunidade/comunicacao':
-        $communicationController = new CommunicationController();
-        $communicationController->index();
+        (new CommunityController())->index();
         break;
+        
     case '/comunidade/foruns':
-        $communicationController = new CommunicationController();
-        $communicationController->foruns();
+        (new CommunityController())->foruns();
         break;
+        
     case '/comunidade/clube-livros':
-        $communicationController = new CommunicationController();
-        $communicationController->clubeLivros();
+        (new CommunityController())->clubeLivros();
         break;
+        
     case '/comunidade/grupo':
-        $communicationController = new CommunicationController();
-        $communicationController->grupo();
+        (new CommunityController())->grupo();
         break;
+        
     case '/compromissos':
-        $compromissosController = new CompromissosController();
-        $compromissosController->index();
+        (new CompromissoController())->index();
         break;
-    // Nova rota para pesquisa de livros (caminho: /inicio/buscar)
+        
     case '/inicio/buscar':
-        $searchController = new SearchController($pdo);
-        $searchController->index();
+        (new SearchController($pdo))->index();
         break;
-    // Nova rota para pesquisa de comunidades (caminho: /comunidades/buscar)
+        
     case '/comunidades/buscar':
-        $communitySearchController = new CommunitySearchController($pdo);
-        $communitySearchController->index();
+        (new CommunitySearchController($pdo))->index();
         break;
+        
     default:
-        // Rotas agrupadas para perfil
         if (strpos($requestUri, '/perfil') === 0) {
-            $perfilController = new PerfilController();
+            $profileController = new ProfileController();
             $subRoute = str_replace('/perfil', '', $requestUri);
             
             switch ($subRoute) {
                 case '':
                 case '/':
-                    $perfilController->index();
+                    $profileController->index();
                     break;
-                // Rota para editar informações (anteriormente /personal)
                 case '/editar':
-                    $perfilController->editarPerfil();
+                    $profileController->editarPerfil();
                     break;
-                // Rota para redefinir senha (anteriormente /security)
                 case '/redefinir-senha':
-                    $perfilController->redefinirSenha();
+                    $profileController->redefinirSenha();
                     break;
-                // Outras rotas de perfil podem ser adicionadas aqui:
                 case '/configuracao':
-                    $perfilController->configuracao();
+                    $profileController->configuracao();
                     break;
                 case '/salvos':
-                    $perfilController->salvos();
+                    $profileController->salvos();
                     break;
                 case '/favoritos':
-                    $perfilController->favoritos();
+                    $profileController->favoritos();
                     break;
                 case '/gerenciar-livros':
-                    $perfilController->gerenciarLivros();
+                    $profileController->gerenciarLivros();
                     break;
                 case '/historico':
-                    $perfilController->historico();
+                    $profileController->historico();
                     break;
                 default:
                     http_response_code(404);
-                    echo "Página não encontrada.";
+                    require_once BASE_PATH . '/src/views/errors/404.php';
                     break;
             }
         } else {
             http_response_code(404);
-            echo "Página não encontrada.";
+            require_once BASE_PATH . '/src/views/errors/404.php';
         }
         break;
 }
-?>

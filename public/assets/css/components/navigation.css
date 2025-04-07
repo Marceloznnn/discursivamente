@@ -1,0 +1,285 @@
+/* navigation.css */
+
+/* Variáveis CSS para fácil customização */
+:root {
+    --primary-color: #3498db;
+    --primary-hover: #2980b9;
+    --background-color: #ffffff;
+    --text-color: #333333;
+    --text-light: #7f8c8d;
+    --accent-color: #e74c3c;
+    --border-color: #ecf0f1;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --header-height: 70px;
+    --transition-speed: 0.3s;
+  }
+  
+  /* Reset de estilos para o header */
+  #siteHeader {
+    background-color: var(--background-color);
+    box-shadow: 0 2px 10px var(--shadow-color);
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+  }
+  
+  #headerContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: var(--header-height);
+  }
+  
+  /* Estilos do logo */
+  #siteLogo {
+    display: flex;
+    align-items: center;
+  }
+  
+  #logoLink {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--primary-color);
+  }
+  
+  #logoIcon {
+    font-size: 1.8rem;
+    margin-right: 10px;
+  }
+  
+  #logoTitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  
+  /* Navegação principal */
+  #mainNavigation {
+    flex-grow: 1;
+  }
+  
+  #navList {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+  
+  #navList li {
+    position: relative;
+    margin-left: 5px;
+  }
+  
+  #navList li a {
+    display: flex;
+    align-items: center;
+    color: var(--text-color);
+    padding: 8px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 500;
+    transition: all var(--transition-speed);
+  }
+  
+  #navList li a:hover {
+    color: var(--primary-color);
+    background-color: rgba(52, 152, 219, 0.1);
+  }
+  
+  #navList li a i {
+    margin-right: 8px;
+    font-size: 1rem;
+  }
+  
+  /* Estilos do perfil do usuário */
+  #userDropdownItem {
+    position: relative;
+  }
+  
+  #dropdownToggle {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  #userProfile {
+    display: flex;
+    align-items: center;
+  }
+  
+  #userImage {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary-color);
+  }
+  
+  #userProfileText {
+    margin-left: 8px;
+  }
+  
+  #dropdownIcon {
+    margin-left: 5px;
+    transition: transform var(--transition-speed);
+  }
+  
+  #dropdownIcon.active {
+    transform: rotate(180deg);
+  }
+  
+  /* Menu dropdown */
+  #dropdownMenu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    background-color: var(--background-color);
+    border-radius: 8px;
+    box-shadow: 0 5px 15px var(--shadow-color);
+    width: 220px;
+    padding: 10px 0;
+    list-style: none;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all var(--transition-speed);
+  }
+  
+  #dropdownMenu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  
+  #dropdownMenu li a {
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: all var(--transition-speed);
+  }
+  
+  #dropdownMenu li a:hover {
+    background-color: rgba(52, 152, 219, 0.1);
+    color: var(--primary-color);
+  }
+  
+  #dropdownMenu li a i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+  }
+  
+  #divider {
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 8px 0;
+  }
+  
+  #logoutLink {
+    color: var(--accent-color) !important;
+  }
+  
+  #logoutLink:hover {
+    background-color: rgba(231, 76, 60, 0.1) !important;
+  }
+  
+  /* Botão do menu mobile */
+  #mobileMenuBtn {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 8px;
+    margin-left: auto;
+  }
+  
+  /* Media queries para responsividade */
+  @media screen and (max-width: 992px) {
+    #mobileMenuBtn {
+      display: block;
+    }
+    
+    #mainNavigation {
+      position: absolute;
+      top: var(--header-height);
+      left: 0;
+      width: 100%;
+      background-color: var(--background-color);
+      box-shadow: 0 5px 10px var(--shadow-color);
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height var(--transition-speed);
+    }
+    
+    #mainNavigation.active {
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    
+    #navList {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 10px 0;
+    }
+    
+    #navList li {
+      width: 100%;
+      margin: 0;
+    }
+    
+    #navList li a {
+      padding: 15px 20px;
+      width: 100%;
+      border-radius: 0;
+    }
+    
+    #userDropdownItem {
+      width: 100%;
+    }
+    
+    #dropdownToggle {
+      padding: 15px 20px;
+      width: 100%;
+      justify-content: space-between;
+    }
+    
+    #dropdownMenu {
+      position: static;
+      box-shadow: none;
+      width: 100%;
+      background-color: rgba(52, 152, 219, 0.05);
+      border-radius: 0;
+      padding: 0;
+    }
+    
+    #dropdownMenu li a {
+      padding-left: 50px;
+    }
+  }
+  
+  @media screen and (max-width: 576px) {
+    #headerContainer {
+      padding: 0 15px;
+    }
+    
+    #logoTitle {
+      font-size: 1.2rem;
+    }
+    
+    #userProfileText {
+      display: none;
+    }
+  }

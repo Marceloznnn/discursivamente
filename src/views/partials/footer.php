@@ -1,96 +1,129 @@
-<footer class="site-footer" role="contentinfo">
-    <div class="container">
-        <div class="footer-content">
-            <!-- Seção Sobre -->
-            <div class="footer-section about">
-                <h3>Sobre a Biblioteca</h3>
-                <p>A Biblioteca Discursivamente é um espaço dedicado à promoção da leitura e do conhecimento, oferecendo
-                    um rico acervo em diversos formatos e temáticas para todos os públicos.</p>
-                <div class="social-links">
-                    <a href="#" class="social-link" aria-label="Siga-nos no Facebook">
+<footer id="siteFooter" role="contentinfo">
+    <div class="footer-container">
+        <!-- Seção principal do footer com informações, links e contatos -->
+        <div class="footer-main">
+            <!-- Sobre o projeto -->
+            <div class="footer-section footer-about">
+                <h3 class="footer-heading">Biblioteca Discursivamente</h3>
+                <p class="footer-description">Uma plataforma inovadora dedicada à promoção do conhecimento, debate
+                    construtivo e desenvolvimento acadêmico, criando pontes entre ideias e pessoas.</p>
+                <div class="footer-social">
+                    <a href="#" class="social-link" aria-label="Facebook">
                         <i class="fab fa-facebook-f" aria-hidden="true"></i>
                     </a>
-                    <a href="#" class="social-link" aria-label="Siga-nos no Instagram">
-                        <i class="fab fa-instagram" aria-hidden="true"></i>
-                    </a>
-                    <a href="#" class="social-link" aria-label="Siga-nos no Twitter">
+                    <a href="#" class="social-link" aria-label="Twitter">
                         <i class="fab fa-twitter" aria-hidden="true"></i>
                     </a>
-                    <a href="#" class="social-link" aria-label="Inscreva-se no nosso canal do YouTube">
-                        <i class="fab fa-youtube" aria-hidden="true"></i>
+                    <a href="#" class="social-link" aria-label="Instagram">
+                        <i class="fab fa-instagram" aria-hidden="true"></i>
+                    </a>
+                    <a href="#" class="social-link" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin-in" aria-hidden="true"></i>
                     </a>
                 </div>
             </div>
 
-            <!-- Seção Links Rápidos -->
-            <div class="footer-section links">
-                <h3>Links Rápidos</h3>
-                <ul class="footer-links">
-                    <li><a href="/home">Home</a></li>
-                    <li><a href="/comunidade/comunicacao">Comunidade</a></li>
-                    <li><a href="/biblioteca">Biblioteca</a></li>
-                    <li><a href="/compromissos">Compromissos</a></li>
-                    <li><a href="/quem-somos">Quem Somos</a></li>
-                    <li><a href="/contato">Contato</a></li>
-                    <li><a href="/perguntas-frequentes">Perguntas Frequentes</a></li>
+            <!-- Links úteis -->
+            <div class="footer-section footer-links">
+                <h3 class="footer-heading">Links Úteis</h3>
+                <ul class="footer-nav">
+                    <li class="footer-nav-item">
+                        <a href="/home" class="footer-nav-link">
+                            <i class="fas fa-chevron-right" aria-hidden="true"></i> Home
+                        </a>
+                    </li>
+                    <li class="footer-nav-item">
+                        <a href="/biblioteca" class="footer-nav-link">
+                            <i class="fas fa-chevron-right" aria-hidden="true"></i> Biblioteca
+                        </a>
+                    </li>
+                    <li class="footer-nav-item">
+                        <a href="/comunidade/comunicacao" class="footer-nav-link">
+                            <i class="fas fa-chevron-right" aria-hidden="true"></i> Comunidade
+                        </a>
+                    </li>
+                    <li class="footer-nav-item">
+                        <a href="/compromissos" class="footer-nav-link">
+                            <i class="fas fa-chevron-right" aria-hidden="true"></i> Compromissos
+                        </a>
+                    </li>
+                    <li class="footer-nav-item">
+                        <a href="/quem-somos" class="footer-nav-link">
+                            <i class="fas fa-chevron-right" aria-hidden="true"></i> Quem Somos
+                        </a>
+                    </li>
+                    <li class="footer-nav-item">
+                        <a href="/politica-privacidade" class="footer-nav-link">
+                            <i class="fas fa-chevron-right" aria-hidden="true"></i> Política de Privacidade
+                        </a>
+                    </li>
                 </ul>
             </div>
 
-            <!-- Seção Newsletter -->
-            <div class="footer-section newsletter">
-                <h3>Newsletter</h3>
-                <p>Assine nossa newsletter para receber as últimas novidades sobre eventos, livros e atividades da biblioteca.</p>
-                <form class="newsletter-form" aria-label="Formulário de inscrição na newsletter">
+            <!-- Contato -->
+            <div class="footer-section footer-contact">
+                <h3 class="footer-heading">Contato</h3>
+                <ul class="footer-contact-list">
+                    <li class="footer-contact-item">
+                        <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                        <span>Av. Maranhão, 1000, Codó - MA</span>
+                    </li>
+                    <li class="footer-contact-item">
+                        <i class="fas fa-envelope" aria-hidden="true"></i>
+                        <a href="mailto:projeto.discursivamente@gmail.com">projeto.discursivamente@gmail.com</a>
+                    </li>
+                    <li class="footer-contact-item">
+                        <i class="fas fa-phone-alt" aria-hidden="true"></i>
+                        <a href="tel:+551123456789">(98) 9212-0055</a>
+                    </li>
+                    <li class="footer-contact-item">
+                        <i class="fas fa-clock" aria-hidden="true"></i>
+                        <span>Segunda a Sexta: 9h às 18h</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Newsletter -->
+            <div class="footer-section footer-newsletter">
+                <h3 class="footer-heading">Newsletter</h3>
+                <p class="footer-newsletter-text">Inscreva-se para receber novidades e atualizações da nossa biblioteca.
+                </p>
+                <form class="footer-form" action="/newsletter/subscribe" method="post">
                     <div class="form-group">
-                        <input type="email" class="newsletter-input" placeholder="Seu email" required aria-label="Digite seu email">
-                        <button class="newsletter-btn" type="submit" aria-label="Inscrever-se na newsletter">Inscrever</button>
+                        <input type="email" name="email" id="footer-email" placeholder="Seu e-mail" required
+                            class="footer-input">
+                        <button type="submit" class="footer-button">
+                            <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
-        
-        <!-- Seção Copyright -->
-        <div class="copyright">
-            &copy; <?php echo date('Y'); ?> Biblioteca Discursivamente. Todos os direitos reservados.
+
+        <!-- Seção de colaboradores -->
+        <div class="footer-collaborators">
+            <h3 class="collaborators-heading">Nossos Colaboradores</h3>
+            <div class="collaborators-carousel">
+                <div class="collaborator-item">
+                    <a href="https://lptacademico.me/" target="_blank" aria-label="LPT Acadêmico">
+                        <img src="/assets/images/colaborators/lptacademico.jpg" alt="LPT Acadêmico"
+                            class="collaborator-logo">
+                        <span class="collaborator-name">LPT Acadêmico</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Divisor -->
+        <div class="footer-divider"></div>
+
+        <!-- Rodapé do footer com copyright -->
+        <div class="footer-bottom">
+            <p class="copyright">&copy;
+                <?php echo date('Y'); ?>
+                Discursivamente. Todos os direitos reservados.</p>
+            <p class="footer-credits">Desenvolvido com <i class="fas fa-heart" aria-hidden="true"></i> para a comunidade
+                acadêmica</p>
         </div>
     </div>
 </footer>
-
-<!-- Script para funcionalidade do newsletter -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Captura o formulário de newsletter
-        const newsletterForm = document.querySelector('.newsletter-form');
-        
-        if (newsletterForm) {
-            newsletterForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const emailInput = this.querySelector('.newsletter-input');
-                const email = emailInput.value.trim();
-                
-                if (email) {
-                    // Aqui você implementaria a lógica para enviar o email para seu sistema
-                    // Por enquanto, vamos apenas mostrar um feedback visual
-                    emailInput.value = '';
-                    
-                    // Cria um elemento de feedback
-                    const feedback = document.createElement('div');
-                    feedback.classList.add('newsletter-feedback');
-                    feedback.textContent = 'Obrigado por se inscrever!';
-                    feedback.style.color = '#10b981';
-                    feedback.style.marginTop = '10px';
-                    feedback.style.fontWeight = '500';
-                    
-                    // Adiciona o feedback após o formulário
-                    this.appendChild(feedback);
-                    
-                    // Remove o feedback após 3 segundos
-                    setTimeout(() => {
-                        feedback.remove();
-                    }, 3000);
-                }
-            });
-        }
-    });
-</script>
