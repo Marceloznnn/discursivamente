@@ -1,0 +1,56 @@
+{% extends 'layouts/admin.twig' %}
+
+{% block styles %}
+    <link rel="stylesheet" href="/assets/css/admin/conversations.css">
+{% endblock %}
+
+{% block scripts %}
+    {# <script src="/assets/js/admin/conversations.js"></script> #}
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3">Conversas</h1>
+    <a href="/admin/conversations/create" class="btn btn-primary">Nova Conversa</a>
+  </div>
+
+  {% if conversations is empty %}
+    <div class="alert alert-info">Nenhuma conversa encontrada.</div>
+  {% else %}
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Assunto</th>
+            <th>Criada Por</th>
+            <th>Participantes</th>
+            <th>Atualizada Em</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for conv in conversations %}
+            <tr>
+              <td>{{ conv.id }}</td>
+              <td>{{ conv.subject }}</td>
+              <td>{{ conv.createdBy }}</td>
+              <td>{{ conv.participantIds|join(', ') }}</td>
+              <td>{{ conv.updatedAt|date("d/m/Y H:i") }}</td>
+              <td>
+                <a href="/admin/conversations/{{ conv.id }}" class="btn btn-sm btn-outline-info">Ver</a>
+                <a href="/admin/conversations/{{ conv.id }}/delete" 
+                   class="btn btn-sm btn-outline-danger"
+                   onclick="return confirm('Excluir conversa #{{ conv.id }}?');">
+                   Excluir
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

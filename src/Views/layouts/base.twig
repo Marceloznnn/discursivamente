@@ -1,0 +1,29 @@
+{# src/Views/layouts/base.twig #}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Discursivamente{% endblock %}</title>
+
+    {# CSS global #}
+    <link rel="stylesheet" href="/assets/css/global.css">
+    {% block styles %}{% endblock %}
+    
+</head>
+<body class="flex flex-col min-h-screen">
+
+    {# Header include corrigido #}
+    {% include 'layouts/header.twig' %}
+
+    <main class="flex-grow container mx-auto p-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    {# Footer include opcional #}
+    {% include 'layouts/footer.twig' %}
+
+    {# JS global #}
+    <script src="/assets/js/global.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,64 @@
+{# src/Views/admin/users/create.twig #}
+{% extends 'layouts/admin.twig' %}
+
+
+{% block styles %}
+    <link rel="stylesheet" href="/assets/css/admin/users.css">
+{% endblock %}
+
+{% block scripts %}
+    {# <script src="/assets/js/admin/users.js"></script> #}
+{% endblock %}
+
+{% block title %}Novo Usuário{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h1 class="h3 mb-0">Novo Usuário</h1>
+      <a href="/admin/users" class="btn btn-secondary">Voltar</a>
+    </div>
+    <div class="card-body">
+      {% if error is defined %}
+      <div class="alert alert-danger">{{ error }}</div>
+      {% endif %}
+      <form action="/admin/users/store" method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+          <label for="name" class="form-label">Nome *</label>
+          <input type="text" class="form-control" id="name" name="name" required value="{{ user.name|default('') }}">
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email *</label>
+          <input type="email" class="form-control" id="email" name="email" required value="{{ user.email|default('') }}">
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Senha *</label>
+          <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+        <div class="mb-3">
+          <label for="type" class="form-label">Tipo</label>
+          <select class="form-select" id="type" name="type">
+            <option value="" {% if user.type is null %}selected{% endif %}>—</option>
+            <option value="admin" {% if user.type=='admin' %}selected{% endif %}>Admin</option>
+            <option value="instituicao" {% if user.type=='instituicao' %}selected{% endif %}>Instituição</option>
+            <option value="teacher" {% if user.type=='teacher' %}selected{% endif %}>Professor</option>
+            <option value="student" {% if user.type=='student' %}selected{% endif %}>Aluno</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="bio" class="form-label">Bio</label>
+          <textarea class="form-control" id="bio" name="bio" rows="3">{{ user.bio|default('') }}</textarea>
+        </div>
+        <div class="mb-3">
+          <label for="avatar" class="form-label">Avatar</label>
+          <input type="file" id="avatar" name="avatar" class="form-control">
+        </div>
+        <div class="d-flex justify-content-end">
+          <button type="submit" class="btn btn-success">Criar Usuário</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

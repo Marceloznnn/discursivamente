@@ -1,0 +1,71 @@
+{% extends 'layouts/admin.twig' %}
+
+{% block styles %}
+    <link rel="stylesheet" href="/assets/css/admin/events.css">
+{% endblock %}
+
+{% block scripts %}
+    {# <script src="/assets/js/admin/events.js"></script> #}
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-0">Editar Evento</h1>
+            <a href="/admin/events" class="btn btn-secondary">Voltar</a>
+        </div>
+        <div class="card-body">
+            {% if error is defined %}
+                <div class="alert alert-danger">{{ error }}</div>
+            {% endif %}
+
+            <form method="post" action="/admin/events/{{ event.id }}/update" enctype="multipart/form-data">
+                <input type="hidden" name="id" value="{{ event.id }}">
+
+                <div class="mb-3">
+                    <label for="title" class="form-label">Título do Evento *</label>
+                    <input type="text" class="form-control" id="title" name="title" required
+                           value="{{ event.title }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Descrição *</label>
+                    <textarea class="form-control" id="description" name="description" rows="4" required>{{ event.description }}</textarea>
+                    <small class="text-muted">Descreva o evento com detalhes. Você pode usar formatação Markdown.</small>
+                </div>
+
+                <div class="mb-3">
+                    <label for="date_time" class="form-label">Data e Hora *</label>
+                    <input type="datetime-local" class="form-control" id="date_time" name="date_time" required
+                           value="{{ event.dateTime|date('Y-m-d\TH:i') }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="visibility" class="form-label">Visibilidade</label>
+                    <select class="form-select" id="visibility" name="visibility">
+                        <option value="public" {% if event.visibility == 'public' %}selected{% endif %}>Público</option>
+                        <option value="members" {% if event.visibility == 'members' %}selected{% endif %}>Apenas Membros</option>
+                        <option value="private" {% if event.visibility == 'private' %}selected{% endif %}>Privado</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="image" class="form-label">Imagem do Evento</label>
+                    {% if event.image %}
+                        <div class="mb-2">
+                            <img src="{{ event.image }}" alt="{{ event.title }}" class="img-fluid" style="max-height: 200px;">
+                        </div>
+                    {% endif %}
+                    <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                    <small class="text-muted">Envie uma nova imagem para substituir a existente.</small>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary">Atualizar Evento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

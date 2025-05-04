@@ -1,0 +1,63 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Discursivamente - Redefinir Senha{% endblock %}
+
+{% block styles %}
+    {# CSS específico para página de redefinição de senha #}
+    {# <link rel="stylesheet" href="/assets/css/auth/reset.css"> #}
+{% endblock %}
+
+{% block content %}
+    <div class="auth-container">
+        <h1>Redefinir Senha</h1>
+
+        {% if error %}
+            <div class="alert alert-danger">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        {% if success %}
+            <div class="alert alert-success">
+                {{ success }}
+                <p><a href="/login">Clique aqui para fazer login</a></p>
+            </div>
+        {% else %}
+            <form action="/reset" method="POST" class="auth-form">
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="code">Código de recuperação</label>
+                    <input type="text" id="code" name="code" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Nova senha</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn primary">Redefinir Senha</button>
+                </div>
+
+                <div class="form-links">
+                    <a href="/login">Voltar para login</a>
+                </div>
+            </form>
+        {% endif %}
+
+        <div class="navigation-menu">
+            <div class="buttons">
+                <a href="/" class="btn">Voltar para Home</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {# JS específico para página de redefinição de senha #}
+    {# <script src="/assets/js/auth/reset.js"></script> #}
+{% endblock %}

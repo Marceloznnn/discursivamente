@@ -1,0 +1,64 @@
+{# src/Views/admin/users/edit.twig #}
+{% extends 'layouts/admin.twig' %}
+
+{% block title %}Editar Tipo de Usuário{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h1 class="h3 mb-0">Editar Tipo de Usuário</h1>
+      <a href="/admin/users" class="btn btn-secondary">Voltar</a>
+    </div>
+    <div class="card-body">
+      {% if error is defined %}
+        <div class="alert alert-danger">{{ error }}</div>
+      {% endif %}
+      <form action="/admin/users/{{ user.id }}/update" method="POST" enctype="multipart/form-data">
+        
+        {# Exibe o ID #}
+        <div class="mb-3">
+          <label class="form-label"><strong>ID:</strong></label>
+          <input type="text" class="form-control" value="{{ user.id }}" disabled>
+        </div>
+
+        {# Exibe o Nome (readonly) #}
+        <div class="mb-3">
+          <label class="form-label"><strong>Nome:</strong></label>
+          <input type="text" class="form-control" value="{{ user.name }}" disabled>
+        </div>
+
+        {# Exibe o Email (readonly) #}
+        <div class="mb-3">
+          <label class="form-label"><strong>Email:</strong></label>
+          <input type="email" class="form-control" value="{{ user.email }}" disabled>
+        </div>
+
+        {# Exibe Avatar, sem possibilidade de alterar #}
+        {% if user.avatar %}
+          <div class="mb-3">
+            <label class="form-label"><strong>Avatar:</strong></label>
+            <div><img src="{{ user.avatar }}" class="img-thumbnail" style="max-width:150px"></div>
+          </div>
+        {% endif %}
+
+        {# Apenas o select de Tipo permanece editável #}
+        <div class="mb-3">
+          <label for="type" class="form-label">Tipo</label>
+          <select id="type" name="type" class="form-select" required>
+            <option value="" {% if user.type is null %}selected{% endif %}>—</option>
+            <option value="admin" {% if user.type=='admin' %}selected{% endif %}>Admin</option>
+            <option value="instituicao" {% if user.type=='instituicao' %}selected{% endif %}>Instituição</option>
+            <option value="teacher" {% if user.type=='teacher' %}selected{% endif %}>Professor</option>
+            <option value="student" {% if user.type=='student' %}selected{% endif %}>Aluno</option>
+          </select>
+        </div>
+
+        <div class="d-flex justify-content-end">
+          <button type="submit" class="btn btn-primary">Salvar Tipo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

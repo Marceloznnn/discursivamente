@@ -1,0 +1,44 @@
+{# src/Views/admin/users/index.twig #}
+{% extends 'layouts/admin.twig' %}
+
+{% block title %}Usuários{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3">Usuários</h1>
+    <a href="/admin/users/create" class="btn btn-primary">Novo Usuário</a>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>Email</th>
+          <th>Tipo</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+          <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.type|default('—') }}</td>
+            <td>
+              <a href="/admin/users/{{ user.id }}" class="btn btn-sm btn-outline-info">Ver</a>
+              <a href="/admin/users/{{ user.id }}/edit" class="btn btn-sm btn-outline-primary">Editar</a>
+            </td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="5" class="text-center">Nenhum usuário encontrado.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

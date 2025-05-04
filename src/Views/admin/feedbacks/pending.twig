@@ -1,0 +1,44 @@
+{% extends 'layouts/admin.twig' %}
+
+
+
+{% block styles %}
+    <link rel="stylesheet" href="/assets/css/admin/feedbacks.css">
+{% endblock %}
+
+{% block scripts %}
+    {# <script src="/assets/js/admin/feedbacks.js"></script> #}
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <h1 class="h3 mb-4">Feedbacks Pendentes</h1>
+
+  {% if feedbacks is empty %}
+    <div class="alert alert-info">Não há feedbacks pendentes.</div>
+  {% else %}
+    <ul class="list-group">
+      {% for fb in feedbacks %}
+        <li class="list-group-item mb-2">
+          <div class="d-flex justify-content-between">
+            <div>
+              <strong>#{{ fb.id }}</strong> de Usuário {{ fb.userId }} —
+              {{ fb.createdAt|date("d/m/Y H:i") }}
+            </div>
+            <span class="badge bg-warning">{{ fb.status }}</span>
+          </div>
+          <p>{{ fb.message }}</p>
+          <form action="/admin/feedbacks/{{ fb.id }}/process" method="POST" class="d-inline">
+            <input type="hidden" name="status" value="resolved">
+            <button class="btn btn-sm btn-success">Resolver</button>
+          </form>
+          <form action="/admin/feedbacks/{{ fb.id }}/process" method="POST" class="d-inline">
+            <input type="hidden" name="status" value="rejected">
+            <button class="btn btn-sm btn-danger">Rejeitar</button>
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Discursivamente - Dashboard Professor{% endblock %}
+
+{% block styles %}
+    {# CSS específico para dashboard do professor #}
+    {# <link rel="stylesheet" href="/assets/css/dashboard/professor.css"> #}
+{% endblock %}
+
+{% block content %}
+    <div class="dashboard-container">
+        <h1>Dashboard do Professor</h1>
+
+        <div class="summary-cards">
+            <div class="card">
+                <h3>Turmas Ativas</h3>
+                <p class="number">{{ dashboard.turmasAtivas }}</p>
+                <a href="/classes/professor" class="btn">Ver Turmas</a>
+            </div>
+
+            <div class="card">
+                <h3>Solicitações Pendentes</h3>
+                <p class="number">{{ dashboard.solicitacoesPendentes }}</p>
+                <a href="#" class="btn">Gerenciar</a>
+            </div>
+
+            <div class="card">
+                <h3>Atividades a Corrigir</h3>
+                <p class="number">{{ dashboard.atividadesACorrigir }}</p>
+                <a href="#" class="btn">Corrigir</a>
+            </div>
+
+            <div class="card">
+                <h3>Metas Pendentes</h3>
+                <p class="number">{{ dashboard.metasPendentes }}</p>
+                <a href="#" class="btn">Ver Metas</a>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <h2>Ações Rápidas</h2>
+            <div class="buttons">
+                <a href="/classes/professor/create" class="btn primary">Nova Turma</a>
+                <a href="#" class="btn primary">Nova Atividade</a>
+            </div>
+        </div>
+
+        <div class="navigation-menu">
+            <h2>Navegação</h2>
+            <div class="buttons">
+                <a href="/" class="btn">Home</a>
+                <a href="/classes/professor" class="btn">Minhas Turmas</a>
+                <a href="/logout" class="btn">Sair</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {# JS específico para dashboard do professor #}
+    {# <script src="/assets/js/dashboard/professor.js"></script> #}
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Discursivamente - Recuperar Senha{% endblock %}
+
+{% block styles %}
+    {# CSS específico para página de recuperação de senha #}
+    {# <link rel="stylesheet" href="/assets/css/auth/forgot.css"> #}
+{% endblock %}
+
+{% block content %}
+    <div class="auth-container">
+        <h1>Recuperar Senha</h1>
+
+        {% if error %}
+            <div class="alert alert-danger">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        {% if success %}
+            <div class="alert alert-success">
+                {{ success }}
+                <p>Use o código recebido para <a href="/reset">redefinir sua senha</a>.</p>
+            </div>
+        {% else %}
+            <form action="/forgot" method="POST" class="auth-form">
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn primary">Enviar Código</button>
+                </div>
+
+                <div class="form-links">
+                    <a href="/login">Voltar para login</a>
+                </div>
+            </form>
+        {% endif %}
+
+        <div class="navigation-menu">
+            <div class="buttons">
+                <a href="/" class="btn">Voltar para Home</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {# JS específico para página de recuperação de senha #}
+    {# <script src="/assets/js/auth/forgot.js"></script> #}
+{% endblock %}

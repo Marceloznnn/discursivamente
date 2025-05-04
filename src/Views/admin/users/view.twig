@@ -1,0 +1,26 @@
+{# src/Views/admin/users/view.twig #}
+{% extends 'layouts/admin.twig' %}
+
+{% block title %}Detalhes do Usuário{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <h1 class="h3 mb-4">Detalhes do Usuário</h1>
+  <div class="card mb-4">
+    <div class="card-body">
+      <p><strong>ID:</strong> {{ user.id }}</p>
+      <p><strong>Nome:</strong> {{ user.name }}</p>
+      <p><strong>Email:</strong> {{ user.email }}</p>
+      <p><strong>Tipo:</strong> {{ user.type|default('—') }}</p>
+      <p><strong>Bio:</strong> {{ user.bio|default('Sem bio') }}</p>
+      {% if user.avatar %}
+        <p><strong>Avatar:</strong><br>
+           <img src="{{ user.avatar }}" alt="Avatar" class="img-thumbnail" style="max-width:150px">
+        </p>
+      {% endif %}
+    </div>
+  </div>
+  <a href="/admin/users" class="btn btn-secondary">Voltar</a>
+  <a href="/admin/users/{{ user.id }}/edit" class="btn btn-primary">Editar Usuário</a>
+</div>
+{% endblock %}

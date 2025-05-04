@@ -1,0 +1,102 @@
+{# src/Views/layouts/header.twig #}
+{% block styles %}
+    <link rel="stylesheet" href="/assets/css/layouts/header.css">
+    <link rel="stylesheet" href="/assets/css/layouts/footer.css">
+{% endblock %}
+
+<header class="site-header">
+    <nav class="container mx-auto flex justify-between items-center">
+        <!-- Logo e Nome do Site -->
+        <a href="/" class="logo-container">
+            <svg class="site-logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 4H20V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18V4Z" stroke="currentColor" stroke-width="2"/>
+                <path d="M7 8H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M7 12H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M7 16H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span class="site-name">Discursivamente</span>
+        </a>
+
+        <!-- Menu de Navegação -->
+        <div class="nav-links">
+            <a href="/" class="nav-link">Home</a>
+            <a href="/about" class="nav-link">Sobre</a>
+            
+            {% if session.user %}
+                {% if session.user.type == 'admin' %}
+                    <a href="/admin" class="nav-link">Painel Admin</a>
+                {% endif %}
+                {% if session.user.type == 'teacher' %}
+                    <a href="/classes/manage" class="nav-link">Gerenciar Turmas</a>
+                    <a href="/lessons" class="nav-link">Minhas Aulas</a>
+                {% elseif session.user.type == 'instituicao' %}
+                    <a href="/institution/dashboard" class="nav-link">Painel Instituição</a>
+                {% else %}
+                    <a href="/classes" class="nav-link">Minhas Turmas</a>
+                {% endif %}
+                <a href="/community" class="nav-link">Comunidade</a>
+                <!-- Dropdown de Perfil -->
+                <div class="profile-dropdown">
+                    <button class="dropdown-toggle">
+                        <span>Perfil</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="/profile">Meu Perfil</a>
+                        <a href="/settings">Configurações</a>
+                        <a href="/logout">Sair</a>
+                    </div>
+                </div>
+            {% else %}
+                <a href="/login" class="login-btn">Entrar</a>
+                <a href="/register" class="register-btn">Cadastrar</a>
+            {% endif %}
+        </div>
+
+        <!-- Menu Mobile -->
+        <button id="mobile-menu-button" class="mobile-menu-button">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+        </button>
+    </nav>
+    
+    <!-- Menu Mobile Dropdown -->
+    <div id="mobile-menu" class="mobile-menu">
+        <div class="container mx-auto">
+            <a href="/">Home</a>
+            <a href="/about">Sobre</a>
+            {% if session.user %}
+                {% if session.user.type == 'admin' %}
+                    <a href="/admin">Painel Admin</a>
+                {% endif %}
+                {% if session.user.type == 'teacher' %}
+                    <a href="/classes/manage">Gerenciar Turmas</a>
+                    <a href="/lessons">Minhas Aulas</a>
+                {% elseif session.user.type == 'instituicao' %}
+                    <a href="/institution/dashboard">Painel Instituição</a>
+                {% else %}
+                    <a href="/classes">Minhas Turmas</a>
+                {% endif %}
+                <a href="/community">Comunidade</a>
+                <a href="/profile">Meu Perfil</a>
+                <a href="/settings">Configurações</a>
+                <a href="/logout">Sair</a>
+            {% else %}
+                <div class="mobile-buttons">
+                    <a href="/login" class="login-btn">Entrar</a>
+                    <a href="/register" class="register-btn">Cadastrar</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</header>
+
+<script>
+    document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        const menu = document.getElementById('mobile-menu');
+        menu.classList.toggle('active');
+    });
+</script>

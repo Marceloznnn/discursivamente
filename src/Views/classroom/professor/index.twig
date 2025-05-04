@@ -1,0 +1,56 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Minhas Turmas - Professor{% endblock %}
+
+{% block styles %}
+    {# CSS específico para listagem de turmas do professor #}
+    {# <link rel="stylesheet" href="/assets/css/classroom/professor.css"> #}
+{% endblock %}
+
+{% block content %}
+    <div class="classroom-container">
+        <h1>Minhas Turmas</h1>
+
+        <div class="actions">
+            <a href="/classes/professor/create" class="btn primary">Nova Turma</a>
+        </div>
+
+        {% if turmas is empty %}
+            <div class="empty-state">
+                <p>Você ainda não possui turmas cadastradas.</p>
+                <a href="/classes/professor/create" class="btn">Criar Primeira Turma</a>
+            </div>
+        {% else %}
+            <div class="turmas-list">
+                {% for turma in turmas %}
+                    <div class="turma-card">
+                        <h3>{{ turma.nome }}</h3>
+                        <p class="description">{{ turma.descricao }}</p>
+                        <div class="meta">
+                            <span class="status {{ turma.status }}">{{ turma.status }}</span>
+                            <span class="privacidade">{{ turma.privacidade }}</span>
+                        </div>
+                        <div class="actions">
+                            <a href="#" class="btn">Ver Detalhes</a>
+                            <a href="#" class="btn">Editar</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="navigation-menu">
+            <h2>Navegação</h2>
+            <div class="buttons">
+                <a href="/" class="btn">Home</a>
+                <a href="/dashboard/professor" class="btn">Dashboard</a>
+                <a href="/logout" class="btn">Sair</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {# JS específico para listagem de turmas do professor #}
+    {# <script src="/assets/js/classroom/professor.js"></script> #}
+{% endblock %}

@@ -1,0 +1,26 @@
+# Ambiente e variáveis sensíveis
+.env
+
+# Dependências PHP
+/vendor/
+
+# Logs
+logs/
+*.log
+
+# Arquivos do VSCode
+.vscode/
+
+# Cache, builds ou arquivos temporários
+*.cache
+*.tmp
+
+# Node (caso esteja usando npm para assets front-end)
+node_modules/
+dist/
+
+# SO/macOS
+.DS_Store
+
+# PHPUnit
+phpunit.result.cache

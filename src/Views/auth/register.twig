@@ -1,0 +1,56 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Discursivamente - Cadastro{% endblock %}
+
+{% block styles %}
+    {# CSS específico para página de cadastro #}
+    {# <link rel="stylesheet" href="/assets/css/auth/register.css"> #}
+{% endblock %}
+
+{% block content %}
+    <div class="auth-container">
+        <h1>Criar Conta</h1>
+
+        {% if error %}
+            <div class="alert alert-danger">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form action="/register" method="POST" class="auth-form">
+            <div class="form-group">
+                <label for="name">Nome completo</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn primary">Cadastrar</button>
+            </div>
+
+            <div class="form-links">
+                <a href="/login">Já tenho uma conta</a>
+            </div>
+        </form>
+
+        <div class="navigation-menu">
+            <div class="buttons">
+                <a href="/" class="btn">Voltar para Home</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {# JS específico para página de cadastro #}
+    {# <script src="/assets/js/auth/register.js"></script> #}
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Discursivamente - Dashboard Aluno{% endblock %}
+
+{% block styles %}
+    {# CSS específico para dashboard do aluno #}
+    {# <link rel="stylesheet" href="/assets/css/dashboard/aluno.css"> #}
+{% endblock %}
+
+{% block content %}
+    <div class="dashboard-container">
+        <h1>Dashboard do Aluno</h1>
+
+        <div class="summary-cards">
+            <div class="card">
+                <h3>Turmas Matriculadas</h3>
+                <p class="number">{{ dashboard.turmasMatriculadas }}</p>
+                <a href="/classes/aluno" class="btn">Ver Turmas</a>
+            </div>
+
+            <div class="card">
+                <h3>Atividades Pendentes</h3>
+                <p class="number">{{ dashboard.atividadesPendentes }}</p>
+                <a href="#" class="btn">Ver Atividades</a>
+            </div>
+
+            <div class="card">
+                <h3>Feedbacks Recentes</h3>
+                <p class="number">{{ dashboard.feedbacksRecentes }}</p>
+                <a href="#" class="btn">Ver Feedbacks</a>
+            </div>
+
+            <div class="card">
+                <h3>Metas Pessoais</h3>
+                <p class="number">{{ dashboard.metasPessoais }}</p>
+                <a href="#" class="btn">Ver Metas</a>
+            </div>
+        </div>
+
+        <div class="performance-indicators">
+            <h2>Seu Desempenho</h2>
+            <div class="indicators">
+                <div class="indicator">
+                    <h3>Média de Notas</h3>
+                    <p class="value">{{ dashboard.indicadoresDesempenho.media_notas }}</p>
+                </div>
+                <div class="indicator">
+                    <h3>Percentual de Entregas</h3>
+                    <p class="value">{{ dashboard.indicadoresDesempenho.percentual_entregas }}%</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation-menu">
+            <h2>Navegação</h2>
+            <div class="buttons">
+                <a href="/" class="btn">Home</a>
+                <a href="/classes/aluno" class="btn">Minhas Turmas</a>
+                <a href="/logout" class="btn">Sair</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {# JS específico para dashboard do aluno #}
+    {# <script src="/assets/js/dashboard/aluno.js"></script> #}
+{% endblock %}

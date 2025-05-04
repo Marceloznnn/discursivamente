@@ -1,0 +1,58 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Turmas Disponíveis - Aluno{% endblock %}
+
+{% block styles %}
+    {# CSS específico para listagem de turmas do aluno #}
+    {# <link rel="stylesheet" href="/assets/css/classroom/aluno.css"> #}
+{% endblock %}
+
+{% block content %}
+    <div class="classroom-container">
+        <h1>Turmas Disponíveis</h1>
+
+        <div class="filter-options">
+            <button class="btn filter active" data-filter="all">Todas</button>
+            <button class="btn filter" data-filter="enrolled">Matriculadas</button>
+            <button class="btn filter" data-filter="open">Abertas</button>
+            <button class="btn filter" data-filter="invited">Convites</button>
+        </div>
+
+        {% if turmas is empty %}
+            <div class="empty-state">
+                <p>Não há turmas disponíveis no momento.</p>
+            </div>
+        {% else %}
+            <div class="turmas-list">
+                {% for turma in turmas %}
+                    <div class="turma-card">
+                        <h3>{{ turma.nome }}</h3>
+                        <p class="description">{{ turma.descricao }}</p>
+                        <div class="meta">
+                            <span class="status {{ turma.status }}">{{ turma.status }}</span>
+                            <span class="privacidade">{{ turma.privacidade }}</span>
+                        </div>
+                        <div class="actions">
+                            <a href="#" class="btn">Ver Detalhes</a>
+                            <a href="#" class="btn primary">Ingressar</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="navigation-menu">
+            <h2>Navegação</h2>
+            <div class="buttons">
+                <a href="/" class="btn">Home</a>
+                <a href="/dashboard/aluno" class="btn">Dashboard</a>
+                <a href="/logout" class="btn">Sair</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {# JS específico para listagem de turmas do aluno #}
+    {# <script src="/assets/js/classroom/aluno.js"></script> #}
+{% endblock %}

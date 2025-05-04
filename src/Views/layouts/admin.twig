@@ -1,0 +1,231 @@
+{# admin-header-sidebar.twig - Componente de navegação para administradores #}
+
+{% block styles %}
+    <link rel="stylesheet" href="/assets/css/admin/index.css">
+{% endblock %}
+
+{# Verificar se o usuário é administrador #}
+{% if session.user and session.user.type == 'admin' %}
+<div class="admin-navigation-wrapper" id="adminWrapper">
+    <!-- SIDEBAR -->
+    <div class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <h2>Discursivamente</h2>
+            <button id="sidebarToggle" class="sidebar-toggle" aria-label="Toggle Sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <div class="sidebar-user">
+            <div class="user-avatar">
+                <img src="{{ session.user.avatar|default('/assets/img/default-avatar.png') }}" alt="Avatar">
+            </div>
+            <div class="user-info">
+                <h3>{{ session.user.name }}</h3>
+                <span class="user-role">Administrador</span>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="nav-items">
+                <li class="nav-item {% if currentModule == 'dashboard' %}active{% endif %}">
+                    <a href="/admin" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item {% if currentModule == 'users' %}active{% endif %}">
+                    <a href="/admin/users" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Usuários</span>
+                    </a>
+                    {% if currentModule == 'users' %}
+                    <ul class="sub-menu">
+                        <li><a href="/admin/users">Listar Todos</a></li>
+                        <li><a href="/admin/users/create">Novo Usuário</a></li>
+                        <li><a href="/admin/users/roles">Papéis</a></li>
+                        <li><a href="/admin/users/permissions">Permissões</a></li>
+                    </ul>
+                    {% endif %}
+                </li>
+                
+                <li class="nav-item {% if currentModule == 'conversations' %}active{% endif %}">
+                    <a href="/admin/conversations" class="nav-link">
+                        <i class="fas fa-comments"></i>
+                        <span>Conversas</span>
+                    </a>
+                    {% if currentModule == 'conversations' %}
+                    <ul class="sub-menu">
+                        <li><a href="/admin/conversations">Listar Todas</a></li>
+                        <li><a href="/admin/conversations/create">Nova Conversa</a></li>
+                        <li><a href="/admin/conversations/analytics">Análise</a></li>
+                    </ul>
+                    {% endif %}
+                </li>
+                
+                <li class="nav-item {% if currentModule == 'feedbacks' %}active{% endif %}">
+                    <a href="/admin/feedbacks" class="nav-link">
+                        <i class="fas fa-comment-dots"></i>
+                        <span>Feedbacks</span>
+                        {% if pendingFeedbacks > 0 %}
+                        <span class="badge">{{ pendingFeedbacks }}</span>
+                        {% endif %}
+                    </a>
+                    {% if currentModule == 'feedbacks' %}
+                    <ul class="sub-menu">
+                        <li><a href="/admin/feedbacks">Todos Feedbacks</a></li>
+                        <li><a href="/admin/feedbacks/pending">Pendentes <span class="badge">{{ pendingFeedbacks }}</span></a></li>
+                        <li><a href="/admin/feedbacks/analytics">Relatórios</a></li>
+                    </ul>
+                    {% endif %}
+                </li>
+                
+                <li class="nav-item {% if currentModule == 'events' %}active{% endif %}">
+                    <a href="/admin/events" class="nav-link">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Eventos</span>
+                    </a>
+                    {% if currentModule == 'events' %}
+                    <ul class="sub-menu">
+                        <li><a href="/admin/events">Listar Todos</a></li>
+                        <li><a href="/admin/events/create">Novo Evento</a></li>
+                        <li><a href="/admin/events/calendar">Calendário</a></li>
+                    </ul>
+                    {% endif %}
+                </li>
+                
+                <li class="nav-item {% if currentModule == 'settings' %}active{% endif %}">
+                    <a href="/admin/settings" class="nav-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Configurações</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="app-version">v1.0.2</div>
+            <div class="footer-links">
+                <a href="/admin/about">Sobre</a>
+                <a href="/admin/privacy">Privacidade</a>
+                <button id="themeToggle" class="theme-toggle" aria-label="Alternar tema">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- HEADER -->
+    <div class="admin-main">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="mobile-sidebar-toggle" id="mobileSidebarToggle" aria-label="Menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="breadcrumbs">
+                    <a href="/admin">Admin</a>
+                    {% if currentModule %}
+                    <i class="fas fa-chevron-right"></i>
+                    <a href="/admin/{{ currentModule }}">{{ currentModule|capitalize }}</a>
+                    {% endif %}
+                    {% if currentAction %}
+                    <i class="fas fa-chevron-right"></i>
+                    <span>{{ currentAction|capitalize }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                {% if currentModule == 'users' %}
+                <a href="/admin/users/create" class="btn-primary">
+                    <i class="fas fa-plus"></i> Novo Usuário
+                </a>
+                {% elseif currentModule == 'conversations' %}
+                <a href="/admin/conversations/create" class="btn-primary">
+                    <i class="fas fa-plus"></i> Nova Conversa
+                </a>
+                {% elseif currentModule == 'events' %}
+                <a href="/admin/events/create" class="btn-primary">
+                    <i class="fas fa-plus"></i> Novo Evento
+                </a>
+                {% endif %}
+            </div>
+            
+            <div class="header-right">
+                <div class="search-wrapper">
+                    <input type="text" id="globalSearch" class="global-search" placeholder="Buscar..." />
+                    <i class="fas fa-search"></i>
+                    <div class="search-tooltip">Pressione / para buscar</div>
+                </div>
+                
+                <div class="header-notifications">
+                    <button class="notification-bell" aria-label="Notificações" id="notificationToggle">
+                        <i class="fas fa-bell"></i>
+                        {% if notifications > 0 %}
+                        <span class="notification-badge">{{ notifications }}</span>
+                        {% endif %}
+                    </button>
+                    <div class="notifications-dropdown">
+                        <div class="notifications-header">
+                            <h3>Notificações</h3>
+                            <button class="mark-read">Marcar todas como lidas</button>
+                        </div>
+                        <div class="notifications-list">
+                            {% if notifications > 0 %}
+                                {% for notification in latestNotifications %}
+                                <div class="notification-item">
+                                    <div class="notification-icon {{ notification.type }}">
+                                        <i class="fas fa-{{ notification.icon|default('bell') }}"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <p>{{ notification.message }}</p>
+                                        <span class="notification-time">{{ notification.time }}</span>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="notification-empty">
+                                    <p>Nenhuma notificação no momento</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="notifications-footer">
+                            <a href="/admin/notifications">Ver todas notificações</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="user-menu">
+                    <div class="user-menu-trigger" id="userMenuToggle">
+                        <div class="user-avatar-small">
+                            <img src="{{ session.user.avatar|default('/assets/img/default-avatar.png') }}" alt="Avatar">
+                        </div>
+                        <span class="user-name">{{ session.user.name }}</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="user-dropdown">
+                        <a href="/admin/profile">
+                            <i class="fas fa-user"></i> Perfil
+                        </a>
+                        <a href="/admin/settings">
+                            <i class="fas fa-cog"></i> Configurações
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="/logout">
+                            <i class="fas fa-sign-out-alt"></i> Sair
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+    </div>
+</div>
+
+{% block scripts %}
+    <script src="/assets/js/admin/index.js"></script>
+{% endblock %}
+
+{% else %}
+    {# Se não for admin, não mostra nada #}
+{% endif %}

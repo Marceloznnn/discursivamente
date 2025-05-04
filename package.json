@@ -1,0 +1,20 @@
+{
+  "name": "discursivamente",
+  "version": "1.0.0",
+  "description": "Plataforma de aprendizado e discussão acadêmica",
+  "scripts": {
+    "clean": "rm -rf var/cache/* var/log/* public/assets/build/*",
+    "build": "npm run build:js && npm run build:css",
+    "build:js": "uglifyjs public/assets/js/*.js -o public/assets/build/app.min.js",
+    "build:css": "cleancss -o public/assets/build/app.min.css public/assets/css/*.css",
+    "watch:js": "watch 'npm run build:js' public/assets/js/",
+    "watch:css": "watch 'npm run build:css' public/assets/css/",
+    "watch": "npm run watch:js & npm run watch:css",
+    "dev": "npm run watch"
+  },
+  "devDependencies": {
+    "uglify-js": "^3.17.4",
+    "clean-css-cli": "^5.6.2",
+    "watch": "^1.0.2"
+  }
+}
