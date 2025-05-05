@@ -1,0 +1,27 @@
+{% extends "layouts/base.twig" %}
+
+{% block content %}
+    <h1 class="text-2xl font-bold mb-4">{{ classroom.nome }}</h1>
+    
+    <p>{{ classroom.descricao }}</p>
+    
+    <div class="mt-4">
+        <p><strong>Professor:</strong> {{ classroom.professor_nome }}</p>
+        <p><strong>Status:</strong> {{ classroom.status }}</p>
+        <p><strong>Privacidade:</strong> {{ classroom.privacidade }}</p>
+    </div>
+
+    <div class="mt-4 flex space-x-2">
+        <!-- Botão para solicitar inscrição -->
+        <a href="/classes/aluno/{{ classroom.id }}/request"
+           class="inline-block px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+            Solicitar inscrição
+        </a>
+
+        <!-- Botão para voltar à lista -->
+        <a href="/classes/explore"
+           class="inline-block px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+            Voltar para a lista de turmas
+        </a>
+    </div>
+{% endblock %}

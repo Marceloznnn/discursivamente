@@ -99,11 +99,127 @@ $r->addRoute('POST', '/classes/professor/store', function($twig) {
     (new ClassroomController($twig))->store();
 });
 
+$r->addRoute('GET', '/classes/professor/{id}/edit', function($twig, $_, $id) {
+    AuthMiddleware::handle();
+    (new ClassroomController($twig))->edit($id);
+});
+
+$r->addRoute('POST', '/classes/professor/{id}/update', function($twig, $_, $id) {
+    AuthMiddleware::handle();
+    (new ClassroomController($twig))->update($id);
+});
+
+
 // Classes (Aluno)
 $r->addRoute('GET', '/classes/aluno', function($twig) {
     AuthMiddleware::handle();
     (new ClassroomController($twig))->indexAluno();
 });
+
+$r->addRoute('GET', '/classes/aluno/{id}/join', function($twig, $_, $id) {
+    AuthMiddleware::handle();
+    (new ClassroomController($twig))->join($id);
+});
+
+// Formulário de solicitação para aluno
+$r->addRoute('GET', '/classes/aluno/{classroomId}/request', function($twig, $_pdo, $classroomId) {
+    AuthMiddleware::handle();
+    (new ClassroomController($twig))->showRequestForm($classroomId);
+});
+// Envio da solicitação
+$r->addRoute('POST', '/classes/aluno/{classroomId}/request', function($twig, $_pdo, $classroomId) {
+    AuthMiddleware::handle();
+    (new ClassroomController($twig))->requestEnrollment($classroomId);
+});
+
+// Listar solicitações pendentes para professor
+$r->addRoute('GET', '/classes/professor/{classroomId}/requests', function($twig, $_pdo, $classroomId) {
+    AuthMiddleware::handle();
+    (new ClassroomController($twig))->listRequests($classroomId);
+});
+// Aprovar solicitação
+$r->addRoute('POST', '/classes/professor/{classroomId}/requests/{requestId}/approve', function($twig, $_pdo, $classroomId, $requestId) {
+    AuthMiddleware::handle();
+    (new ClassroomController($twig))->approveRequest($classroomId, $requestId);
+});
+
+// Página de resumo de solicitações para o professor
+$r->addRoute('GET', '/classes/professor/requests', function($twig, $_pdo) {
+    AuthMiddleware::handle();
+    (new ClassroomController($twig))->manageRequestsOverview();
+});
+
+
+// Recusar solicitação
+$r->addRoute('POST', '/classes/professor/{classroomId}/requests/{requestId}/reject', function($twig, $_pdo, $classroomId, $requestId) {
+    AuthMiddleware::handle();
+    (new ClassroomController($twig))->rejectRequest($classroomId, $requestId);
+});
+
+// lista atividades da turma (professor)
+$r->addRoute('GET', '/classes/professor/{classroomId}/assignments', function($twig, $_pdo, $classroomId) {
+    AuthMiddleware::handle();
+    (new Controller\pages\ClassroomController($twig))->listAssignments((int)$classroomId);
+});
+
+// formulário de criação
+$r->addRoute('GET', '/classes/professor/{classroomId}/assignments/create', function($twig, $_pdo, $classroomId) {
+    AuthMiddleware::handle();
+    (new Controller\pages\ClassroomController($twig))->showCreateAssignmentForm((int)$classroomId);
+});
+
+// grava nova atividade
+$r->addRoute('POST', '/classes/professor/{classroomId}/assignments/store', function($twig, $_pdo, $classroomId) {
+    AuthMiddleware::handle();
+    (new Controller\pages\ClassroomController($twig))->storeAssignment((int)$classroomId);
+});
+
+
+// Rota para explorar turmas
+$r->addRoute('GET', '/classes/explore', function($twig) {
+    AuthMiddleware::handle();
+    (new ClassroomController($twig))->explore();
+});
+$r->addRoute('GET', '/classes/aluno/{classroomId}/view', function($twig, $_pdo, $classroomId) {
+    AuthMiddleware::handle();
+    (new ClassroomController($twig))->view($classroomId);
+});
+
+
+$r->addRoute('GET', '/classes/professor/{classroomId}/assignments/{id}/edit', function($twig, $_pdo, $classroomId, $id) {
+    AuthMiddleware::handle();
+    (new ClassroomController($twig))->editAssignment((int)$classroomId, (int)$id);
+});
+
+
+$r->addRoute('POST', '/classes/professor/{classroomId}/assignments/{id}/update', function($twig, $_pdo, $classroomId, $id) {
+    AuthMiddleware::handle();
+    (new ClassroomController($twig))->updateAssignment((int)$classroomId, (int)$id);
+});
+
+// Ver detalhes de uma atividade
+$r->addRoute(
+    'GET',
+    '/classes/professor/{classroomId}/assignments/{id}',
+    function($twig, $_pdo, $classroomId, $id) {
+        AuthMiddleware::handle();
+        (new ClassroomController($twig))->showAssignment((int)$classroomId, (int)$id);
+    }
+);
+
+// Ver detalhes de uma atividade (Aluno)
+$r->addRoute('GET', '/classes/aluno/{classroomId}/assignments/{id}', function($twig, $_pdo, $classroomId, $id) {
+    AuthMiddleware::handle();
+    (new Controller\pages\StudentAssignmentController($twig))->showAssignmentAluno((int)$classroomId, (int)$id);
+});
+
+// Submeter resposta para uma atividade (Aluno)
+$r->addRoute('POST', '/classes/aluno/{classroomId}/assignments/{id}/submit', function($twig, $_pdo, $classroomId, $id) {
+    AuthMiddleware::handle();
+    (new Controller\pages\StudentAssignmentController($twig))->submitAssignmentAluno((int)$classroomId, (int)$id);
+});
+
+
 
 // Conversas (usuário)
 $r->addRoute('GET', '/conversations', function($twig) {

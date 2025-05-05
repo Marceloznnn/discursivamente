@@ -88,6 +88,7 @@ class ClassroomRepository
         }
         return $result;
     }
+    
 
     private function hydrate(array $row): Classroom
     {
@@ -108,4 +109,21 @@ class ClassroomRepository
             $row['updated_at']
         );
     }
+    public function findPublicAndActiveWithProfessorName(): array
+{
+    $stmt = $this->pdo->query('
+        SELECT c.*, u.name AS professor_nome
+        FROM classrooms c
+        JOIN users u ON c.professor_id = u.id
+        WHERE c.status = "ativa" AND c.privacidade = "aberta"
+    ');
+    
+    $result = [];
+    while ($row = $stmt->fetch()) {
+        $result[] = $row;
+    }
+
+    return $result;
+}
+
 }

@@ -1,0 +1,31 @@
+{% extends "layouts/base.twig" %}
+
+{% block content %}
+  <h1 class="text-2xl font-bold mb-4">Solicitar Inscrição na Turma</h1>
+
+  <div class="p-4 border rounded shadow bg-white">
+    <h2 class="text-xl font-semibold mb-2">{{ classroom.nome }}</h2>
+    <p class="mb-4">{{ classroom.descricao }}</p>
+
+    <form action="/classes/aluno/{{ classroom.id }}/request" method="post">
+      <input type="hidden" name="classroomId" value="{{ classroom.id }}">
+      <div class="mb-4">
+        <label for="informacoesAdicionais" class="block font-medium mb-1">
+          Informações adicionais (opcional)
+        </label>
+        <textarea id="informacoesAdicionais" name="informacoesAdicionais"
+                  class="w-full border rounded p-2"
+                  rows="4"
+                  placeholder="Diga algo sobre você ou por que deseja entrar nesta turma…"></textarea>
+      </div>
+      <button type="submit"
+              class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+        Enviar solicitação
+      </button>
+      <a href="/classes/explore"
+         class="ml-2 px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">
+        Voltar
+      </a>
+    </form>
+  </div>
+{% endblock %}

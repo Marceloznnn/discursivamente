@@ -1,0 +1,27 @@
+{% extends 'base.twig' %}
+
+{% block content %}
+  <h1>Atividades Pendentes</h1>
+
+  {% if assignments is empty %}
+    <p>Você não possui atividades pendentes no momento.</p>
+  {% else %}
+    <ul>
+      {% for assignment in assignments %}
+        <li>
+          <strong>{{ assignment.title }}</strong><br>
+          {{ assignment.description|length > 100 ? assignment.description[:100] ~ '...' : assignment.description }}<br>
+          <a href="/classes/aluno/{{ classroomId }}/assignments/{{ assignment.id }}">Responder</a>
+
+          {# Exibe o status da submissão, se já houver uma submissão do aluno #}
+          {% if assignment.status %}
+            <br><em>Status: {{ assignment.status|capitalize }}</em>
+          {% endif %}
+        </li>
+        <hr>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <p><a href="/classes/aluno">Voltar</a></p>
+{% endblock %}

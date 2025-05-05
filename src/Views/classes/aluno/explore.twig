@@ -1,0 +1,26 @@
+{% extends "layouts/base.twig" %}
+
+{% block content %}
+    <h1 class="text-2xl font-bold mb-4">Explorar Turmas</h1>
+
+    {% if classes is empty %}
+        <p>Nenhuma turma disponível no momento.</p>
+    {% else %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% for turma in classes %}
+                <div class="p-4 border rounded shadow">
+                    <h2 class="text-xl font-semibold">{{ turma.nome }}</h2>
+                    <p>{{ turma.descricao }}</p>
+                    <p class="text-sm text-gray-600">Professor: {{ turma.professor_nome }}</p>
+                    <p class="text-sm">Status: {{ turma.status }} | Privacidade: {{ turma.privacidade }}</p>
+                    
+                    <!-- Botão para ver detalhes da turma -->
+                    <a href="/classes/aluno/{{ turma.id }}/view" class="mt-2 inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+  Ver Detalhes
+</a>
+
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

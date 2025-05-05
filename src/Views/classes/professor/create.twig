@@ -1,0 +1,54 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Criar Nova Turma{% endblock %}
+
+{% block content %}
+<div class="container mx-auto py-8 max-w-lg">
+  <h1 class="text-2xl font-bold mb-6">Criar Nova Turma</h1>
+
+  {% if errors is defined %}
+    <ul class="mb-4 text-red-600">
+      {% for err in errors %}
+        <li>• {{ err }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <form action="/classes/professor/store" method="POST" class="space-y-4">
+    <div>
+      <label for="nome" class="block font-medium">Nome</label>
+      <input type="text" id="nome" name="nome" required
+             value="{{ old.nome|default('') }}"
+             class="w-full p-2 border rounded">
+    </div>
+
+    <div>
+      <label for="descricao" class="block font-medium">Descrição</label>
+      <textarea id="descricao" name="descricao" rows="4" required
+                class="w-full p-2 border rounded">{{ old.descricao|default('') }}</textarea>
+    </div>
+
+    <div>
+      <label for="status" class="block font-medium">Status</label>
+      <select id="status" name="status" class="w-full p-2 border rounded">
+        <option value="ativa" {{ old.status == 'ativa' ? 'selected' : '' }}>Ativa</option>
+        <option value="arquivada" {{ old.status == 'arquivada' ? 'selected' : '' }}>Arquivada</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="privacidade" class="block font-medium">Privacidade</label>
+      <select id="privacidade" name="privacidade" class="w-full p-2 border rounded">
+        <option value="aberta" {{ old.privacidade == 'aberta' ? 'selected' : '' }}>Aberta</option>
+        <option value="protegida" {{ old.privacidade == 'protegida' ? 'selected' : '' }}>Protegida</option>
+        <option value="privada" {{ old.privacidade == 'privada' ? 'selected' : '' }}>Privada</option>
+      </select>
+    </div>
+
+    <div class="flex justify-end">
+      <a href="/classes/professor" class="btn mr-2">Cancelar</a>
+      <button type="submit" class="btn primary">Criar Turma</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

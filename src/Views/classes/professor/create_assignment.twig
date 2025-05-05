@@ -1,0 +1,40 @@
+{% extends "layouts/base.twig" %}
+
+{% block title %}Criar Nova Atividade{% endblock %}
+
+{% block content %}
+<h2>Criar Nova Atividade</h2>
+
+<form method="POST" action="/classes/professor/{{ classroomId }}/assignments/store">
+    <div>
+        <label for="title">Título da Atividade:</label>
+        <input type="text" id="title" name="title" required>
+    </div>
+
+    <div>
+        <label for="description">Descrição:</label>
+        <textarea id="description" name="description" rows="5"></textarea>
+    </div>
+
+    <div>
+        <label for="due_date">Prazo (data limite):</label>
+        <input type="date" id="due_date" name="due_date" required>
+    </div>
+
+    <div>
+        <label for="weight">Peso (%):</label>
+        <input type="number" id="weight" name="weight" step="0.1" min="0" max="100">
+    </div>
+
+    <div>
+        <label for="type">Tipo de Atividade:</label>
+        <select id="type" name="type">
+            <option value="trabalho">Trabalho</option>
+            <option value="prova">Prova</option>
+            <option value="exercício">Exercício</option>
+        </select>
+    </div>
+
+    <button type="submit">Criar Atividade</button>
+</form>
+{% endblock %}
