@@ -15,58 +15,130 @@ class DashboardRepository
         $this->pdo = $pdo;
     }
 
-    // Retorna dados do dashboard do professor
+    /**
+     * Retorna dados do dashboard do professor
+     *
+     * @param int $professorId
+     * @return DashboardProfessor
+     */
     public function getProfessorDashboard(int $professorId): DashboardProfessor
     {
-        // Exemplos de queries, ajuste conforme seu banco
-        $turmasAtivas = $this->pdo->query("SELECT COUNT(*) FROM classes WHERE professor_id = $professorId AND status = 'ativa'")->fetchColumn();
-        $solicitacoesPendentes = $this->pdo->query("SELECT COUNT(*) FROM enrollments WHERE class_id IN (SELECT id FROM classes WHERE professor_id = $professorId) AND status = 'pending'")->fetchColumn();
-        $atividadesACorrigir = $this->pdo->query("SELECT COUNT(*) FROM assignments WHERE class_id IN (SELECT id FROM classes WHERE professor_id = $professorId) AND status = 'pending'")->fetchColumn();
-        $metasPendentes = 0; // Implemente conforme sua lógica
+        // Total de turmas ativas do professor
+        $turmasAtivas = (int) $this->pdo
+            ->query(
+                "SELECT COUNT(*)
+                 FROM classrooms
+                 WHERE professor_id = $professorId
+                   AND status = 'ativa'"
+            )
+            ->fetchColumn();
 
+        // Solicitações pendentes de matrícula
+        // Nota: coluna `status` em enrollments armazena valores em português ('pendente')
+        $solicitacoesPendentes = (int) $this->pdo
+            ->query(
+                "SELECT COUNT(*)
+                 FROM enrollments
+                 WHERE classroom_id IN (
+                     SELECT id FROM classrooms WHERE professor_id = $professorId
+                 )
+                   AND status = 'pendente'"
+            )
+            ->fetchColumn();
+
+        // Atividades pendentes de correção
+        // A tabela `assignments` não possui coluna `status`. Se você tiver uma tabela de submissões,
+        // substitua por ela; caso contrário, remova o filtro `status`.
+        $atividadesACorrigir = (int) $this->pdo
+            ->query(
+                "SELECT COUNT(*)
+                 FROM assignments
+                 WHERE classroom_id IN (
+                     SELECT id FROM classrooms WHERE professor_id = $professorId
+                 )"
+            )
+            ->fetchColumn();
+
+        // Metas pendentes (implementar lógica específica)
+        $metasPendentes = 0;
+
+        // Dados para gráficos de progresso
         $graficosProgresso = [
-            'notas' => [], // Busque médias de notas
-            'presenca' => [] // Busque médias de presença
+            'notas'    => [], // preencher com médias de notas
+            'presenca' => []  // preencher com médias de presença
         ];
+
+        // Atalhos rápidos
         $atalhosRapidos = [
-            'nova_turma' => true,
+            'nova_turma'     => true,
             'nova_atividade' => true
         ];
 
         return new DashboardProfessor(
             $professorId,
-            (int)$turmasAtivas,
-            (int)$solicitacoesPendentes,
-            (int)$atividadesACorrigir,
-            (int)$metasPendentes,
+            $turmasAtivas,
+            $solicitacoesPendentes,
+            $atividadesACorrigir,
+            $metasPendentes,
             $graficosProgresso,
             $atalhosRapidos
         );
     }
 
-    // Retorna dados do dashboard do aluno
+    /**
+     * Retorna dados do dashboard do aluno
+     *
+     * @param int $alunoId
+     * @return DashboardAluno
+     */
     public function getAlunoDashboard(int $alunoId): DashboardAluno
     {
-        $turmasMatriculadas = $this->pdo->query("SELECT COUNT(*) FROM enrollments WHERE user_id = $alunoId AND status = 'approved'")->fetchColumn();
-        $atividadesPendentes = $this->pdo->query("SELECT COUNT(*) FROM assignments WHERE class_id IN (SELECT class_id FROM enrollments WHERE user_id = $alunoId) AND status = 'pending'")->fetchColumn();
-        $feedbacksRecentes = 0; // Implemente conforme sua lógica
-        $metasPessoais = 0; // Implemente conforme sua lógica
+        // Total de turmas em que o aluno está matriculado
+        $turmasMatriculadas = (int) $this->pdo
+            ->query(
+                "SELECT COUNT(*)
+                 FROM enrollments
+                 WHERE user_id = $alunoId
+                   AND status = 'aprovado'"
+            )
+            ->fetchColumn();
 
+        // Atividades pendentes do aluno
+        // A tabela `assignments` não possui coluna `status`, ajuste se usar tabela de submissões
+        $atividadesPendentes = (int) $this->pdo
+            ->query(
+                "SELECT COUNT(*)
+                 FROM assignments
+                 WHERE classroom_id IN (
+                     SELECT classroom_id FROM enrollments WHERE user_id = $alunoId
+                 )"
+            )
+            ->fetchColumn();
+
+        // Feedbacks recentes (implementar lógica)
+        $feedbacksRecentes = 0;
+
+        // Metas pessoais (implementar lógica)
+        $metasPessoais = 0;
+
+        // Indicadores de desempenho do aluno
         $indicadoresDesempenho = [
-            'media_notas' => 0, // Busque média real
-            'percentual_entregas' => 0 // Busque percentual real
+            'media_notas'         => 0, // preencher com média real
+            'percentual_entregas' => 0  // preencher com percentual real
         ];
+
+        // Links de ação no dashboard do aluno
         $linksAcoes = [
             'enviar_atividade' => true,
-            'ver_feedback' => true
+            'ver_feedback'     => true
         ];
 
         return new DashboardAluno(
             $alunoId,
-            (int)$turmasMatriculadas,
-            (int)$atividadesPendentes,
-            (int)$feedbacksRecentes,
-            (int)$metasPessoais,
+            $turmasMatriculadas,
+            $atividadesPendentes,
+            $feedbacksRecentes,
+            $metasPessoais,
             $indicadoresDesempenho,
             $linksAcoes
         );

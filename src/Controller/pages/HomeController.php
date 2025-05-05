@@ -7,17 +7,16 @@ use Services\CloudinaryService;
 use Repositories\EventRepository;
 use Infrastructure\Database\Connection;
 
-
 class HomeController {
     private $twig;
     private $cloudinaryService;
-    
+
     public function __construct($twig)
     {
         $this->twig = $twig;
         $this->cloudinaryService = new CloudinaryService();
     }
-    
+
     public function index()
     {
         // a) Conexão e repositório de eventos
@@ -46,6 +45,7 @@ class HomeController {
             'recentEvents'  => $recentEvents,
         ]);
     }
+
     /**
      * Faz upload de imagem ou vídeo para o Cloudinary
      * 
@@ -58,17 +58,17 @@ class HomeController {
         if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
             return false;
         }
-        
+
         try {
             // Pasta temporária para armazenar o arquivo
             $tmpPath = $file['tmp_name'];
-            
+
             // Realiza o upload para o Cloudinary
             $result = $this->cloudinaryService->upload($tmpPath, $folder);
-            
+
             // Registra o upload em banco de dados se necessário
             $this->logUpload($result, $file['name']);
-            
+
             return $result;
         } catch (\Exception $e) {
             // Log do erro
@@ -76,7 +76,7 @@ class HomeController {
             return false;
         }
     }
-    
+
     /**
      * Processa formulário de upload
      */
@@ -86,32 +86,32 @@ class HomeController {
             header('Location: /');
             exit;
         }
-        
+
         $result = false;
-        
+
         if (isset($_FILES['media'])) {
             $result = $this->uploadMedia($_FILES['media']);
         }
-        
+
         if ($result) {
             $_SESSION['flash_message'] = [
-                'type' => 'success', 
+                'type' => 'success',
                 'message' => 'Arquivo enviado com sucesso!'
             ];
-            
+
             // Adiciona a URL do arquivo na sessão para ser exibida na view
             $_SESSION['uploaded_file'] = $result['url'];
         } else {
             $_SESSION['flash_message'] = [
-                'type' => 'error', 
+                'type' => 'error',
                 'message' => 'Falha ao enviar o arquivo. Tente novamente.'
             ];
         }
-        
+
         header('Location: /');
         exit;
     }
-    
+
     /**
      * Exclui um arquivo do Cloudinary
      * 
@@ -124,30 +124,30 @@ class HomeController {
         if (!$publicId) {
             return false;
         }
-        
+
         // Se o tipo de arquivo não foi especificado, tenta determinar
         if (!$fileType) {
             // Verifica a extensão do ID público para inferir o tipo
             $extension = pathinfo($publicId, PATHINFO_EXTENSION);
             $fileType = $this->cloudinaryService->determineFileType("dummy.$extension");
         }
-        
+
         try {
             $result = $this->cloudinaryService->deleteFile($publicId, $fileType);
-            
+
             // Remove o registro do upload do banco de dados se necessário
             if ($result['result'] === 'ok') {
                 $this->removeUploadLog($publicId);
                 return true;
             }
-            
+
             return false;
         } catch (\Exception $e) {
             error_log('Erro ao excluir arquivo do Cloudinary: ' . $e->getMessage());
             return false;
         }
     }
-    
+
     /**
      * Registra o upload em um banco de dados
      * 
@@ -172,7 +172,7 @@ class HomeController {
         ]);
         */
     }
-    
+
     /**
      * Remove o registro de upload do banco de dados
      * 
@@ -188,7 +188,7 @@ class HomeController {
         $stmt->execute([$publicId]);
         */
     }
-    
+
     /**
      * Recupera uploads recentes do banco de dados
      * 

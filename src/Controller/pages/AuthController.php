@@ -12,26 +12,24 @@ class AuthController
     private $twig;
     private $userRepository;
     
-    // Função simples para registro de logs
     private function log($message) {
-        $logFile = __DIR__ . '/../../logs/auth.log';
+        $logFile   = __DIR__ . '/../../logs/auth.log';
         $timestamp = date('Y-m-d H:i:s');
-        $logMessage = "[$timestamp] $message" . PHP_EOL;
-        
-        // Cria diretório de logs se não existir
-        $logDir = dirname($logFile);
-        if (!is_dir($logDir)) {
-            mkdir($logDir, 0755, true);
+        $msg       = "[$timestamp] $message\n";
+        $dir       = dirname($logFile);
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
         }
-        
-        file_put_contents($logFile, $logMessage, FILE_APPEND);
+        file_put_contents($logFile, $msg, FILE_APPEND);
     }
 
     public function __construct($twig)
     {
-        $this->twig = $twig;
+        $this->twig           = $twig;
         $this->userRepository = new UserRepository(Connection::getInstance());
     }
+
+    // === LOGIN ===
 
     public function login()
     {
@@ -41,39 +39,38 @@ class AuthController
 
     public function loginPost()
     {
-        $email = $_POST['email'] ?? '';
+        $email    = $_POST['email']    ?? '';
         $password = $_POST['password'] ?? '';
-        
-        $this->log("Tentativa de login para o email: $email");
+        $this->log("Tentativa de login para: $email");
 
         $user = $this->userRepository->findByEmail($email);
+        if ($user && password_verify($password, $user->getPassword())) {
+            $_SESSION['user'] = $user->toArray();
+            $type = $user->getType();
+            $this->log("Login OK: ID {$user->getId()}, tipo {$type}");
 
-        if ($user) {
-            $this->log("Usuário encontrado com ID: " . $user->getId() . ", Tipo: " . $user->getType());
-            
-            if (password_verify($password, $user->getPassword())) {
-                $this->log("Senha válida para usuário " . $user->getEmail());
-                
-                $_SESSION['user'] = $user->toArray();
-                $userType = $user->getType();
-                
-                $this->log("Redirecionando usuário para a página home");
-                
-                // Redirecionando todos os tipos de usuário para a home
-                header('Location: /');
-                exit;
-            } else {
-                $this->log("Senha inválida para usuário " . $user->getEmail());
+            switch ($type) {
+                case 'admin':
+                    $dest = '/admin'; break;
+                case 'instituicao':
+                case 'teacher':
+                case 'student':
+                default:
+                    $dest = '/'; break;
             }
-        } else {
-            $this->log("Usuário não encontrado para o email: $email");
+
+            header("Location: {$dest}");
+            exit;
         }
 
+        $this->log("Falha no login para: $email");
         echo $this->twig->render('auth/login.twig', [
             'error' => 'E-mail ou senha inválidos.'
         ]);
     }
-    
+
+    // === REGISTRO ===
+
     public function register()
     {
         $this->log("Página de registro acessada");
@@ -82,15 +79,15 @@ class AuthController
 
     public function registerPost()
     {
-        $name = $_POST['name'] ?? '';
-        $email = $_POST['email'] ?? '';
+        $name     = $_POST['name']     ?? '';
+        $email    = $_POST['email']    ?? '';
         $password = $_POST['password'] ?? '';
-        $type = $_POST['type'] ?? null;
+        $type     = $_POST['type']     ?? null;
 
-        $this->log("Tentativa de registro para: $name, $email, tipo: $type");
+        $this->log("Tentativa de registro: $name, $email, tipo $type");
 
         if (!$name || !$email || !$password) {
-            $this->log("Registro falhou: campos obrigatórios não preenchidos");
+            $this->log("Registro falhou: campos vazios");
             echo $this->twig->render('auth/register.twig', [
                 'error' => 'Preencha todos os campos.'
             ]);
@@ -98,7 +95,7 @@ class AuthController
         }
 
         if ($this->userRepository->findByEmail($email)) {
-            $this->log("Registro falhou: email já cadastrado - $email");
+            $this->log("Registro falhou: e-mail já existe");
             echo $this->twig->render('auth/register.twig', [
                 'error' => 'E-mail já cadastrado.'
             ]);
@@ -108,113 +105,124 @@ class AuthController
         $hash = password_hash($password, PASSWORD_BCRYPT);
         $user = new User($name, $email, $hash, $type);
         $this->userRepository->save($user);
-        
-        $this->log("Usuário registrado com sucesso: $email, tipo: $type");
+        $_SESSION['user'] = $user->toArray();
+        $this->log("Registro OK: ID {$user->getId()}, tipo {$type}");
 
-        // Após registro, redirecionar para a página home em vez de login
-        // Podemos realizar login automático para melhor experiência do usuário
-        $_SESSION['user'] = [
-            'name' => $name,
-            'email' => $email,
-            'type' => $type
-        ];
-        
-        $this->log("Redirecionando novo usuário para a página home");
-        header('Location: /');
+        switch ($type) {
+            case 'admin':
+                $dest = '/admin'; break;
+            case 'instituicao':
+            case 'teacher':
+            case 'student':
+            default:
+                $dest = '/'; break;
+        }
+
+        header("Location: {$dest}");
         exit;
     }
-    
+
+    // === LOGOUT ===
+
     public function logout()
     {
-        $userId = $_SESSION['user']['id'] ?? 'desconhecido';
-        $this->log("Logout para usuário ID: $userId");
-        
+        $id = $_SESSION['user']['id'] ?? 'desconhecido';
+        $this->log("Logout: usuário {$id}");
         session_destroy();
         header('Location: /login');
         exit;
     }
-    
+
+    // === ESQUECI A SENHA ===
+
+    // 1) Exibe formulário de envio de e-mail
     public function forgot()
     {
-        $this->log("Página de recuperação de senha acessada");
+        $this->log("Página 'Esqueci a senha' acessada");
         echo $this->twig->render('auth/forgot.twig');
     }
 
+    // 2) Processa envio do e-mail e redireciona direto para a página de reset
     public function forgotPost()
     {
         $email = $_POST['email'] ?? '';
-        $this->log("Solicitação de recuperação de senha para: $email");
-        
-        $user = $this->userRepository->findByEmail($email);
+        $this->log("Solicitação de recovery para: $email");
 
+        $user = $this->userRepository->findByEmail($email);
         if (!$user) {
-            $this->log("Recuperação falhou: email não encontrado - $email");
+            $this->log("E-mail não encontrado: $email");
             echo $this->twig->render('auth/forgot.twig', [
                 'error' => 'E-mail não encontrado.'
             ]);
             return;
         }
 
-        // Gera código e expiração
-        $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        $code      = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
         $expiresAt = date('Y-m-d H:i:s', strtotime('+15 minutes'));
-
         $this->userRepository->setRecoveryCode($user->getId(), $code, $expiresAt);
-        $this->log("Código de recuperação gerado para usuário ID: " . $user->getId());
-
-        // Envia e-mail
         ResetPasswordMailer::send($user->getEmail(), $user->getName(), $code);
-        $this->log("Email de recuperação enviado para: " . $user->getEmail());
+        $this->log("Código enviado para {$email}");
 
-        echo $this->twig->render('auth/forgot.twig', [
-            'success' => 'Enviamos um código para seu e-mail. Verifique sua caixa de entrada.'
-        ]);
+        // redireciona imediatamente para página de reset
+        header('Location: /reset-password');
+        exit;
     }
 
+    // === REDEFINIR SENHA ===
+
+    // 3) Exibe formulário de reset (campo e-mail, código, nova senha)
     public function reset()
     {
-        $this->log("Página de redefinição de senha acessada");
+        $this->log("Página 'Redefinir senha' acessada");
         echo $this->twig->render('auth/reset.twig');
     }
 
+    // 4) Processa reset e, em caso de sucesso, redireciona para /
     public function resetPost()
-    {
-        $email = $_POST['email'] ?? '';
-        $code = $_POST['code'] ?? '';
-        $password = $_POST['password'] ?? '';
-        
-        $this->log("Tentativa de redefinição de senha para: $email");
+{
+    $email    = $_POST['email']    ?? '';
+    $code     = $_POST['code']     ?? '';
+    $password = $_POST['password'] ?? '';
+    $this->log("Tentativa de reset para: $email");
 
-        $user = $this->userRepository->findByEmail($email);
-
-        if (!$user || !$code || !$password) {
-            $this->log("Redefinição falhou: dados inválidos");
-            echo $this->twig->render('auth/reset.twig', [
-                'error' => 'Dados inválidos.'
-            ]);
-            return;
-        }
-
-        // Confirma código e validade
-        if (
-            $user->getRecoveryCode() !== $code ||
-            !$user->getRecoveryCodeExpiresAt() ||
-            strtotime($user->getRecoveryCodeExpiresAt()) < time()
-        ) {
-            $this->log("Redefinição falhou: código inválido ou expirado para usuário ID: " . $user->getId());
-            echo $this->twig->render('auth/reset.twig', [
-                'error' => 'Código inválido ou expirado.'
-            ]);
-            return;
-        }
-
-        // Atualiza senha e limpa código
-        $hash = password_hash($password, PASSWORD_BCRYPT);
-        $this->userRepository->updatePassword($user->getId(), $hash);
-        $this->log("Senha redefinida com sucesso para usuário ID: " . $user->getId());
-
+    $user = $this->userRepository->findByEmail($email);
+    if (
+        !$user ||
+        $user->getRecoveryCode() !== $code ||
+        !$user->getRecoveryCodeExpiresAt() ||
+        strtotime($user->getRecoveryCodeExpiresAt()) < time()
+    ) {
+        $this->log("Reset falhou para: $email (código inválido ou expirado)");
         echo $this->twig->render('auth/reset.twig', [
-            'success' => 'Senha redefinida com sucesso! Você já pode fazer login.'
+            'error' => 'Código inválido ou expirado.'
         ]);
+        return;
     }
+
+    // Atualiza senha
+    $hash = password_hash($password, PASSWORD_BCRYPT);
+    $this->userRepository->updatePassword($user->getId(), $hash);
+    $this->log("Senha resetada para: ID {$user->getId()}");
+
+    // --- Novo: auto-login após reset ---
+    // Recarrega o usuário (para garantir que veio o hash novo, e todos os campos)
+    $user = $this->userRepository->findByEmail($email);
+    $_SESSION['user'] = $user->toArray();
+    $type = $user->getType();
+    $this->log("Auto-login após reset: ID {$user->getId()}, tipo {$type}");
+
+    // Redireciona conforme tipo
+    switch ($type) {
+        case 'admin':
+            $dest = '/admin'; break;
+        case 'instituicao':
+        case 'teacher':
+        case 'student':
+        default:
+            $dest = '/'; break;
+    }
+
+    header("Location: {$dest}");
+    exit;
+}
 }

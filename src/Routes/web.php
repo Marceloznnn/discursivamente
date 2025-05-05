@@ -45,20 +45,22 @@ $r->addRoute('POST', '/register', function($twig) {
     (new AuthController($twig))->registerPost();
 });
 
-// Recuperação de senha
-$r->addRoute('GET', '/forgot-password', function($twig) {
+// Recuperação de senha (esqueci)
+$r->addRoute('GET',  '/forgot-password',    function($twig) {
     GuestMiddleware::handle();
     (new AuthController($twig))->forgot();
 });
-$r->addRoute('POST', '/forgot-password', function($twig) {
+$r->addRoute('POST', '/forgot-password',    function($twig) {
     GuestMiddleware::handle();
     (new AuthController($twig))->forgotPost();
 });
-$r->addRoute('GET', '/reset-password/{token}', function($twig, $_, $token) {
+
+// Redefinir senha
+$r->addRoute('GET',  '/reset-password',     function($twig) {
     GuestMiddleware::handle();
     (new AuthController($twig))->reset();
 });
-$r->addRoute('POST', '/reset-password', function($twig) {
+$r->addRoute('POST', '/reset-password',     function($twig) {
     GuestMiddleware::handle();
     (new AuthController($twig))->resetPost();
 });

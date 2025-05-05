@@ -3,14 +3,12 @@
 {% block title %}Discursivamente - Home{% endblock %}
 
 {% block styles %}
-    <link rel="stylesheet" href="/assets/css/home/home.css">
+    <link rel="stylesheet" href="/assets/css/home/index.css">
 {% endblock %}
 
 {% block content %}
-    <!-- Hero Slider Section -->
     <section class="hero-slider">
         <div class="slider-container">
-            <!-- Slider 1: Welcome Banner -->
             <div class="slide active">
                 <div class="slide-image" style="background-image: url('/assets/images/sliders/welcome-banner.jpg');">
                     <div class="slide-content">
@@ -18,147 +16,94 @@
                         <p>Sua plataforma completa para desenvolvimento do pensamento crítico e expressão textual</p>
                         {% if not session.user %}
                             <div class="cta-buttons">
-                                <a href="/register" class="btn btn-primary">Cadastre-se Agora</a>
-                                <a href="/login" class="btn btn-outline">Entrar</a>
+                                <a href="/register" class="btn btn-primary btn-lg">Cadastre-se Agora</a>
+                                <a href="/login" class="btn btn-outline btn-lg">Entrar</a>
                             </div>
                         {% endif %}
                     </div>
                 </div>
             </div>
-            
-            <!-- Slider 2: Education Banner -->
+
             <div class="slide">
                 <div class="slide-image" style="background-image: url('/assets/images/sliders/education-banner.jpg');">
                     <div class="slide-content">
-                        <h1>Educação Transformadora</h1>
+                        <h2>Educação Transformadora</h2>
                         <p>Potencialize sua capacidade argumentativa e desenvolva habilidades essenciais para o século XXI</p>
-                        <a href="/recursos-educacionais" class="btn btn-primary">Explorar Recursos</a>
+                        <a href="/recursos-educacionais" class="btn btn-primary btn-lg">Explorar Recursos</a>
                     </div>
                 </div>
             </div>
-            
-            <!-- Slider 3: News Banner -->
+
             <div class="slide">
                 <div class="slide-image" style="background-image: url('/assets/images/sliders/news-banner.jpg');">
                     <div class="slide-content">
-                        <h1>Fique por Dentro das Novidades</h1>
+                        <h2>Fique por Dentro das Novidades</h2>
                         <p>Acompanhe os eventos, atualizações e conteúdos exclusivos da nossa plataforma</p>
-                        <a href="/novidades" class="btn btn-primary">Ver Novidades</a>
+                        <a href="/novidades" class="btn btn-primary btn-lg">Ver Novidades</a>
                     </div>
                 </div>
             </div>
-            
-            <!-- Slider Controls -->
+
+            <div class="slide">
+                <div class="slide-image" style="background-image: url('/assets/images/sliders/results-banner.jpg');">
+                    <div class="slide-content">
+                        <h2>Alcance seus Objetivos</h2>
+                        <p>Veja como milhares de estudantes como você conquistaram seus objetivos com o Discursivamente</p>
+                        <a href="/#feedback-section" class="btn btn-primary btn-lg">Ver Depoimentos</a>
+                    </div>
+                </div>
+            </div>
+
             <div class="slider-controls">
                 <button class="prev-btn">&lt;</button>
                 <div class="slider-dots">
                     <span class="dot active" data-slide="0"></span>
                     <span class="dot" data-slide="1"></span>
                     <span class="dot" data-slide="2"></span>
+                    <span class="dot" data-slide="3"></span>
                 </div>
                 <button class="next-btn">&gt;</button>
             </div>
         </div>
     </section>
 
-    <!-- Project Info Section -->
-    <section class="project-info">
+    <section class="how-it-works-section">
         <div class="container">
-            <h2 class="section-title">Conheça o Discursivamente</h2>
-            <p class="section-subtitle">Uma plataforma completa para o desenvolvimento da expressão textual</p>
-            
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-pencil-alt"></i>
-                    </div>
-                    <h3>Redações e Feedback</h3>
-                    <p>Submeta suas redações e receba feedback detalhado de especialistas para melhorar sua escrita.</p>
+            <h2 class="section-title">Como o Discursivamente te Ajuda a Evoluir</h2>
+            <p class="section-subtitle">Descubra os passos para aprimorar sua escrita e pensamento crítico</p>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-icon"><i class="fas fa-upload"></i></div>
+                    <h3>Envie sua Redação</h3>
+                    <p>Compartilhe seus textos para receber feedback personalizado.</p>
                 </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-book"></i>
-                    </div>
-                    <h3>Materiais Didáticos</h3>
-                    <p>Acesse conteúdos exclusivos sobre técnicas de redação, argumentação e desenvolvimento textual.</p>
+                <div class="step-card">
+                    <div class="step-icon"><i class="fas fa-comments"></i></div>
+                    <h3>Receba Feedback Detalhado</h3>
+                    <p>Nossos especialistas analisam sua escrita com atenção.</p>
                 </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3>Comunidade</h3>
-                    <p>Conecte-se com outros estudantes, compartilhe experiências e participe de discussões enriquecedoras.</p>
+                <div class="step-card">
+                    <div class="step-icon"><i class="fas fa-lightbulb"></i></div>
+                    <h3>Aprenda com Materiais Exclusivos</h3>
+                    <p>Acesse recursos didáticos para aprimorar suas técnicas.</p>
                 </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-trophy"></i>
-                    </div>
-                    <h3>Desafios de Redação</h3>
-                    <p>Participe de desafios semanais para praticar e aprimorar suas habilidades de escrita.</p>
+                <div class="step-card">
+                    <div class="step-icon"><i class="fas fa-users"></i></div>
+                    <h3>Participe da Comunidade</h3>
+                    <p>Troque ideias e experiências com outros estudantes.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Resources Section -->
-    <section class="resources-section">
-        <div class="container">
-            <h2 class="section-title">Recursos Disponíveis</h2>
-            <p class="section-subtitle">Ferramentas e conteúdos para potencializar seu aprendizado</p>
-            
-            <div class="resources-grid">
-                <div class="resource-card">
-                    <img src="/assets/images/resource-template.jpg" alt="Modelos de Redação">
-                    <div class="resource-content">
-                        <h3>Modelos de Redação</h3>
-                        <p>Acesse exemplos de redações nota máxima com análises detalhadas.</p>
-                        <a href="/recursos/modelos" class="btn btn-sm">Acessar</a>
-                    </div>
-                </div>
-                
-                <div class="resource-card">
-                    <img src="/assets/images/resource-tutorial.jpg" alt="Vídeo Aulas">
-                    <div class="resource-content">
-                        <h3>Vídeo Aulas</h3>
-                        <p>Aprenda com nossas vídeo aulas sobre técnicas de escrita e argumentação.</p>
-                        <a href="/recursos/video-aulas" class="btn btn-sm">Assistir</a>
-                    </div>
-                </div>
-                
-                <div class="resource-card">
-                    <img src="/assets/images/resource-correction.jpg" alt="Correção Detalhada">
-                    <div class="resource-content">
-                        <h3>Correção Detalhada</h3>
-                        <p>Envie suas redações e receba correções personalizadas.</p>
-                        <a href="/recursos/correcao" class="btn btn-sm">Enviar Redação</a>
-                    </div>
-                </div>
-                
-                <div class="resource-card">
-                    <img src="/assets/images/resource-forum.jpg" alt="Fórum de Discussão">
-                    <div class="resource-content">
-                        <h3>Fórum de Discussão</h3>
-                        <p>Participe de debates sobre temas atuais para enriquecer seu repertório.</p>
-                        <a href="/forum" class="btn btn-sm">Participar</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Events Section -->
     <section class="events-section">
         <div class="container">
-            <h2 class="section-title">Próximos Eventos</h2>
-            <p class="section-subtitle">Não perca nossas atividades e encontros</p>
-            
+            <h2 class="section-title">Próximos Eventos e Atividades</h2>
+            <p class="section-subtitle">Não perca as oportunidades de aprendizado ao vivo</p>
             <div class="events-grid">
                 {% if recentEvents is empty %}
                     <div class="no-events">
-                        <p>Não há eventos programados no momento.</p>
+                        <p>Não há eventos programados no momento. Fique ligado!</p>
                     </div>
                 {% else %}
                     {% for event in recentEvents %}
@@ -181,19 +126,16 @@
                     {% endfor %}
                 {% endif %}
             </div>
-            
             <div class="view-all-link">
                 <a href="/eventos" class="btn btn-outline">Ver todos os eventos</a>
             </div>
         </div>
     </section>
 
-    <!-- Feedback Section -->
-    <section class="feedback-section">
+    <section id="feedback-section" class="feedback-section">
         <div class="container">
-            <h2 class="section-title">O que dizem nossos usuários</h2>
-            <p class="section-subtitle">Depoimentos de quem já utiliza nossa plataforma</p>
-            
+            <h2 class="section-title">O que Nossos Usuários Estão Dizendo</h2>
+            <p class="section-subtitle">Histórias de sucesso e depoimentos inspiradores</p>
             <div class="testimonials-slider">
                 <div class="testimonial">
                     <div class="testimonial-content">
@@ -214,7 +156,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="testimonial">
                     <div class="testimonial-content">
                         <p>"Como professor, recomendo o Discursivamente para todos os meus alunos. A plataforma oferece recursos completos e uma abordagem didática excelente."</p>
@@ -234,7 +176,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="testimonial">
                     <div class="testimonial-content">
                         <p>"A comunidade do Discursivamente me ajudou muito a desenvolver meu repertório sociocultural. Os debates são enriquecedores e os materiais são de alta qualidade."</p>
@@ -255,30 +197,29 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="feedback-cta">
-                <h3>Sua opinião é importante para nós!</h3>
-                <p>Compartilhe sua experiência com a plataforma e nos ajude a melhorar.</p>
+                <h3>Compartilhe Sua Experiência!</h3>
+                <p>Sua opinião é valiosa para construirmos um Discursivamente ainda melhor.</p>
                 <a href="/feedback" class="btn btn-primary">Deixar feedback</a>
             </div>
         </div>
     </section>
-    
-    <!-- CTA Section -->
+
     <section class="cta-section">
         <div class="container">
             <div class="cta-content">
-                <h2>Comece sua jornada agora!</h2>
-                <p>Junte-se a milhares de estudantes que já estão melhorando suas habilidades de escrita com o Discursivamente.</p>
+                <h2>Está Pronto para Transformar Sua Escrita?</h2>
+                <p>Junte-se à nossa comunidade e desbloqueie todo o seu potencial discursivo.</p>
                 {% if not session.user %}
                     <div class="cta-buttons">
                         <a href="/register" class="btn btn-primary btn-lg">Criar Conta Gratuita</a>
-                        <a href="/sobre" class="btn btn-outline btn-lg">Saiba Mais</a>
+                        <a href="/sobre" class="btn btn-outline btn-lg">Saiba Mais Sobre Nós</a>
                     </div>
                 {% else %}
                     <div class="cta-buttons">
-                        <a href="/dashboard" class="btn btn-primary btn-lg">Acessar Dashboard</a>
-                        <a href="/recursos" class="btn btn-outline btn-lg">Explorar Recursos</a>
+                        <a href="/dashboard" class="btn btn-primary btn-lg">Acessar Meu Dashboard</a>
+                        <a href="/recursos" class="btn btn-outline btn-lg">Explorar Todos os Recursos</a>
                     </div>
                 {% endif %}
             </div>
@@ -289,4 +230,5 @@
 {% block scripts %}
     <script src="/assets/js/home/slider.js"></script>
     <script src="/assets/js/home/testimonials.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 {% endblock %}

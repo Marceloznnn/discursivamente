@@ -38,6 +38,12 @@ class Feedback
     // Setters
     public function setStatus(string $status): void { $this->status = $status; }
 
+    public function setId(int $id): void
+{
+    $this->id = $id;
+}
+
+
     public function toArray(): array
     {
         return [

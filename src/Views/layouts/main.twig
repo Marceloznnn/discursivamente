@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="{% if darkTheme %}dark-theme{% endif %}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Painel Administrativo{% endblock %} | Discursivamente</title>
+
+    <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    {% block styles %}
+      <link rel="stylesheet" href="/assets/css/layouts/admin.css">
+    {% endblock %}
+</head>
+<body id="body">
+
+  {# INCLUDE O NOME CORRETO DO SEU HEADER/SIDEBAR #}
+  {% include 'layouts/admin-header-sidebar.twig' with {
+      'currentModule': currentModule|default(null),
+      'currentAction': currentAction|default(null),
+      'notifications': notifications|default(0),
+      'latestNotifications': latestNotifications|default([]),
+      'pendingFeedbacks': pendingFeedbacks|default(0)
+  } %}
+
+  {# AQUI O SEU CONTEÚDO É INJETADO #}
+  <main class="admin-main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <div id="modalContainer" class="modal-container">
+    <div id="modalOverlay" class="modal-overlay"></div>
+  </div>
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="/assets/js/global.js"></script>
+  <script src="/assets/js/layouts/admin.js"></script>
+  {% block scripts %}{% endblock %}
+
+  {% if app.environment == 'production' %}
+  <script>
+    (function(d,t){
+      var g=d.createElement(t), s=d.getElementsByTagName(t)[0];
+      g.src='https://analytics.exemplo.com.br/tracker.js';
+      s.parentNode.insertBefore(g,s);
+    }(document,'script'));
+  </script>
+  {% endif %}
+</body>
+</html>

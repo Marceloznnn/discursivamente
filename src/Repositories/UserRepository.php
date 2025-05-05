@@ -90,21 +90,36 @@ class UserRepository
 }
 
 
-    private function hydrate(array $row): User
-    {
-        return new User(
-            $row['name'],
-            $row['email'],
-            $row['password'],
-            $row['type'] ?? null,
-            (int)$row['id'],
-            $row['recovery_code'] ?? null,
-            $row['recovery_code_expiration'] ?? null,
-            $row['avatar'] ?? null,
-            $row['created_at'] ?? null,
-            $row['updated_at'] ?? null,
-            $row['bio'] ?? null,
-            $row['recovery_code_expires_at'] ?? null
-        );
-    }
+private function hydrate(array $row): User
+{
+    return new User(
+        // __construct(
+        //   string $name,
+        //   string $email,
+        //   string $password,
+        //   ?string $type = null,
+        //   ?int $id = null,
+        //   ?string $recoveryCode = null,
+        //   ?string $recoveryCodeExpiration = null,
+        //   ?string $avatar = null,
+        //   ?string $createdAt = null,
+        //   ?string $updatedAt = null,
+        //   ?string $bio = null,
+        //   ?string $recoveryCodeExpiresAt = null
+        // )
+        $row['name'],
+        $row['email'],
+        $row['password'],
+        $row['type'],                         // 4) type
+        (int)$row['id'],                      // 5) id
+        $row['recovery_code'],                // 6) recoveryCode
+        $row['recovery_code_expiration'],     // 7) recoveryCodeExpiration
+        $row['avatar'],                       // 8) avatar
+        $row['created_at'],                   // 9) createdAt
+        $row['updated_at'],                   // 10) updatedAt
+        $row['bio'],                          // 11) bio
+        $row['recovery_code_expires_at']      // 12) recoveryCodeExpiresAt
+    );
+}
+
 }

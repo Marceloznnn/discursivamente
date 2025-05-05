@@ -1,62 +1,111 @@
-// Script específico para o Header
+/**
+ * Discursivamente - Script de navegação para o header
+ * Gerencia os dropdowns do menu de navegação e o menu mobile
+ */
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Toggle do menu mobile
-    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-    const mainNavigation = document.querySelector('.main-navigation');
+    // ======= MENU DESKTOP - DROPDOWNS =======
+    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
     
-    if (mobileMenuToggle && mainNavigation) {
-        mobileMenuToggle.addEventListener('click', function() {
-            mainNavigation.classList.toggle('active');
-            
-            // Anima os spans do ícone de hambúrguer
-            const spans = this.querySelectorAll('span');
-            if (mainNavigation.classList.contains('active')) {
-                spans[0].style.transform = 'rotate(45deg) translate(5px, 6px)';
-                spans[1].style.opacity = '0';
-                spans[2].style.transform = 'rotate(-45deg) translate(5px, -6px)';
-            } else {
-                spans[0].style.transform = 'none';
-                spans[1].style.opacity = '1';
-                spans[2].style.transform = 'none';
-            }
+    // Função para fechar todos os dropdowns
+    function closeAllDropdowns() {
+        document.querySelectorAll('.dropdown-menu').forEach(dropdown => {
+            dropdown.classList.remove('active');
+        });
+        
+        // Resetar estado dos toggles
+        dropdownToggles.forEach(toggle => {
+            toggle.classList.remove('active');
         });
     }
     
-    // Destaca o item de menu ativo com base na URL atual
-    const currentLocation = window.location.pathname;
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    navLinks.forEach(link => {
-        const linkPath = link.getAttribute('href');
-        
-        // Verifica se o caminho do link corresponde à URL atual
-        if (currentLocation === linkPath || 
-            (linkPath !== '/' && currentLocation.startsWith(linkPath))) {
-            link.classList.add('active');
-            link.style.color = '#007bff';
-            link.style.fontWeight = '700';
-        }
-    });
-    
-    // Adiciona efeito de rolagem suave para os links de navegação
-    document.querySelectorAll('a[href^="/"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            // Não previne o comportamento padrão para links de navegação entre páginas
-            // Este código é apenas para preparar possíveis efeitos de transição no futuro
+    // Adicionar evento de clique para cada botão dropdown
+    dropdownToggles.forEach(toggle => {
+        toggle.addEventListener('click', function(e) {
+            e.stopPropagation(); // Evitar que o clique propague para o documento
             
-            // Fecha o menu mobile se estiver aberto
-            if (mainNavigation && mainNavigation.classList.contains('active')) {
-                mainNavigation.classList.remove('active');
-                
-                // Restaura o ícone de hambúrguer
-                if (mobileMenuToggle) {
-                    const spans = mobileMenuToggle.querySelectorAll('span');
-                    spans[0].style.transform = 'none';
-                    spans[1].style.opacity = '1';
-                    spans[2].style.transform = 'none';
-                }
+            const dropdownMenu = this.nextElementSibling;
+            const isActive = dropdownMenu.classList.contains('active');
+            
+            // Fechar todos os outros dropdowns primeiro
+            closeAllDropdowns();
+            
+            // Se não estava ativo, ative-o (toggle)
+            if (!isActive) {
+                dropdownMenu.classList.add('active');
+                this.classList.add('active');
             }
         });
     });
+    
+    // Fechar dropdowns quando clicar fora deles
+    document.addEventListener('click', function(e) {
+        // Verifica se o clique foi fora de qualquer dropdown ou toggle
+        if (!e.target.closest('.dropdown-menu') && !e.target.closest('.dropdown-toggle')) {
+            closeAllDropdowns();
+        }
+    });
+    
+    // ======= MENU MOBILE =======
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    // Toggle do menu mobile
+    if (mobileMenuButton) {
+        mobileMenuButton.addEventListener('click', function() {
+            mobileMenuButton.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+        });
+    }
+    
+    // Gerenciar submenus mobile
+    const mobileSubmenuHeaders = document.querySelectorAll('.mobile-dropdown-header');
+    
+    mobileSubmenuHeaders.forEach(header => {
+        header.addEventListener('click', function() {
+            // Toggle do conteúdo do submenu
+            const content = this.nextElementSibling;
+            content.classList.toggle('active');
+            this.classList.toggle('active');
+        });
+    });
+    
+    // Fechar menu mobile ao clicar em links de navegação
+    const mobileLinks = document.querySelectorAll('#mobile-menu a:not(.mobile-dropdown-header)');
+    
+    mobileLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            mobileMenu.classList.remove('active');
+            mobileMenuButton.classList.remove('active');
+        });
+    });
+    
+    // Fechar menu mobile quando clicar fora dele
+    document.addEventListener('click', function(e) {
+        if (mobileMenu && mobileMenu.classList.contains('active')) {
+            // Se o menu mobile está aberto e o clique não foi no menu ou no botão
+            if (!e.target.closest('#mobile-menu') && !e.target.closest('#mobile-menu-button')) {
+                mobileMenu.classList.remove('active');
+                mobileMenuButton.classList.remove('active');
+            }
+        }
+    });
+    
+    // ======= RESPONSIVIDADE =======
+    // Função para verificar o tamanho da tela e ajustar comportamentos
+    function checkScreenSize() {
+        if (window.innerWidth > 768) {
+            // Se o dispositivo voltar para desktop, garantir que o menu mobile esteja fechado
+            if (mobileMenu && mobileMenu.classList.contains('active')) {
+                mobileMenu.classList.remove('active');
+                mobileMenuButton.classList.remove('active');
+            }
+        }
+    }
+    
+    // Verificar quando a janela for redimensionada
+    window.addEventListener('resize', checkScreenSize);
+    
+    // Verificar no carregamento inicial
+    checkScreenSize();
 });

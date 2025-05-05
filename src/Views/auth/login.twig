@@ -4,7 +4,6 @@
 
 {% block styles %}
     {# CSS específico para página de login #}
-    {# <link rel="stylesheet" href="/assets/css/auth/login.css"> #}
 {% endblock %}
 
 {% block content %}
@@ -33,7 +32,8 @@
             </div>
 
             <div class="form-links">
-                <a href="/forgot">Esqueci minha senha</a>
+                {# Aponta para a rota GET /forgot-password #}
+                <a href="/forgot-password">Esqueci minha senha</a>
                 <a href="/register">Criar conta</a>
             </div>
         </form>
@@ -48,5 +48,4 @@
 
 {% block scripts %}
     {# JS específico para página de login #}
-    {# <script src="/assets/js/auth/login.js"></script> #}
 {% endblock %}

@@ -1,6 +1,4 @@
-{# src/Views/admin/users/edit.twig #}
-{% extends 'layouts/admin.twig' %}
-
+{% extends 'layouts/main.twig' %}
 {% block title %}Editar Tipo de Usuário{% endblock %}
 
 {% block content %}
@@ -19,38 +17,57 @@
         {# Exibe o ID #}
         <div class="mb-3">
           <label class="form-label"><strong>ID:</strong></label>
-          <input type="text" class="form-control" value="{{ user.id }}" disabled>
+          <input type="text"
+                 name="id"
+                 class="form-control"
+                 value="{{ user.id }}"
+                 readonly>
         </div>
 
-        {# Exibe o Nome (readonly) #}
+        {# Exibe o Nome (readonly, mas enviado no POST) #}
         <div class="mb-3">
           <label class="form-label"><strong>Nome:</strong></label>
-          <input type="text" class="form-control" value="{{ user.name }}" disabled>
+          <input type="text"
+                 name="name"
+                 class="form-control"
+                 value="{{ user.name }}"
+                 readonly>
         </div>
 
-        {# Exibe o Email (readonly) #}
+        {# Exibe o Email (readonly, mas enviado no POST) #}
         <div class="mb-3">
           <label class="form-label"><strong>Email:</strong></label>
-          <input type="email" class="form-control" value="{{ user.email }}" disabled>
+          <input type="email"
+                 name="email"
+                 class="form-control"
+                 value="{{ user.email }}"
+                 readonly>
         </div>
 
         {# Exibe Avatar, sem possibilidade de alterar #}
         {% if user.avatar %}
           <div class="mb-3">
             <label class="form-label"><strong>Avatar:</strong></label>
-            <div><img src="{{ user.avatar }}" class="img-thumbnail" style="max-width:150px"></div>
+            <div>
+              <img src="{{ user.avatar }}"
+                   class="img-thumbnail"
+                   style="max-width:150px">
+            </div>
           </div>
         {% endif %}
 
         {# Apenas o select de Tipo permanece editável #}
         <div class="mb-3">
           <label for="type" class="form-label">Tipo</label>
-          <select id="type" name="type" class="form-select" required>
+          <select id="type"
+                  name="type"
+                  class="form-select"
+                  required>
             <option value="" {% if user.type is null %}selected{% endif %}>—</option>
-            <option value="admin" {% if user.type=='admin' %}selected{% endif %}>Admin</option>
-            <option value="instituicao" {% if user.type=='instituicao' %}selected{% endif %}>Instituição</option>
-            <option value="teacher" {% if user.type=='teacher' %}selected{% endif %}>Professor</option>
-            <option value="student" {% if user.type=='student' %}selected{% endif %}>Aluno</option>
+            <option value="admin"        {% if user.type=='admin' %}selected{% endif %}>Admin</option>
+            <option value="instituicao"  {% if user.type=='instituicao' %}selected{% endif %}>Instituição</option>
+            <option value="teacher"      {% if user.type=='teacher' %}selected{% endif %}>Professor</option>
+            <option value="student"      {% if user.type=='student' %}selected{% endif %}>Aluno</option>
           </select>
         </div>
 

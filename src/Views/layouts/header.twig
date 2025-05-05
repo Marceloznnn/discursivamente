@@ -2,101 +2,303 @@
 {% block styles %}
     <link rel="stylesheet" href="/assets/css/layouts/header.css">
     <link rel="stylesheet" href="/assets/css/layouts/footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}
+
+{% block scripts %}
+    <script src="/assets/js/layouts/header.js"></script>
 {% endblock %}
 
 <header class="site-header">
-    <nav class="container mx-auto flex justify-between items-center">
-        <!-- Logo e Nome do Site -->
+    <div class="header-background"></div>
+    <nav class="site-nav">
+        <!-- Logo e Nome do Site como Imagens -->
         <a href="/" class="logo-container">
-            <svg class="site-logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 4H20V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18V4Z" stroke="currentColor" stroke-width="2"/>
-                <path d="M7 8H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                <path d="M7 12H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                <path d="M7 16H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-            <span class="site-name">Discursivamente</span>
+            <img src="/assets/images/logo/logo.png" alt="Logo Discursivamente" class="site-logo">
+            <img src="/assets/images/logo/titulo.png" alt="Discursivamente" class="site-title">
         </a>
 
         <!-- Menu de Navegação -->
         <div class="nav-links">
-            <a href="/" class="nav-link">Home</a>
-            <a href="/about" class="nav-link">Sobre</a>
+            <a href="/" class="nav-link {% if current_page == 'home' %}active{% endif %}">
+                <i class="fas fa-home nav-icon"></i>
+                <span>Home</span>
+            </a>
+            <a href="/about" class="nav-link {% if current_page == 'about' %}active{% endif %}">
+                <i class="fas fa-info-circle nav-icon"></i>
+                <span>Sobre</span>
+            </a>
             
             {% if session.user %}
-                {% if session.user.type == 'admin' %}
-                    <a href="/admin" class="nav-link">Painel Admin</a>
-                {% endif %}
-                {% if session.user.type == 'teacher' %}
-                    <a href="/classes/manage" class="nav-link">Gerenciar Turmas</a>
-                    <a href="/lessons" class="nav-link">Minhas Aulas</a>
-                {% elseif session.user.type == 'instituicao' %}
-                    <a href="/institution/dashboard" class="nav-link">Painel Instituição</a>
-                {% else %}
-                    <a href="/classes" class="nav-link">Minhas Turmas</a>
-                {% endif %}
-                <a href="/community" class="nav-link">Comunidade</a>
-                <!-- Dropdown de Perfil -->
-                <div class="profile-dropdown">
-                    <button class="dropdown-toggle">
-                        <span>Perfil</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
+                <!-- Navegação para usuários autenticados com base no type -->
+                
+                <!-- Menu Turmas com Dropdown -->
+                <div class="nav-dropdown">
+                    <button class="dropdown-toggle nav-link {% if current_page starts with 'classes' %}active{% endif %}">
+                        <i class="fas fa-chalkboard-teacher nav-icon"></i>
+                        <span>Turmas</span>
+                        <span class="dropdown-arrow"></span>
                     </button>
                     <div class="dropdown-menu">
-                        <a href="/profile">Meu Perfil</a>
-                        <a href="/settings">Configurações</a>
-                        <a href="/logout">Sair</a>
+                        {% if session.user.type == 'teacher' %}
+                            <a href="/dashboard/professor">
+                                <i class="fas fa-tachometer-alt menu-icon"></i>
+                                Painel do Professor
+                            </a>
+                        {% elseif session.user.type == 'student' %}
+                            <a href="/classes/dashboard">
+                                <i class="fas fa-tachometer-alt menu-icon"></i>
+                                Painel do Aluno
+                            </a>
+                        {% else %}
+                            <a href="/classes/explore">
+                                <i class="fas fa-compass menu-icon"></i>
+                                Explorar
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Menu Compromissos com Dropdown -->
+                <div class="nav-dropdown">
+                    <button class="dropdown-toggle nav-link {% if current_page starts with 'commitments' %}active{% endif %}">
+                        <i class="fas fa-tasks nav-icon"></i>
+                        <span>Compromissos</span>
+                        <span class="dropdown-arrow"></span>
+                    </button>
+                    <div class="dropdown-menu">
+                        {% if session.user.type == 'teacher' %}
+                            <a href="/commitments/manage">
+                                <i class="fas fa-cogs menu-icon"></i>
+                                Gerenciar
+                            </a>
+                        {% else %}
+                            <a href="/commitments/goals">
+                                <i class="fas fa-bullseye menu-icon"></i>
+                                Metas
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Menu Comunidades com Dropdown -->
+                <div class="nav-dropdown">
+                    <button class="dropdown-toggle nav-link {% if current_page starts with 'community' %}active{% endif %}">
+                        <i class="fas fa-users nav-icon"></i>
+                        <span>Comunidades</span>
+                        <span class="dropdown-arrow"></span>
+                    </button>
+                    <div class="dropdown-menu">
+                        {% if session.user.type == 'teacher' %}
+                            <a href="/community/dashboard">
+                                <i class="fas fa-tachometer-alt menu-icon"></i>
+                                Painel de Comunidades
+                            </a>
+                        {% else %}
+                            <a href="/community/forums">
+                                <i class="fas fa-comments menu-icon"></i>
+                                Fóruns
+                            </a>
+                            <a href="/community/clubs">
+                                <i class="fas fa-user-friends menu-icon"></i>
+                                Clubes
+                            </a>
+                            <a href="/community/feed">
+                                <i class="fas fa-newspaper menu-icon"></i>
+                                Feed
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Dropdown de Perfil -->
+                <div class="profile-dropdown">
+                    <button class="dropdown-toggle profile-button {% if current_page == 'profile' %}active{% endif %}">
+                        {% if session.user.avatar %}
+                            <img src="{{ session.user.avatar }}" alt="Avatar" class="user-avatar">
+                        {% else %}
+                            <i class="fas fa-user-circle"></i>
+                        {% endif %}
+                        <span>{{ session.user.name|default('Perfil') }}</span>
+                        <span class="dropdown-arrow"></span>
+                    </button>
+                    <div class="dropdown-menu profile-menu">
+                        <div class="user-info">
+                            <div class="user-avatar-container">
+                                {% if session.user.avatar %}
+                                    <img src="{{ session.user.avatar }}" alt="Avatar" class="user-avatar-large">
+                                {% else %}
+                                    <i class="fas fa-user-circle fa-3x"></i>
+                                {% endif %}
+                            </div>
+                            <div class="user-details">
+                                <span class="user-name">{{ session.user.name }}</span>
+                                <span class="user-role">{{ session.user.type|capitalize }}</span>
+                            </div>
+                        </div>
+                        <div class="profile-menu-links">
+                            <a href="/profile">
+                                <i class="fas fa-id-card menu-icon"></i>
+                                Ver Perfil
+                            </a>
+                            <a href="/settings">
+                                <i class="fas fa-cog menu-icon"></i>
+                                Configurações
+                            </a>
+                            <div class="menu-divider"></div>
+                            <a href="/logout" class="logout-link">
+                                <i class="fas fa-sign-out-alt menu-icon"></i>
+                                Sair
+                            </a>
+                        </div>
                     </div>
                 </div>
             {% else %}
-                <a href="/login" class="login-btn">Entrar</a>
-                <a href="/register" class="register-btn">Cadastrar</a>
+                <div class="auth-buttons">
+                    <a href="/login" class="login-btn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Entrar</span>
+                    </a>
+                    <a href="/register" class="register-btn">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Cadastrar</span>
+                    </a>
+                </div>
             {% endif %}
         </div>
 
         <!-- Menu Mobile -->
-        <button id="mobile-menu-button" class="mobile-menu-button">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-            </svg>
+        <button id="mobile-menu-button" class="mobile-menu-button" aria-label="Menu de navegação">
+            <span class="menu-icon"></span>
         </button>
     </nav>
     
     <!-- Menu Mobile Dropdown -->
     <div id="mobile-menu" class="mobile-menu">
-        <div class="container mx-auto">
-            <a href="/">Home</a>
-            <a href="/about">Sobre</a>
+        <div class="mobile-menu-container">
+            <a href="/" class="mobile-link {% if current_page == 'home' %}active{% endif %}">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="/about" class="mobile-link {% if current_page == 'about' %}active{% endif %}">
+                <i class="fas fa-info-circle"></i>
+                <span>Sobre</span>
+            </a>
+            
             {% if session.user %}
-                {% if session.user.type == 'admin' %}
-                    <a href="/admin">Painel Admin</a>
-                {% endif %}
-                {% if session.user.type == 'teacher' %}
-                    <a href="/classes/manage">Gerenciar Turmas</a>
-                    <a href="/lessons">Minhas Aulas</a>
-                {% elseif session.user.type == 'instituicao' %}
-                    <a href="/institution/dashboard">Painel Instituição</a>
-                {% else %}
-                    <a href="/classes">Minhas Turmas</a>
-                {% endif %}
-                <a href="/community">Comunidade</a>
-                <a href="/profile">Meu Perfil</a>
-                <a href="/settings">Configurações</a>
-                <a href="/logout">Sair</a>
+                <!-- Turmas -->
+                <div class="mobile-submenu">
+                    <div class="mobile-dropdown-header {% if current_page starts with 'classes' %}active{% endif %}">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <span>Turmas</span>
+                    </div>
+                    <div class="mobile-dropdown-content">
+                        {% if session.user.type == 'teacher' %}
+                            <a href="/classes/dashboard">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Painel do Professor
+                            </a>
+                        {% elseif session.user.type == 'student' %}
+                            <a href="/classes/dashboard">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Painel do Aluno
+                            </a>
+                        {% else %}
+                            <a href="/classes/explore">
+                                <i class="fas fa-compass"></i>
+                                Explorar
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Compromissos -->
+                <div class="mobile-submenu">
+                    <div class="mobile-dropdown-header {% if current_page starts with 'commitments' %}active{% endif %}">
+                        <i class="fas fa-tasks"></i>
+                        <span>Compromissos</span>
+                    </div>
+                    <div class="mobile-dropdown-content">
+                        {% if session.user.type == 'teacher' %}
+                            <a href="/commitments/manage">
+                                <i class="fas fa-cogs"></i>
+                                Gerenciar
+                            </a>
+                        {% else %}
+                            <a href="/commitments/goals">
+                                <i class="fas fa-bullseye"></i>
+                                Metas
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Comunidades -->
+                <div class="mobile-submenu">
+                    <div class="mobile-dropdown-header {% if current_page starts with 'community' %}active{% endif %}">
+                        <i class="fas fa-users"></i>
+                        <span>Comunidades</span>
+                    </div>
+                    <div class="mobile-dropdown-content">
+                        {% if session.user.type == 'teacher' %}
+                            <a href="/community/dashboard">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Painel de Comunidades
+                            </a>
+                        {% else %}
+                            <a href="/community/forums">
+                                <i class="fas fa-comments"></i>
+                                Fóruns
+                            </a>
+                            <a href="/community/clubs">
+                                <i class="fas fa-user-friends"></i>
+                                Clubes
+                            </a>
+                            <a href="/community/feed">
+                                <i class="fas fa-newspaper"></i>
+                                Feed
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Perfil Mobile -->
+                <div class="mobile-submenu">
+                    <div class="mobile-dropdown-header user-header {% if current_page == 'profile' %}active{% endif %}">
+                        {% if session.user.avatar %}
+                            <img src="{{ session.user.avatar }}" alt="Avatar" class="mobile-user-avatar">
+                        {% else %}
+                            <i class="fas fa-user-circle"></i>
+                        {% endif %}
+                        <span>{{ session.user.name|default('Perfil') }}</span>
+                    </div>
+                    <div class="mobile-dropdown-content">
+                        <a href="/profile">
+                            <i class="fas fa-id-card"></i>
+                            Ver Perfil
+                        </a>
+                        <a href="/settings">
+                            <i class="fas fa-cog"></i>
+                            Configurações
+                        </a>
+                        <a href="/logout" class="mobile-logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Sair
+                        </a>
+                    </div>
+                </div>
             {% else %}
                 <div class="mobile-buttons">
-                    <a href="/login" class="login-btn">Entrar</a>
-                    <a href="/register" class="register-btn">Cadastrar</a>
+                    <a href="/login" class="login-btn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Entrar</span>
+                    </a>
+                    <a href="/register" class="register-btn">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Cadastrar</span>
+                    </a>
                 </div>
             {% endif %}
         </div>
     </div>
 </header>
-
-<script>
-    document.getElementById('mobile-menu-button').addEventListener('click', function() {
-        const menu = document.getElementById('mobile-menu');
-        menu.classList.toggle('active');
-    });
-</script>

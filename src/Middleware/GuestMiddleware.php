@@ -12,7 +12,7 @@ class GuestMiddleware
 
         // Se já estiver logado, manda para /dashboard
         if (!empty($_SESSION['user'])) {
-            header('Location: /dashboard');
+            header('Location: /');
             exit;
         }
 

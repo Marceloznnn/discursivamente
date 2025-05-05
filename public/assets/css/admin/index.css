@@ -1,0 +1,26 @@
+:root {
+    --header-height: 60px;
+  }
+  
+  .site-header {
+    position: fixed;
+    top: 0; left: 0; width: 100%;
+    height: var(--header-height);
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex; align-items: center; z-index:1000;
+  }
+  
+  .site-header .container {
+    max-width: 1200px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 1rem;
+  }
+  
+  .admin-main {
+    margin-top: var(--header-height);
+    padding: 1rem;
+  }
+  
+  /* restante dos seus estilos… */
+  
