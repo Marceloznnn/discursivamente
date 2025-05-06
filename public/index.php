@@ -18,15 +18,21 @@ use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
 use Infrastructure\Database\Connection;
 
+// Inclui a classe que contém as funções do Twig
+use Infrastructure\Twig\TwigFunctions;
+
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 
 // Setup Twig templating
 $loader = new FilesystemLoader(__DIR__ . '/../src/Views');
 $twig = new Environment($loader, [
-    'cache' => false, // or path to cache
+    'cache' => false, // ou caminho para o cache
     'auto_reload' => true,
 ]);
+
+// Registra as funções personalizadas no Twig
+TwigFunctions::addCustomFunctions($twig);
 
 // Torna a sessão disponível em todas as views
 $twig->addGlobal('session', $_SESSION);

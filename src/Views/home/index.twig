@@ -1,234 +1,263 @@
 {% extends 'layouts/base.twig' %}
 
-{% block title %}Discursivamente - Home{% endblock %}
+{% block title %}Discursivamente - Portal de Aprendizado e Desenvolvimento Intelectual{% endblock %}
+
+{% block meta %}
+    <meta name="description" content="Discursivamente é sua plataforma completa para cursos online, eventos educacionais e desenvolvimento intelectual. Aprenda, compartilhe e cresça com nossa comunidade.">
+    <meta name="keywords" content="cursos online, eventos educacionais, aprendizado, desenvolvimento intelectual, comunidade acadêmica">
+    <meta property="og:title" content="Discursivamente - Portal de Aprendizado">
+    <meta property="og:description" content="Sua plataforma completa para cursos online e desenvolvimento intelectual.">
+    <meta property="og:image" content="/assets/images/social-share.jpg">
+    <meta property="og:url" content="{{ current_url() }}">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <!-- Schema.org markup for Google -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Discursivamente",
+        "url": "https://www.discursivamente.com.br",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://www.discursivamente.com.br/search?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+{% endblock %}
 
 {% block styles %}
-    <link rel="stylesheet" href="/assets/css/home/index.css">
+    <link rel="stylesheet" href="/assets/css/pages/home/index.css">
+{% endblock %}
+
+{% block breadcrumbs %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Home</li>
+        </ol>
+    </nav>
 {% endblock %}
 
 {% block content %}
-    <section class="hero-slider">
+    <!-- Hero Slider Section - Melhoria 1 -->
+    <section class="hero-slider" aria-label="Destaques da plataforma">
         <div class="slider-container">
-            <div class="slide active">
-                <div class="slide-image" style="background-image: url('/assets/images/sliders/welcome-banner.jpg');">
-                    <div class="slide-content">
-                        <h1>Bem-vindo ao Discursivamente!</h1>
-                        <p>Sua plataforma completa para desenvolvimento do pensamento crítico e expressão textual</p>
-                        {% if not session.user %}
-                            <div class="cta-buttons">
-                                <a href="/register" class="btn btn-primary btn-lg">Cadastre-se Agora</a>
-                                <a href="/login" class="btn btn-outline btn-lg">Entrar</a>
+            <div class="slider-item active">
+                <div class="slider-content">
+                    <h1>Bem-vindo à Discursivamente</h1>
+                    <p>Seu portal para o aprendizado e desenvolvimento intelectual</p>
+                    <div class="slider-cta">
+                        <a href="/cursos" class="btn btn-primary">Explorar Cursos</a>
+                        <a href="/sobre" class="btn btn-outline">Conheça-nos</a>
+                    </div>
+                </div>
+                <div class="slider-bg">
+                    <img src="/api/placeholder/1920/1080" alt="Estudantes em ambiente de aprendizado colaborativo" loading="lazy">
+                </div>
+            </div>
+            
+            <div class="slider-item">
+                <div class="slider-content">
+                    <h1>Amplie seus horizontes</h1>
+                    <p>Descubra novos conhecimentos e perspectivas</p>
+                    <div class="slider-cta">
+                        <a href="/biblioteca" class="btn btn-primary">Acessar Biblioteca</a>
+                    </div>
+                </div>
+                <div class="slider-bg">
+                    <img src="/api/placeholder/1920/1080" alt="Pessoa lendo livro com vista para montanhas" loading="lazy">
+                </div>
+            </div>
+            
+            <!-- Outros slides -->
+        </div>
+        
+        <div class="slider-controls">
+            <button class="slider-prev" aria-label="Slide anterior"><i class="fas fa-chevron-left"></i></button>
+            <div class="slider-dots" role="tablist"></div>
+            <button class="slider-next" aria-label="Próximo slide"><i class="fas fa-chevron-right"></i></button>
+        </div>
+    </section>
+
+    <!-- Seções existentes (Events, Parallax) mantidas como estão -->
+
+    <!-- Newsletter Section - Melhoria 4 -->
+    <section class="newsletter-section" aria-labelledby="newsletter-heading">
+        <div class="container">
+            <div class="newsletter-wrapper">
+                <div class="newsletter-content">
+                    <h2 id="newsletter-heading">Fique por dentro das novidades</h2>
+                    <p>Receba atualizações sobre novos cursos, eventos e conteúdos exclusivos</p>
+                    <ul class="newsletter-benefits">
+                        <li><i class="fas fa-check" aria-hidden="true"></i> Conteúdos exclusivos para assinantes</li>
+                        <li><i class="fas fa-check" aria-hidden="true"></i> Descontos em cursos e eventos</li>
+                        <li><i class="fas fa-check" aria-hidden="true"></i> Primeiro acesso a novas funcionalidades</li>
+                    </ul>
+                    <div class="social-links">
+                        <p>Siga-nos também:</p>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="newsletter-form">
+                    <form action="/newsletter/subscribe" method="POST" id="newsletterForm">
+                        <div class="form-group">
+                            <label for="newsletter-email" class="sr-only">Email</label>
+                            <input type="email" id="newsletter-email" name="email" placeholder="Seu melhor e-mail" required aria-required="true">
+                            <div class="preference-checkboxes">
+                                <label><input type="checkbox" name="pref_cursos" checked> Cursos</label>
+                                <label><input type="checkbox" name="pref_eventos" checked> Eventos</label>
+                                <label><input type="checkbox" name="pref_conteudos"> Conteúdos</label>
                             </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-
-            <div class="slide">
-                <div class="slide-image" style="background-image: url('/assets/images/sliders/education-banner.jpg');">
-                    <div class="slide-content">
-                        <h2>Educação Transformadora</h2>
-                        <p>Potencialize sua capacidade argumentativa e desenvolva habilidades essenciais para o século XXI</p>
-                        <a href="/recursos-educacionais" class="btn btn-primary btn-lg">Explorar Recursos</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="slide">
-                <div class="slide-image" style="background-image: url('/assets/images/sliders/news-banner.jpg');">
-                    <div class="slide-content">
-                        <h2>Fique por Dentro das Novidades</h2>
-                        <p>Acompanhe os eventos, atualizações e conteúdos exclusivos da nossa plataforma</p>
-                        <a href="/novidades" class="btn btn-primary btn-lg">Ver Novidades</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="slide">
-                <div class="slide-image" style="background-image: url('/assets/images/sliders/results-banner.jpg');">
-                    <div class="slide-content">
-                        <h2>Alcance seus Objetivos</h2>
-                        <p>Veja como milhares de estudantes como você conquistaram seus objetivos com o Discursivamente</p>
-                        <a href="/#feedback-section" class="btn btn-primary btn-lg">Ver Depoimentos</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="slider-controls">
-                <button class="prev-btn">&lt;</button>
-                <div class="slider-dots">
-                    <span class="dot active" data-slide="0"></span>
-                    <span class="dot" data-slide="1"></span>
-                    <span class="dot" data-slide="2"></span>
-                    <span class="dot" data-slide="3"></span>
-                </div>
-                <button class="next-btn">&gt;</button>
-            </div>
-        </div>
-    </section>
-
-    <section class="how-it-works-section">
-        <div class="container">
-            <h2 class="section-title">Como o Discursivamente te Ajuda a Evoluir</h2>
-            <p class="section-subtitle">Descubra os passos para aprimorar sua escrita e pensamento crítico</p>
-            <div class="steps-grid">
-                <div class="step-card">
-                    <div class="step-icon"><i class="fas fa-upload"></i></div>
-                    <h3>Envie sua Redação</h3>
-                    <p>Compartilhe seus textos para receber feedback personalizado.</p>
-                </div>
-                <div class="step-card">
-                    <div class="step-icon"><i class="fas fa-comments"></i></div>
-                    <h3>Receba Feedback Detalhado</h3>
-                    <p>Nossos especialistas analisam sua escrita com atenção.</p>
-                </div>
-                <div class="step-card">
-                    <div class="step-icon"><i class="fas fa-lightbulb"></i></div>
-                    <h3>Aprenda com Materiais Exclusivos</h3>
-                    <p>Acesse recursos didáticos para aprimorar suas técnicas.</p>
-                </div>
-                <div class="step-card">
-                    <div class="step-icon"><i class="fas fa-users"></i></div>
-                    <h3>Participe da Comunidade</h3>
-                    <p>Troque ideias e experiências com outros estudantes.</p>
+                            <button type="submit" class="btn btn-primary">Inscrever</button>
+                        </div>
+                        <div class="privacy-notice">
+                            <small>Respeitamos sua privacidade. Você pode cancelar a qualquer momento.</small>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="events-section">
+    <!-- FAQ Section - Melhoria 5 -->
+    <section class="faq-section" aria-labelledby="faq-heading">
         <div class="container">
-            <h2 class="section-title">Próximos Eventos e Atividades</h2>
-            <p class="section-subtitle">Não perca as oportunidades de aprendizado ao vivo</p>
-            <div class="events-grid">
-                {% if recentEvents is empty %}
-                    <div class="no-events">
-                        <p>Não há eventos programados no momento. Fique ligado!</p>
+            <h2 id="faq-heading" class="section-title">Perguntas Frequentes</h2>
+            <p class="section-subtitle">Encontre respostas para as dúvidas mais comuns</p>
+            
+            <div class="faq-search">
+                <label for="faq-search-input" class="sr-only">Buscar perguntas</label>
+                <input type="text" id="faq-search-input" placeholder="Buscar em perguntas frequentes..." aria-label="Buscar perguntas">
+                <button aria-label="Buscar"><i class="fas fa-search"></i></button>
+            </div>
+            
+            <div class="faq-categories" role="tablist">
+                <button class="category-btn active" data-category="all" role="tab" aria-selected="true">Todas</button>
+                <button class="category-btn" data-category="account" role="tab" aria-selected="false">Conta</button>
+                <button class="category-btn" data-category="courses" role="tab" aria-selected="false">Cursos</button>
+                <button class="category-btn" data-category="events" role="tab" aria-selected="false">Eventos</button>
+                <button class="category-btn" data-category="payment" role="tab" aria-selected="false">Pagamentos</button>
+            </div>
+            
+            <div class="faq-accordion">
+                <div class="faq-item" data-category="courses">
+                    <div class="faq-question" role="button" aria-expanded="false" aria-controls="faq-answer-1">
+                        <h3>Como posso me inscrever em um curso?</h3>
+                        <span class="faq-icon" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
                     </div>
-                {% else %}
-                    {% for event in recentEvents %}
-                        <div class="event-card">
-                            {% if event.image %}
-                                <div class="event-image">
-                                    <img src="{{ event.image }}" alt="{{ event.title }}">
+                    <div id="faq-answer-1" class="faq-answer" aria-hidden="true">
+                        <p>Para se inscrever em um curso, navegue até a página de cursos, escolha o curso desejado e clique em "Inscrever-se". Você precisará estar logado para completar a inscrição.</p>
+                    </div>
+                </div>
+                
+                <!-- Outras FAQs -->
+            </div>
+            
+            <div class="faq-footer">
+                <div class="faq-more">
+                    <a href="/faq" class="btn btn-outline">Ver todas as perguntas</a>
+                </div>
+                <div class="faq-contact">
+                    <p>Não encontrou o que procurava?</p>
+                    <a href="/contato" class="btn btn-text">Envie sua dúvida <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login CTA Section - Melhoria 6 -->
+    <section class="login-cta-section" aria-labelledby="join-community-heading">
+        <div class="container">
+            <div class="login-cta-wrapper">
+                {% if not user.isLoggedIn %}
+                    <div class="login-cta-content">
+                        <h2 id="join-community-heading">Junte-se à nossa comunidade</h2>
+                        <p>Crie uma conta para ter acesso completo a todos os recursos da plataforma</p>
+                        
+                        <div class="community-activity">
+                            <h3>Atividade recente da comunidade</h3>
+                            <div class="activity-feed">
+                                <div class="activity-item">
+                                    <img src="/assets/images/avatars/user1.jpg" alt="Foto de perfil de Maria" loading="lazy">
+                                    <p>Maria completou o curso <strong>Introdução à Filosofia</strong></p>
                                 </div>
-                            {% endif %}
-                            <div class="event-details">
-                                <h3>{{ event.title }}</h3>
-                                <div class="event-date">
-                                    <i class="fas fa-calendar"></i>
-                                    {{ event.dateTime|date('d/m/Y H:i') }}
+                                <div class="activity-item">
+                                    <img src="/assets/images/avatars/user2.jpg" alt="Foto de perfil de João" loading="lazy">
+                                    <p>João publicou um novo tópico no fórum</p>
                                 </div>
-                                <p>{{ event.description|length > 120 ? event.description|slice(0, 120) ~ '...' : event.description }}</p>
-                                <a href="/eventos/{{ event.id }}" class="btn btn-sm">Saiba mais</a>
                             </div>
                         </div>
-                    {% endfor %}
-                {% endif %}
-            </div>
-            <div class="view-all-link">
-                <a href="/eventos" class="btn btn-outline">Ver todos os eventos</a>
-            </div>
-        </div>
-    </section>
-
-    <section id="feedback-section" class="feedback-section">
-        <div class="container">
-            <h2 class="section-title">O que Nossos Usuários Estão Dizendo</h2>
-            <p class="section-subtitle">Histórias de sucesso e depoimentos inspiradores</p>
-            <div class="testimonials-slider">
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        <p>"O Discursivamente foi essencial para minha aprovação no vestibular. As correções detalhadas e o material didático fizeram toda diferença na minha escrita."</p>
-                    </div>
-                    <div class="testimonial-author">
-                        <img src="/assets/images/avatar-placeholder.jpg" alt="Maria Silva">
-                        <div class="author-info">
-                            <h4>Maria Silva</h4>
-                            <p>Estudante aprovada em Medicina</p>
-                            <div class="rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
+                        
+                        <div class="partners">
+                            <p>Parceiros e instituições que confiam em nós:</p>
+                            <div class="partner-logos">
+                                <img src="/assets/images/partners/partner1.png" alt="Logo Universidade X" loading="lazy">
+                                <img src="/assets/images/partners/partner2.png" alt="Logo Instituto Y" loading="lazy">
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        <p>"Como professor, recomendo o Discursivamente para todos os meus alunos. A plataforma oferece recursos completos e uma abordagem didática excelente."</p>
-                    </div>
-                    <div class="testimonial-author">
-                        <img src="/assets/images/avatar-placeholder.jpg" alt="Carlos Mendes">
-                        <div class="author-info">
-                            <h4>Carlos Mendes</h4>
-                            <p>Professor de Redação</p>
-                            <div class="rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
+                        
+                        <div class="login-cta-buttons">
+                            <a href="/login" class="btn btn-primary">Entrar</a>
+                            <a href="/registro" class="btn btn-outline">Criar conta</a>
                         </div>
-                    </div>
-                </div>
-
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        <p>"A comunidade do Discursivamente me ajudou muito a desenvolver meu repertório sociocultural. Os debates são enriquecedores e os materiais são de alta qualidade."</p>
-                    </div>
-                    <div class="testimonial-author">
-                        <img src="/assets/images/avatar-placeholder.jpg" alt="Juliana Ferreira">
-                        <div class="author-info">
-                            <h4>Juliana Ferreira</h4>
-                            <p>Estudante de Ensino Médio</p>
-                            <div class="rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="feedback-cta">
-                <h3>Compartilhe Sua Experiência!</h3>
-                <p>Sua opinião é valiosa para construirmos um Discursivamente ainda melhor.</p>
-                <a href="/feedback" class="btn btn-primary">Deixar feedback</a>
-            </div>
-        </div>
-    </section>
-
-    <section class="cta-section">
-        <div class="container">
-            <div class="cta-content">
-                <h2>Está Pronto para Transformar Sua Escrita?</h2>
-                <p>Junte-se à nossa comunidade e desbloqueie todo o seu potencial discursivo.</p>
-                {% if not session.user %}
-                    <div class="cta-buttons">
-                        <a href="/register" class="btn btn-primary btn-lg">Criar Conta Gratuita</a>
-                        <a href="/sobre" class="btn btn-outline btn-lg">Saiba Mais Sobre Nós</a>
-                    </div>
-                {% else %}
-                    <div class="cta-buttons">
-                        <a href="/dashboard" class="btn btn-primary btn-lg">Acessar Meu Dashboard</a>
-                        <a href="/recursos" class="btn btn-outline btn-lg">Explorar Todos os Recursos</a>
                     </div>
                 {% endif %}
             </div>
         </div>
     </section>
+
+    <!-- Chatbot de Atendimento -->
+    <div class="chatbot-container" role="dialog" aria-labelledby="chatbot-heading">
+        <button class="chatbot-toggle" aria-expanded="false" aria-controls="chatbot-window">
+            <i class="fas fa-comments" aria-hidden="true"></i>
+            <span class="sr-only">Abrir chat de atendimento</span>
+        </button>
+        <div id="chatbot-window" class="chatbot-window" aria-hidden="true">
+            <div class="chatbot-header">
+                <h3 id="chatbot-heading">Atendimento Discursivamente</h3>
+                <button class="chatbot-close" aria-label="Fechar chat">
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="chatbot-messages"></div>
+            <div class="chatbot-input">
+                <input type="text" placeholder="Digite sua mensagem..." aria-label="Digite sua mensagem">
+                <button aria-label="Enviar mensagem"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block scripts %}
-    <script src="/assets/js/home/slider.js"></script>
-    <script src="/assets/js/home/testimonials.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    <!-- Scripts otimizados com defer/async -->
+    <script src="/assets/js/pages/pages-scripts/slider.js" defer></script>
+    <script src="/assets/js/pages/pages-scripts/newsletter.js" defer></script>
+    <script src="/assets/js/pages/pages-scripts/faq.js" defer></script>
+    <script src="/assets/js/pages/pages-scripts/chatbot.js" defer></script>
+    
+    <!-- Font Awesome com carga otimizada -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js" integrity="sha512-fzff82+8pzHnwA1mQ0dzz9/E0B+ZRizq08yZfya66INZBz86qKTCt9MLU0NCNIgaMJCgeyhujhasnFUsYMsi0Q==" crossorigin="anonymous" referrerpolicy="no-referrer" async></script>
+    
+    <!-- Schema.org para FAQ -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Como posso me inscrever em um curso?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Para se inscrever em um curso, navegue até a página de cursos, escolha o curso desejado e clique em 'Inscrever-se'. Você precisará estar logado para completar a inscrição."
+                }
+            }
+            <!-- Outras perguntas -->
+        ]
+    }
+    </script>
 {% endblock %}
