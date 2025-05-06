@@ -11,6 +11,7 @@ use Controller\pages\FeedbackController;
 use Middleware\AdminMiddleware;
 use Middleware\AuthMiddleware;
 use Middleware\GuestMiddleware;
+use Controller\PagesController;
 
 // ==========================================
 // Rotas públicas (sem autenticação)
@@ -219,6 +220,22 @@ $r->addRoute('POST', '/classes/aluno/{classroomId}/assignments/{id}/submit', fun
     (new Controller\pages\StudentAssignmentController($twig))->submitAssignmentAluno((int)$classroomId, (int)$id);
 });
 
+// Exibe o perfil
+$r->addRoute('GET', '/profile', function($twig) {
+    AuthMiddleware::handle();
+    (new \Controller\pages\ProfileController($twig))->index();
+});
+
+// Formulário de edição
+$r->addRoute('GET', '/profile/edit', function($twig) {
+    AuthMiddleware::handle();
+    (new \Controller\pages\ProfileController($twig))->edit();
+});
+// Processa atualização (form POST)
+$r->addRoute('POST', '/profile/update', function($twig) {
+    AuthMiddleware::handle();
+    (new \Controller\pages\ProfileController($twig))->update();
+});
 
 
 // Conversas (usuário)
@@ -377,23 +394,35 @@ $r->addRoute('GET', '/admin/feedbacks/{id}/process', function($twig, $_, $id) {
     (new AdminController($twig))->feedbackProcess($id);
 });
 
-// Gerenciamento de eventos (admin)
-$r->addRoute('GET', '/admin/events', function($twig) {
+// ==========================================
+// Rotas de Eventos
+// ==========================================
+
+// --- Front‑end público ---
+$r->addRoute('GET', '/events', function($twig) {
+    (new \Controller\pages\EventsController($twig))->index();
+});
+$r->addRoute('GET', '/events/{id}', function($twig, $_, $id) {
+    (new \Controller\pages\EventsController($twig))->show($id);
+});
+
+// --- Painel Administrativo ---
+$r->addRoute('GET',  '/admin/events',           function($twig) {
     AuthMiddleware::handle();
     AdminMiddleware::handle();
     (new AdminController($twig))->eventsList();
 });
-$r->addRoute('GET', '/admin/events/create', function($twig) {
+$r->addRoute('GET',  '/admin/events/create',    function($twig) {
     AuthMiddleware::handle();
     AdminMiddleware::handle();
     (new AdminController($twig))->eventCreate();
 });
-$r->addRoute('POST', '/admin/events/store', function($twig) {
+$r->addRoute('POST', '/admin/events/store',     function($twig) {
     AuthMiddleware::handle();
     AdminMiddleware::handle();
     (new AdminController($twig))->eventStore();
 });
-$r->addRoute('GET', '/admin/events/{id}/edit', function($twig, $_, $id) {
+$r->addRoute('GET',  '/admin/events/{id}/edit', function($twig, $_, $id) {
     AuthMiddleware::handle();
     AdminMiddleware::handle();
     (new AdminController($twig))->eventEdit($id);
@@ -408,3 +437,10 @@ $r->addRoute('POST', '/admin/events/{id}/delete', function($twig, $_, $id) {
     AdminMiddleware::handle();
     (new AdminController($twig))->eventDelete($id);
 });
+
+// Aqui você usa diretamente o $r (RouteCollector)
+$r->addRoute('GET', '/about', [PagesController::class, 'about']);
+$r->addRoute('GET', '/terms', [PagesController::class, 'terms']);
+$r->addRoute('GET', '/contact', [PagesController::class, 'contact']);
+$r->addRoute('GET', '/cookies', [PagesController::class, 'cookies']);
+$r->addRoute('GET', '/privacy', [PagesController::class, 'privacy']);

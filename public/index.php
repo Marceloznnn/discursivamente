@@ -1,4 +1,5 @@
 <?php
+/** @var \FastRoute\RouteCollector $r */
 
 declare(strict_types=1);
 
@@ -39,6 +40,7 @@ $twig->addGlobal('session', $_SESSION);
 
 // Load routes
 $dispatcher = simpleDispatcher(function(RouteCollector $r) {
+    // Passa o $r explicitamente para web.php
     require __DIR__ . '/../src/Routes/web.php';
 });
 

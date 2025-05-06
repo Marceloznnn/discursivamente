@@ -1,10 +1,8 @@
+
+{# templates/admin/events/index.twig #}
 {% extends 'layouts/main.twig' %}
 {% block styles %}
     <link rel="stylesheet" href="/assets/css/admin/events.css">
-{% endblock %}
-
-{% block scripts %}
-    {# <script src="/assets/js/admin/events.js"></script> #}
 {% endblock %}
 
 {% block content %}
@@ -14,7 +12,6 @@
         <a href="/admin/events/create" class="btn btn-primary">Novo Evento</a>
     </div>
 
-    {# Resumo rápido #}
     <div class="row mb-4">
         <div class="col-md-4">
             <div class="card text-white bg-info mb-2">
@@ -24,29 +21,13 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-success mb-2">
-                <div class="card-body">
-                    <h5 class="card-title">Próximos Eventos</h5>
-                    <p class="card-text display-4">{{ events|filter(e => e.getDateTimeObject() >= "now"|date_modify("0 seconds"))|length }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-secondary mb-2">
-                <div class="card-body">
-                    <h5 class="card-title">Eventos Passados</h5>
-                    <p class="card-text display-4">{{ events|length - (events|filter(e => e.getDateTimeObject() >= "now"|date_modify("0 seconds"))|length) }}</p>
-                </div>
-            </div>
-        </div>
     </div>
 
-    {# Lista de Eventos em tabela #}
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
                 <tr>
+                    <th>Destaque</th>
                     <th>Título</th>
                     <th>Data</th>
                     <th>Visibilidade</th>
@@ -55,29 +36,30 @@
             </thead>
             <tbody>
                 {% for event in events %}
-                    <tr>
-                        <td>{{ event.title }}</td>
-                        <td>{{ event.getDateTimeObject()|date('d/m/Y H:i') }}</td>
+                    <tr class="{{ event.isFeatured ? 'table-warning' }}">
                         <td>
-                            {% if event.visibility == 'public' %}
-                                <span class="badge bg-success">Público</span>
-                            {% elseif event.visibility == 'members' %}
-                                <span class="badge bg-warning">Membros</span>
+                            {% if event.isFeatured %}
+                                <span class="badge bg-warning text-dark">Sim ({{ event.featurePriority }})</span>
                             {% else %}
-                                <span class="badge bg-secondary">Privado</span>
+                                <span class="badge bg-secondary">Não</span>
                             {% endif %}
+                        </td>
+                        <td>{{ event.title }}</td>
+                        <td>{{ event.dateTime|date('d/m/Y H:i') }}</td>
+                        <td>
+                            {% if event.visibility=='public' %}<span class="badge bg-success">Público</span>
+                            {% elseif event.visibility=='members' %}<span class="badge bg-warning">Membros</span>
+                            {% else %}<span class="badge bg-secondary">Privado</span>{% endif %}
                         </td>
                         <td>
                             <a href="/admin/events/{{ event.id }}/edit" class="btn btn-sm btn-outline-primary">Editar</a>
                             <form action="/admin/events/{{ event.id }}/delete" method="POST" class="d-inline">
-                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Deseja excluir este evento?');">Excluir</button>
+                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Excluir evento?');">Excluir</button>
                             </form>
                         </td>
                     </tr>
                 {% else %}
-                    <tr>
-                        <td colspan="4" class="text-center">Nenhum evento encontrado.</td>
-                    </tr>
+                    <tr><td colspan="5" class="text-center">Nenhum evento encontrado.</td></tr>
                 {% endfor %}
             </tbody>
         </table>

@@ -1,0 +1,32 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Eventos{% endblock %}
+
+{% block content %}
+<div class="eventos-container">
+  <h2 class="eventos-header">Eventos e Atividades</h2>
+  <p class="eventos-subheader">Veja as oportunidades disponíveis</p>
+
+  {% if events is empty %}
+    <div class="eventos-empty">Nenhum evento encontrado.</div>
+  {% else %}
+    {% for event in events %}
+    <div class="evento-item">
+      <div class="evento-image">
+        {% if event.image %}
+          <img src="{{ event.image }}" alt="{{ event.title }}" />
+        {% endif %}
+      </div>
+      <div class="evento-content">
+        <h3 class="evento-title">{{ event.title }}</h3>
+        <div class="evento-date">{{ event.dateTime|date('d/m/Y H:i') }}</div>
+        <p class="evento-description">
+          {{ event.description|length > 120 ? event.description|slice(0, 120) ~ '...' : event.description }}
+        </p>
+        <a href="/events/{{ event.id }}" class="evento-link">Ver detalhes</a>
+      </div>
+    </div>
+    {% endfor %}
+  {% endif %}
+</div>
+{% endblock %}

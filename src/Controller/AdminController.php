@@ -19,6 +19,7 @@ class AdminController {
     private $messageRepository;
     private $feedbackRepository;
     private $eventRepository;
+
     private $auditLogRepository;
 
     public function __construct($twig)
@@ -270,12 +271,10 @@ class AdminController {
         header('Location: /admin/feedbacks');
         exit;
     }
-
     // === EVENTOS ===
     public function eventsList()
     {
         $this->checkAdminAccess();
-
         $events = $this->eventRepository->findAll();
         echo $this->twig->render('admin/events/index.twig', ['events' => $events]);
     }
@@ -283,23 +282,24 @@ class AdminController {
     public function eventCreate()
     {
         $this->checkAdminAccess();
-
-        echo $this->twig->render('admin/events/create.twig');
+        echo $this->twig->render('admin/events/form.twig', ['event' => null]);
     }
 
     public function eventStore()
     {
         $this->checkAdminAccess();
 
-        $title       = $_POST['title']       ?? '';
-        $description = $_POST['description'] ?? '';
-        $dateTime    = $_POST['date_time']   ?? '';
-        $visibility  = $_POST['visibility']  ?? 'public';
+        $title            = $_POST['title'] ?? '';
+        $description      = $_POST['description'] ?? '';
+        $dateTime         = $_POST['date_time'] ?? '';
+        $visibility       = $_POST['visibility'] ?? 'public';
+        $isFeatured       = isset($_POST['is_featured']) ? 1 : 0;
+        $featurePriority  = (int)($_POST['feature_priority'] ?? 0);
 
         if (!$title || !$description || !$dateTime) {
-            echo $this->twig->render('admin/events/create.twig', [
+            echo $this->twig->render('admin/events/form.twig', [
                 'error' => 'Todos os campos são obrigatórios.',
-                'event' => compact('title','description','dateTime','visibility')
+                'event' => compact('title','description','dateTime','visibility','isFeatured','featurePriority')
             ]);
             return;
         }
@@ -309,7 +309,6 @@ class AdminController {
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
             $uploadDir = __DIR__ . '/../../public/uploads/events/';
             if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-
             $fileName = time() . '_' . basename($_FILES['image']['name']);
             $filePath = $uploadDir . $fileName;
             if (move_uploaded_file($_FILES['image']['tmp_name'], $filePath)) {
@@ -322,7 +321,9 @@ class AdminController {
             $description,
             $dateTime,
             $visibility,
-            $imageUrl
+            $imageUrl,
+            $isFeatured,
+            $featurePriority
         );
         $this->eventRepository->save($event);
 
@@ -334,39 +335,30 @@ class AdminController {
     public function eventEdit(int $id)
     {
         $this->checkAdminAccess();
-
         $event = $this->eventRepository->findById($id);
         if (!$event) {
             $_SESSION['flash_message'] = ['type'=>'error','message'=>'Evento não encontrado.'];
-            header('Location: /admin/events');
-            exit;
+            header('Location: /admin/events'); exit;
         }
-
-        echo $this->twig->render('admin/events/create.twig', [
-            'event' => [
-                'id'          => $event->getId(),
-                'title'       => $event->getTitle(),
-                'description' => $event->getDescription(),
-                'dateTime'    => $event->getDateTime(),
-                'visibility'  => $event->getVisibility(),
-                'image'       => $event->getImage(),
-            ]
-        ]);
+        echo $this->twig->render('admin/events/form.twig', ['event' => $event]);
     }
 
     public function eventUpdate(int $id)
     {
         $this->checkAdminAccess();
 
-        $title       = $_POST['title']       ?? '';
-        $description = $_POST['description'] ?? '';
-        $dateTime    = $_POST['date_time']   ?? '';
-        $visibility  = $_POST['visibility']  ?? 'public';
+        $event            = $this->eventRepository->findById($id);
+        $title            = $_POST['title'] ?? '';
+        $description      = $_POST['description'] ?? '';
+        $dateTime         = $_POST['date_time'] ?? '';
+        $visibility       = $_POST['visibility'] ?? 'public';
+        $isFeatured       = isset($_POST['is_featured']) ? 1 : 0;
+        $featurePriority  = (int)($_POST['feature_priority'] ?? 0);
 
         if (!$title || !$description || !$dateTime) {
-            echo $this->twig->render('admin/events/create.twig', [
+            echo $this->twig->render('admin/events/form.twig', [
                 'error' => 'Todos os campos são obrigatórios.',
-                'event' => compact('id','title','description','dateTime','visibility')
+                'event' => compact('id','title','description','dateTime','visibility','isFeatured','featurePriority')
             ]);
             return;
         }
@@ -376,42 +368,36 @@ class AdminController {
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
             $uploadDir = __DIR__ . '/../../public/uploads/events/';
             if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-
             $fileName = time() . '_' . basename($_FILES['image']['name']);
             $filePath = $uploadDir . $fileName;
             if (move_uploaded_file($_FILES['image']['tmp_name'], $filePath)) {
                 $imageUrl = '/uploads/events/' . $fileName;
             }
         }
-
-        // mantém imagem existente se nenhuma nova for enviada
         if ($imageUrl === null) {
-            $existing = $this->eventRepository->findById($id);
-            $imageUrl = $existing ? $existing->getImage() : null;
+            $imageUrl = $event ? $event->getImage() : null;
         }
 
-        $event = new \App\Models\Event(
+        $updatedEvent = new \App\Models\Event(
             $title,
             $description,
             $dateTime,
             $visibility,
             $imageUrl,
+            $isFeatured,
+            $featurePriority,
             $id
         );
-        $this->eventRepository->save($event);
-
+        $this->eventRepository->save($updatedEvent);
         $_SESSION['flash_message'] = ['type'=>'success','message'=>'Evento atualizado com sucesso.'];
-        header('Location: /admin/events');
-        exit;
+        header('Location: /admin/events'); exit;
     }
 
     public function eventDelete(int $id)
     {
         $this->checkAdminAccess();
-
         $this->eventRepository->delete($id);
         $_SESSION['flash_message'] = ['type'=>'success','message'=>'Evento excluído com sucesso.'];
-        header('Location: /admin/events');
-        exit;
+        header('Location: /admin/events'); exit;
     }
 }

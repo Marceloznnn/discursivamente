@@ -18,33 +18,34 @@ class HomeController {
     }
 
     public function index()
-    {
-        // a) Conexão e repositório de eventos
-        $connection      = Connection::getInstance();
-        $eventRepository = new EventRepository($connection);
+{
+    // a) Conexão e repositório de eventos
+    $connection      = Connection::getInstance();
+    $eventRepository = new EventRepository($connection);
 
-        // b) Busca todos os eventos, filtra apenas os futuros e pega os 4 mais próximos
-        $allEvents = $eventRepository->findAll();
+    // b) Busca todos os eventos
+    $allEvents = $eventRepository->findAll();
 
-        $now = new \DateTime();
-        $upcoming = array_filter($allEvents, function($e) use ($now) {
-            return new \DateTime($e->getDateTime()) >= $now;
-        });
+    // c) Filtra apenas os eventos marcados como 'featured'
+    $featured = array_filter($allEvents, function($e) {
+        return $e->getIsFeatured();
+    });
 
-        // Ordena por data ascendente (caso findAll não faça isso)
-        usort($upcoming, function($a, $b) {
-            return (new \DateTime($a->getDateTime())) <=> (new \DateTime($b->getDateTime()));
-        });
+    // d) Ordena por featurePriority descendente (maior destaque primeiro)
+    usort($featured, function($a, $b) {
+        return $b->getFeaturePriority() <=> $a->getFeaturePriority();
+    });
 
-        // Limita a X eventos (aqui 4, mas ajuste como quiser)
-        $recentEvents = array_slice($upcoming, 0, 4);
+    // e) Limita ao top N eventos (aqui, 4)
+    $topFeatured = array_slice($featured, 0, 4);
 
-        // c) Renderiza passando também recentEvents
-        echo $this->twig->render('home/index.twig', [
-            'recentUploads' => $this->getRecentUploads(),
-            'recentEvents'  => $recentEvents,
-        ]);
-    }
+    // f) Renderiza a view passando só os eventos em destaque
+    echo $this->twig->render('home/index.twig', [
+        'featuredEvents' => $topFeatured,
+        'recentUploads'  => $this->getRecentUploads(),
+    ]);
+}
+
 
     /**
      * Faz upload de imagem ou vídeo para o Cloudinary

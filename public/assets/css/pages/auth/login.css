@@ -1,0 +1,236 @@
+/* login.css */
+
+/* Reset básico */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+.auth-container {
+    background-color: #1E1E1E;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    display: flex;
+    overflow: hidden;
+    max-width: 900px;
+    width: 100%;
+}
+
+.auth-branding {
+    flex: 1;
+    background: linear-gradient(135deg, #2D2D2D, #1A1A1A);
+    padding: 40px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.auth-logo {
+    max-width: 120px;
+    margin: 0 auto 20px;
+}
+
+.auth-branding h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #FFFFFF;
+}
+
+.auth-branding p {
+    font-size: 1rem;
+    color: #B0B0B0;
+}
+
+.auth-form {
+    flex: 1.2;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.input-with-icon {
+    position: relative;
+}
+
+.input-with-icon i {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    font-size: 1.1rem;
+    color: #B0B0B0;
+}
+
+.input-with-icon input {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border: none;
+    border-radius: 6px;
+    background-color: #2A2A2A;
+    color: #E0E0E0;
+    font-size: 1rem;
+}
+
+.input-with-icon input::placeholder {
+    color: #757575;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    color: #B0B0B0;
+}
+
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    -webkit-user-select: none; /* Para Safari */
+    user-select: none;         /* Padrão moderno */
+    }
+
+.checkbox-container input {
+    margin-right: 8px;
+    width: 16px;
+    height: 16px;
+}
+
+.checkbox-container .checkmark {
+    position: relative;
+}
+
+.form-options a {
+    color: #BB86FC;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.form-options a:hover {
+    text-decoration: underline;
+}
+
+.form-actions .btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: #BB86FC;
+    color: #FFFFFF;
+    transition: background-color 0.3s ease;
+}
+
+.form-actions .btn:hover {
+    background-color: #9A66D1;
+}
+
+.alert {
+    display: flex;
+    align-items: flex-start;
+    background-color: #B00020;
+    color: #FFFFFF;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.alert .icon-warning {
+    font-size: 1.4rem;
+    margin-right: 10px;
+}
+
+.alert-content strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.social-login {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.social-login p {
+    margin-bottom: 10px;
+    color: #B0B0B0;
+}
+
+.social-buttons .btn.social {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: #FFFFFF;
+    color: #000000;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.social-buttons .btn.social:hover {
+    background-color: #F1F1F1;
+}
+
+.social-buttons .button-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    fill: #4285F4;
+}
+
+.form-links {
+    margin-top: 20px;
+    text-align: center;
+    color: #B0B0B0;
+    font-size: 0.9rem;
+}
+
+.form-links a {
+    color: #BB86FC;
+    text-decoration: none;
+    margin-left: 4px;
+}
+
+.form-links a:hover {
+    text-decoration: underline;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .auth-container {
+        flex-direction: column;
+    }
+    .auth-branding, .auth-form {
+        padding: 20px;
+    }
+}

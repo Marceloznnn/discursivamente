@@ -1,0 +1,8 @@
+{% extends 'layouts/base.twig' %}
+{% block title %}{{ event.title }}{% endblock %}
+{% block content %}
+<h1>{{ event.title }}</h1>
+<p>{{ event.dateTime|date('d/m/Y H:i') }}</p>
+{% if event.image %}<img src="{{ event.image }}" />{% endif %}
+<div>{{ event.description }}</div>
+{% endblock %}

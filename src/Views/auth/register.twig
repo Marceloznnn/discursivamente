@@ -1,56 +1,88 @@
 {% extends 'layouts/base.twig' %}
 
-{% block title %}Discursivamente - Cadastro{% endblock %}
-
 {% block styles %}
-    {# CSS específico para página de cadastro #}
-    {# <link rel="stylesheet" href="/assets/css/auth/register.css"> #}
+    <link rel="stylesheet" href="/assets/css/pages/auth/register.css">
 {% endblock %}
 
 {% block content %}
-    <div class="auth-container">
-        <h1>Criar Conta</h1>
+    <div id="auth-container" class="auth-container">
+        <div id="auth-branding" class="auth-branding">
+            <img id="branding-logo" src="/assets/images/logo/logo.png" alt="Discursivamente" class="auth-logo">
+            <h1 id="branding-title">Crie sua conta</h1>
+            <p id="branding-subtitle">Junte-se à nossa comunidade</p>
+        </div>
 
         {% if error %}
-            <div class="alert alert-danger">
-                {{ error }}
+            <div id="alert-error" class="alert alert-danger">
+                <i class="icon-warning"></i>
+                <div id="alert-content" class="alert-content">
+                    <strong>Erro no cadastro:</strong> {{ error }}
+                    {% if error == "E-mail já cadastrado" %}
+                        <p id="alert-help">Este e-mail já está em uso. <a id="link-login" href="/login">Faça login</a> ou <a id="link-forgot" href="/forgot-password">recupere sua senha</a>.</p>
+                    {% endif %}
+                </div>
             </div>
         {% endif %}
 
-        <form action="/register" method="POST" class="auth-form">
-            <div class="form-group">
+        <form id="register-form" action="/register" method="POST" class="auth-form">
+            <div id="group-name" class="form-group">
                 <label for="name">Nome completo</label>
-                <input type="text" id="name" name="name" required>
+                <div id="input-name" class="input-with-icon">
+                    <i class="icon-user"></i>
+                    <input type="text" id="name" name="name" required placeholder="Seu nome completo">
+                </div>
             </div>
 
-            <div class="form-group">
+            <div id="group-email" class="form-group">
                 <label for="email">E-mail</label>
-                <input type="email" id="email" name="email" required>
+                <div id="input-email" class="input-with-icon">
+                    <i class="icon-mail"></i>
+                    <input type="email" id="email" name="email" required placeholder="seu@email.com">
+                </div>
             </div>
 
-            <div class="form-group">
+            <div id="group-password" class="form-group">
                 <label for="password">Senha</label>
-                <input type="password" id="password" name="password" required>
+                <div id="input-password" class="input-with-icon">
+                    <i class="icon-lock"></i>
+                    <input type="password" id="password" name="password" required placeholder="••••••••">
+                    <button type="button" id="toggle-password" class="toggle-password" aria-label="Mostrar senha">
+                        <i class="icon-eye"></i>
+                    </button>
+                </div>
             </div>
 
-            <div class="form-actions">
-                <button type="submit" class="btn primary">Cadastrar</button>
+            <div id="group-confirm" class="form-group">
+                <label for="confirm-password">Confirmar Senha</label>
+                <div id="input-confirm-password" class="input-with-icon">
+                    <i class="icon-lock"></i>
+                    <input type="password" id="confirm-password" name="confirm_password" required placeholder="••••••••">
+                </div>
             </div>
 
-            <div class="form-links">
-                <a href="/login">Já tenho uma conta</a>
+            <div id="form-actions" class="form-actions">
+                <button id="btn-submit" type="submit" class="btn primary">Cadastrar</button>
+            </div>
+
+            <div id="social-login" class="social-login">
+                <p id="social-text">Ou cadastre-se com</p>
+                <div id="social-buttons" class="social-buttons">
+                    <button type="button" id="btn-google" class="btn social google">
+                        <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M12.545 10.239v3.821h5.445c-0.712 2.315-2.647 3.972-5.445 3.972-3.332 0-6.033-2.701-6.033-6.032s2.701-6.032 6.033-6.032c1.498 0 2.866 0.549 3.921 1.453l2.814-2.814c-1.786-1.667-4.166-2.685-6.735-2.685-5.522 0-10 4.477-10 10s4.478 10 10 10c8.396 0 10-7.524 10-10 0-0.671-0.069-1.325-0.189-1.955h-9.811z"/>
+                        </svg>
+                        <span id="google-text">Cadastre-se com Google</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="form-links" class="form-links">
+                Já tem uma conta? <a id="link-login-bottom" href="/login">Faça login</a>
             </div>
         </form>
-
-        <div class="navigation-menu">
-            <div class="buttons">
-                <a href="/" class="btn">Voltar para Home</a>
-            </div>
-        </div>
     </div>
 {% endblock %}
 
 {% block scripts %}
-    {# JS específico para página de cadastro #}
-    {# <script src="/assets/js/auth/register.js"></script> #}
+    <script src="/assets/js/pages/auth/auth.js"></script>
 {% endblock %}

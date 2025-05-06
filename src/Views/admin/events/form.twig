@@ -1,3 +1,4 @@
+{# templates/admin/events/form.twig #}
 {% extends 'layouts/main.twig' %}
 {% block styles %}
     <link rel="stylesheet" href="/assets/css/admin/events.css">
@@ -7,68 +8,69 @@
 <div class="container py-4">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h1 class="h3 mb-0">Editar Evento</h1>
+            <h1 class="h3 mb-0">{{ event is defined and event.id ? 'Editar Evento' : 'Criar Novo Evento' }}</h1>
             <a href="/admin/events" class="btn btn-secondary">Voltar</a>
         </div>
         <div class="card-body">
             {% if error is defined %}
                 <div class="alert alert-danger">{{ error }}</div>
             {% endif %}
-
-            <form method="post" action="/admin/events/{{ event.id }}/update" enctype="multipart/form-data">
-                <input type="hidden" name="id" value="{{ event.id }}">
+            <form method="post" action="{{ event is defined and event.id ? '/admin/events/' ~ event.id ~ '/update' : '/admin/events/store' }}" enctype="multipart/form-data">
+                {% if event is defined and event.id %}
+                    <input type="hidden" name="id" value="{{ event.id }}">
+                {% endif %}
 
                 <div class="mb-3">
                     <label for="title" class="form-label">Título do Evento *</label>
-                    <input type="text" class="form-control" id="title" name="title" required
-                           value="{{ event.title }}">
+                    <input type="text" class="form-control" id="title" name="title" required 
+                           value="{{ event.title|default('') }}">
                 </div>
 
                 <div class="mb-3">
                     <label for="description" class="form-label">Descrição *</label>
-                    <textarea class="form-control" id="description" name="description" rows="4" required>{{ event.description }}</textarea>
-                    <small class="text-muted">Descreva o evento com detalhes. Você pode usar formatação Markdown.</small>
+                    <textarea class="form-control" id="description" name="description" rows="4" required>{{ event.description|default('') }}</textarea>
+                    <small class="text-muted">Descreva o evento com detalhes. Markdown permitido.</small>
                 </div>
 
                 <div class="mb-3">
                     <label for="date_time" class="form-label">Data e Hora *</label>
                     <input type="datetime-local" class="form-control" id="date_time" name="date_time" required
-                           value="{{ event.dateTime|date('Y-m-d\TH:i') }}">
+                           value="{{ event.dateTime is defined ? event.dateTime|date('Y-m-d\TH:i') : '' }}">
                 </div>
 
                 <div class="mb-3">
                     <label for="visibility" class="form-label">Visibilidade</label>
                     <select class="form-select" id="visibility" name="visibility">
-                        <option value="public" {% if event.visibility == 'public' %}selected{% endif %}>Público</option>
-                        <option value="members" {% if event.visibility == 'members' %}selected{% endif %}>Apenas Membros</option>
-                        <option value="private" {% if event.visibility == 'private' %}selected{% endif %}>Privado</option>
+                        <option value="public" {{ event.visibility|default('public')=='public'?'selected':'' }}>Público</option>
+                        <option value="members" {{ event.visibility=='members'?'selected':'' }}>Apenas Membros</option>
+                        <option value="private" {{ event.visibility=='private'?'selected':'' }}>Privado</option>
                     </select>
                 </div>
 
                 <div class="mb-3 form-check">
-                    <input type="checkbox" class="form-check-input" id="is_featured" name="is_featured" {% if event.isFeatured %}checked{% endif %}>
+                    <input type="checkbox" class="form-check-input" id="is_featured" name="is_featured" {{ event.isFeatured ? 'checked' }}>
                     <label class="form-check-label" for="is_featured">Destacar Evento</label>
                 </div>
 
                 <div class="mb-3">
                     <label for="feature_priority" class="form-label">Prioridade de Destaque</label>
                     <input type="number" class="form-control" id="feature_priority" name="feature_priority" min="0"
-                           value="{{ event.featurePriority }}">
+                           value="{{ event.featurePriority|default(0) }}">
                 </div>
 
                 <div class="mb-3">
                     <label for="image" class="form-label">Imagem do Evento</label>
-                    {% if event.image %}
+                    {% if event.image is defined and event.image %}
                         <div class="mb-2">
-                            <img src="{{ event.image }}" alt="{{ event.title }}" class="img-fluid" style="max-height: 200px;">
+                            <img src="{{ event.image }}" alt="{{ event.title }}" class="img-fluid" style="max-height:200px;">
                         </div>
                     {% endif %}
                     <input type="file" class="form-control" id="image" name="image" accept="image/*">
-                    <small class="text-muted">Envie uma nova imagem para substituir a existente.</small>
+                    <small class="text-muted">Recomendado 1200x600px. JPG, PNG ou GIF.</small>
                 </div>
 
-                <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary">Atualizar Evento</button>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-primary">{{ event is defined and event.id ? 'Atualizar Evento' : 'Criar Evento' }}</button>
                 </div>
             </form>
         </div>
