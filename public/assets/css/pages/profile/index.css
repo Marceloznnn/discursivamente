@@ -1,0 +1,147 @@
+/* assets/css/pages/profile.css */
+
+/* Container principal */
+.container {
+    max-width: 768px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+/* Cartão de perfil */
+.profile-card {
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+/* Cabeçalho com avatar e info */
+.profile-header {
+    display: flex;
+    align-items: center;
+    background-color: #f7fafc;
+    padding: 1rem 1.5rem;
+}
+
+.profile-avatar-wrapper {
+    position: relative;
+}
+
+#profile-avatar {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 9999px;
+    object-fit: cover;
+    border: 2px solid #cbd5e0;
+}
+
+/* Botão de upload no avatar */
+.profile-avatar-wrapper form {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.profile-avatar-wrapper label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    border-radius: 9999px;
+    padding: 0.25rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.profile-avatar-wrapper label:hover {
+    background-color: #edf2f7;
+}
+
+.profile-info {
+    margin-left: 1rem;
+}
+
+.profile-info h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.25rem;
+}
+
+.profile-info p {
+    color: #4a5568;
+    font-size: 0.875rem;
+}
+
+/* Biografia */
+.profile-bio {
+    padding: 1rem 1.5rem;
+}
+
+.profile-bio h3 {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #4a5568;
+    margin-bottom: 0.5rem;
+}
+
+.profile-bio p {
+    font-size: 0.875rem;
+    color: #4a5568;
+    white-space: pre-wrap;
+}
+
+/* Ações de perfil */
+.profile-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    background-color: #f7fafc;
+}
+
+.profile-actions a {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: background-color 0.2s;
+}
+
+.profile-actions .logout-btn {
+    background-color: #e53e3e;
+    color: #ffffff;
+}
+
+.profile-actions .logout-btn:hover {
+    background-color: #c53030;
+}
+
+.profile-actions .edit-btn {
+    background-color: #3182ce;
+    color: #ffffff;
+}
+
+.profile-actions .edit-btn:hover {
+    background-color: #2b6cb0;
+}
+
+/* Responsividade */
+@media (max-width: 640px) {
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .profile-info {
+        margin-left: 0;
+        margin-top: 0.75rem;
+    }
+
+    .profile-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

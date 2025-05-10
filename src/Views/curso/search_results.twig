@@ -1,0 +1,52 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Resultados da Pesquisa{% endblock %}
+
+{% block content %}
+  <section>
+
+    {# Breadcrumb #}
+    <nav aria-label="breadcrumb">
+      <ul>
+        <li><a href="/curso">Cursos</a></li>
+        <li>/</li>
+        <li>Pesquisa</li>
+      </ul>
+    </nav>
+
+    {% if search is defined and search != '' %}
+      <p>Buscando por: <strong>{{ search }}</strong></p>
+    {% endif %}
+
+    {% if courses is empty %}
+      <p>Nenhum curso encontrado para o termo '{{ search }}'.</p>
+    {% else %}
+      <p>{{ courses|length }} curso(s) encontrado(s).</p>
+      <table border="1">
+        <caption>Resultados para '{{ search }}'</caption>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Título</th>
+            <th>Status</th>
+            <th>Preço</th>
+            <th>Detalhes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for course in courses %}
+            <tr>
+              <td>{{ course.getId() }}</td>
+              <td>{{ course.getTitle() }}</td>
+              <td>{{ course.getStatus()|capitalize }}</td>
+              <td>{{ course.getFormattedPrice() }}</td>
+              <td><a href="/curso/{{ course.getId() }}">Ver Detalhes</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+
+    <p><a href="/curso">Voltar à lista de cursos</a></p>
+  </section>
+{% endblock %}

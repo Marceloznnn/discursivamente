@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Footer Discursivamente</title>
+    <link rel="stylesheet" href="/assets/css/layouts/footer.css">
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-logo-section">
+                    <p class="footer-description">Discursivamente é uma plataforma dedicada à educação transformadora, promovendo o pensamento crítico e o desenvolvimento pessoal através de conteúdos de qualidade.</p>
+                </div>
+
+                <div class="footer-navigation">
+                    <h3 class="footer-heading">Navegação</h3>
+                    <ul class="navigation-list">
+                        <li><a href="/about" class="nav-link">Sobre Nós</a></li>
+                        <li><a href="/curso" class="nav-link">Cursos</a></li>
+                        <li><a href="/faq" class="nav-link">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-contact">
+                    <h3 class="footer-heading">Contato</h3>
+                    <ul class="contact-list">
+                        <li><i data-feather="map-pin"></i> Av. Educação, 1000 - São Paulo, SP</li>
+                        <li><i data-feather="phone"></i> (98) 9212-0055</li>
+                        <li><i data-feather="mail"></i> projeto.discursivamente@gmail.com</li>
+                    </ul>
+                </div>
+
+                 <div class="footer-newsletter">
+                    <h3 class="footer-heading">Assine nossa Newsletter</h3>
+                    <p>Receba atualizações e novidades diretamente no seu e-mail.</p>
+                    <form action="#" method="post">
+                        <input type="email" placeholder="Seu e-mail" required>
+                        <button type="submit"><i data-feather="send"></i> Assinar</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="footer-divider"></div>
+
+            <div class="footer-bottom">
+                <div class="legal-links">
+                    <ul>
+                        <li><a href="/termos" class="legal-link">Termos de Uso</a></li>
+                        <li><a href="/privacidade" class="legal-link">Política de Privacidade</a></li>
+                        <li><a href="/cookies" class="legal-link">Política de Cookies</a></li>
+                        <li><a href="/acessibilidade" class="legal-link">Acessibilidade</a></li>
+                        <li><a href="/sitemap" class="legal-link">Mapa do Site</a></li>
+                    </ul>
+                </div>
+
+                <div class="social-links">
+                    <ul>
+                        <li>
+                            <a href="https://facebook.com/discursivamente" aria-label="Facebook" class="social-link">
+                                <i data-feather="facebook"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://instagram.com/discursivamente" aria-label="Instagram" class="social-link">
+                                <i data-feather="instagram"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://twitter.com/discursivamente" aria-label="Twitter" class="social-link">
+                                <i data-feather="twitter"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://youtube.com/discursivamente" aria-label="YouTube" class="social-link">
+                                <i data-feather="youtube"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://linkedin.com/company/discursivamente" aria-label="LinkedIn" class="social-link">
+                                <i data-feather="linkedin"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-divider"></div>
+
+            <button id="partners-toggle" class="partners-toggle">Ver parceiros</button>
+
+            <div id="partners-section" class="partners-section">
+                <h3 class="footer-heading partners-heading">Nossos Parceiros</h3>
+                <div class="partners-logos">
+                    <a href="https://lptacademico.me/sobre-2/" target="_blank" rel="noopener noreferrer" class="partner-link">
+                        <img src="/assets/images/partners/lpt.png" alt="Parceiro 1" class="partner-logo">
+                    </a>
+                </div>
+            </div>
+
+            <div class="copyright">
+                <p>&copy; <span id="current-year"></span> Discursivamente. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        feather.replace();
+    </script>
+    <script src="/assets/js/layouts/footer.js"></script>
+</body>
+</html>

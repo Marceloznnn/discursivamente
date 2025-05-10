@@ -1,0 +1,482 @@
+/* =====================
+   Estilos Gerais - Auth
+===================== */
+:root {
+  --primary-color: #5165FF;
+  --primary-hover: #3B4FE3;
+  --primary-light: #EDF0FF;
+  --text-primary: #333333;
+  --text-secondary: #6B7280;
+  --surface: #FFFFFF;
+  --background: #F9FAFC;
+  --border: #E5E7EB;
+  --error: #EF4444;
+  --error-light: #FEF2F2;
+  --success: #10B981;
+  --success-light: #ECFDF5;
+  
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --transition: all 0.2s ease-in-out;
+}
+
+/* =====================
+   Contêineres e Layout
+===================== */
+.auth-container {
+  width: 100%;
+  max-width: 460px;
+  margin: 2rem auto;
+  padding: 2.5rem;
+  background-color: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.auth-branding {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.auth-logo {
+  height: 60px;
+  width: auto;
+  margin-bottom: 1.5rem;
+}
+
+.auth-branding h1 {
+  color: var(--text-primary);
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.auth-branding p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+/* =====================
+   Formulários
+===================== */
+.auth-form {
+  width: 100%;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.input-with-icon {
+  position: relative;
+  width: 100%;
+}
+
+.input-with-icon i {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  font-size: 1.25rem;
+}
+
+.input-with-icon input {
+  width: 100%;
+  padding: 0.875rem 1rem 0.875rem 3rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  color: var(--text-primary);
+  background-color: var(--surface);
+  transition: var(--transition);
+}
+
+/* Efeito para input com ícone no início */
+.input-with-icon i {
+  opacity: 0.65;
+  font-size: 1.125rem;
+}
+
+.input-with-icon input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(81, 101, 255, 0.15);
+}
+
+.input-with-icon input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+.auth-logo {
+    filter: brightness(0) saturate(100%) sepia(100%) hue-rotate(310deg) saturate(800%) brightness(90%);
+}
+
+
+.toggle-password {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0.25rem;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-password:hover {
+  color: var(--primary-color);
+}
+
+/* =====================
+   Botões
+===================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+  border: 1px solid transparent;
+  width: auto;
+}
+
+.btn.primary {
+  background-color: var(--primary-color);
+  color: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn.primary:hover {
+  background-color: var(--primary-hover);
+  box-shadow: var(--shadow-md);
+}
+
+.btn.small {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: var(--primary-color);
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.btn.small:hover {
+  text-decoration: underline;
+}
+
+.form-actions {
+  margin-top: 1.5rem;
+}
+
+.form-actions .btn {
+  width: 100%;
+}
+
+/* Botões Sociais */
+.social-login {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.social-login p {
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.social-login p::before,
+.social-login p::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 35%;
+  height: 1px;
+  background-color: var(--border);
+}
+
+.social-login p::before {
+  left: 0;
+}
+
+.social-login p::after {
+  right: 0;
+}
+
+.social-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.btn.social {
+  background-color: white;
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 0.75rem 1.25rem;
+}
+
+.btn.social:hover {
+  background-color: var(--background);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn.social.google {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn.social .button-icon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+/* =====================
+   Links e Opções
+===================== */
+.form-links {
+  margin-top: 1.5rem;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+}
+
+.form-links a,
+.form-options a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.form-links a:hover,
+.form-options a:hover {
+  text-decoration: underline;
+  color: var(--primary-hover);
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1rem 0;
+}
+
+/* Checkbox personalizado */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-left: 28px;
+  cursor: pointer;
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  user-select: none;
+}
+
+.checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 18px;
+  width: 18px;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+.checkbox-container:hover input ~ .checkmark {
+  border-color: var(--primary-color);
+}
+
+.checkbox-container input:checked ~ .checkmark {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.checkbox-container .checkmark:after {
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* =====================
+   Alertas
+===================== */
+.alert {
+  display: flex;
+  align-items: flex-start;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
+}
+
+.alert-danger {
+  background-color: var(--error-light);
+  border-left: 4px solid var(--error);
+}
+
+.alert i {
+  margin-right: 0.75rem;
+  font-size: 1.25rem;
+  color: var(--error);
+}
+
+.alert-content {
+  flex: 1;
+}
+
+.alert-content strong {
+  color: var(--error);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.alert-content p {
+  margin: 0.25rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+}
+
+/* =====================
+   Responsividade
+===================== */
+@media (max-width: 640px) {
+  .auth-container {
+    max-width: 100%;
+    margin: 0;
+    padding: 1.5rem;
+    border-radius: 0;
+    box-shadow: none;
+    min-height: 100vh;
+  }
+  
+  .auth-logo {
+    height: 50px;
+  }
+  
+  .auth-branding h1 {
+    font-size: 1.5rem;
+  }
+  
+  .form-options {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+}
+
+/* =====================
+   Animações e Transições
+===================== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.auth-container {
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* =====================
+   Ícones (Substituições para os originais)
+===================== */
+.icon-user, .icon-mail, .icon-lock, .icon-warning, .icon-eye, .icon-eye-off {
+  font-family: 'Material Icons', sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'liga';
+}
+
+.icon-user:before { content: "person"; }
+.icon-mail:before { content: "email"; }
+.icon-lock:before { content: "lock"; }
+.icon-warning:before { content: "warning"; }
+.icon-eye:before { content: "visibility"; }
+.icon-eye-off:before { content: "visibility_off"; }
+
+/* Implementação de rótulos flutuantes */
+.form-group {
+  position: relative;
+}
+
+.form-group label {
+  position: absolute;
+  top: -0.5rem;
+  left: 0.5rem;
+  background-color: white;
+  padding: 0 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  z-index: 1;
+}
+
+/* =====================
+   Estilos extras para Register
+===================== */
+#change-email {
+  margin-top: 0.5rem;
+  display: inline-block;
+}

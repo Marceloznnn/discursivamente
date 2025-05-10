@@ -15,6 +15,8 @@ class ClassroomController
     private PDO $pdo;
     private EnrollmentRepository $enrollmentRepo;
     private AssignmentRepository $assignmentRepo;
+    private ClassroomRepository $classRepo;   // ← adiciona aqui
+
 
     public function __construct($twig)
     {
@@ -22,6 +24,8 @@ class ClassroomController
         $this->pdo            = Connection::getInstance();
         $this->enrollmentRepo = new EnrollmentRepository($this->pdo);
         $this->assignmentRepo = new AssignmentRepository($this->pdo);
+        $this->classRepo      = new ClassroomRepository($this->pdo);  // ← e aqui
+
     }
 
     /**
@@ -105,21 +109,38 @@ class ClassroomController
 exit;
     }
 
-    public function indexAluno()
-    {
-        $alunoId = $_SESSION['user']['id'];
-        $stmt = $this->pdo->prepare(
-            "SELECT id, nome, descricao, status, privacidade
-             FROM classrooms
-             WHERE privacidade = 'aberta'"
-        );
-        $stmt->execute();
-        $classes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // src/Controller/pages/ClassroomController.php
 
-        echo $this->twig->render('classes/aluno/index.twig', [
-            'classes' => $classes
-        ]);
+public function indexAluno()
+{
+    // Garante que só alunos ou usuários autenticados acessem
+    if (!isset($_SESSION['user'])) {
+        header('Location: /login');
+        exit;
     }
+
+    $search = trim($_GET['q'] ?? '');
+
+    // Puxa todas as turmas públicas e ativas
+    $rawClasses = $this->classRepo->findPublicAndActiveWithProfessorName();
+
+    // Se houver termo de busca, filtra
+    if ($search !== '') {
+        $filtered = [];
+        foreach ($rawClasses as $c) {
+            if (stripos($c['nome'], $search) !== false) {
+                $filtered[] = $c;
+            }
+        }
+        $classes = $filtered;
+    } else {
+        $classes = $rawClasses;
+    }
+
+    echo $this->twig->render('classes/aluno/index.twig', [
+        'classes' => $classes
+    ]);
+}
 
     public function view($classroomId)
     {

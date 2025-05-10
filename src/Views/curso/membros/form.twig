@@ -1,0 +1,25 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Adicionar Membro{% endblock %}
+
+{% block content %}
+<h1>Adicionar Membro ao Curso</h1>
+
+<form action="/curso/{{ courseId }}/membros/store" method="POST">
+    <div class="mb-3">
+        <label for="user_id" class="form-label">ID do Usuário</label>
+        <input type="number" name="user_id" id="user_id" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="role" class="form-label">Função</label>
+        <select name="role" id="role" class="form-select" required>
+            <option value="aluno">Aluno</option>
+            <option value="professor">Professor</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Adicionar</button>
+    <a href="/curso/{{ courseId }}/membros" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

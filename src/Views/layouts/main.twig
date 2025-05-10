@@ -17,8 +17,8 @@
 </head>
 <body id="body">
 
-  {# INCLUDE O NOME CORRETO DO SEU HEADER/SIDEBAR #}
-  {% include 'layouts/admin-header-sidebar.twig' with {
+  {# ✅ Header (topo + menu lateral, se aplicável) #}
+  {% include 'layouts/partials_admin/header.twig' with {
       'currentModule': currentModule|default(null),
       'currentAction': currentAction|default(null),
       'notifications': notifications|default(0),
@@ -26,10 +26,13 @@
       'pendingFeedbacks': pendingFeedbacks|default(0)
   } %}
 
-  {# AQUI O SEU CONTEÚDO É INJETADO #}
+  {# ✅ Conteúdo principal da página #}
   <main class="admin-main">
     {% block content %}{% endblock %}
   </main>
+
+  {# ✅ Footer separado #}
+  {% include 'layouts/partials_admin/footer.twig' %}
 
   <div id="modalContainer" class="modal-container">
     <div id="modalOverlay" class="modal-overlay"></div>

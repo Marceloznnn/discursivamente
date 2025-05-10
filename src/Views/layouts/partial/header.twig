@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discursivamente - Header Moderno</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/layouts/header.css">
+</head>
+<body>
+<header id="site-header" class="site-header" role="banner">
+    <nav id="site-nav" class="site-nav" aria-label="Navegação principal">
+        <a href="/" class="logo-container" aria-label="Página inicial Discursivamente">
+            <img src="/assets/images/logo/logo.png" alt="Logo Discursivamente" class="site-logo">
+            <img src="/assets/images/logo/titulo.png" alt="Discursivamente" class="site-title">
+        </a>
+
+        <div class="nav-links-desktop">
+            <a href="/about" class="nav-link {% if current_page == 'about' %}active{% endif %}" aria-current="{% if current_page == 'about' %}page{% endif %}">
+                <i class="fas fa-info-circle nav-icon"></i>
+                <span>Sobre</span>
+            </a>
+
+            {% if session.user %}
+                {% macro dropdown(label, icon, pagePrefix, items) %}
+                    <div class="nav-dropdown">
+                        <button class="dropdown-toggle {% if current_page starts with pagePrefix %}active{% endif %}" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-{{ icon }} nav-icon"></i>
+                            <span>{{ label }}</span>
+                            <i class="fas fa-chevron-down dropdown-arrow"></i>
+                        </button>
+                        <div class="dropdown-menu" role="menu">
+                            {% for item in items %}
+                                <a href="{{ item.href }}" role="menuitem">{{ item.text }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endmacro %}
+
+                {{ _self.dropdown('Turmas', 'chalkboard-teacher', 'classes', [
+                    { href: '/dashboard/aluno', text: 'Painel do Aluno' },
+                    { href: '/curso', text: 'Explorar Cursos' }
+                ]) }}
+
+                {{ _self.dropdown('Compromissos', 'tasks', 'commitments', [
+                    { href: '/commitments/goals', text: 'Metas' }
+                ]) }}
+
+                {{ _self.dropdown('Comunidades', 'users', 'community', [
+                    { href: '/community/forums', text: 'Fóruns' },
+                    { href: '/community/clubs', text: 'Clubes' },
+                    { href: '/community/feed', text: 'Feed' }
+                ]) }}
+
+                <a href="/profile" class="nav-link profile-link {% if current_page == 'profile' %}active{% endif %}" aria-current="{% if current_page == 'profile' %}page{% endif %}">
+                    {% if session.user.avatar %}
+                        <img src="{{ session.user.avatar }}" alt="Avatar de {{ session.user.name }}" class="user-avatar">
+                    {% else %}
+                        <i class="fas fa-user-circle nav-icon user-avatar-icon"></i>
+                    {% endif %}
+                    <span>{{ session.user.name|default('Perfil') }}</span>
+                </a>
+            {% else %}
+                <div class="auth-buttons">
+                    <a href="/login" class="btn btn-secondary">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Entrar
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <button id="mobile-menu-toggle" class="mobile-menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-menu">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+
+    <div id="mobile-menu" class="mobile-menu" aria-hidden="true">
+        <div class="mobile-menu-header">
+            <span class="mobile-menu-title">Menu</span>
+            <button id="mobile-menu-close" class="mobile-menu-close" aria-label="Fechar menu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="mobile-nav-links">
+            <a href="/about" class="mobile-link {% if current_page == 'about' %}active{% endif %}">
+                <i class="fas fa-info-circle"></i> Sobre
+            </a>
+
+            {% if session.user %}
+                <div class="mobile-menu-section">
+                    <button class="mobile-menu-section-toggle" aria-expanded="false" aria-controls="mobile-section-turmas">
+                        <i class="fas fa-chalkboard-teacher"></i> Turmas <i class="fas fa-chevron-down arrow"></i>
+                    </button>
+                    <div id="mobile-section-turmas" class="mobile-menu-subsection">
+                        <a href="/dashboard/aluno" class="mobile-link">Painel do Aluno</a>
+                        <a href="/classes/explore" class="mobile-link">Explorar Turmas</a>
+                    </div>
+                </div>
+
+                <div class="mobile-menu-section">
+                     <button class="mobile-menu-section-toggle" aria-expanded="false" aria-controls="mobile-section-compromissos">
+                        <i class="fas fa-tasks"></i> Compromissos <i class="fas fa-chevron-down arrow"></i>
+                    </button>
+                    <div id="mobile-section-compromissos" class="mobile-menu-subsection">
+                        <a href="/commitments/goals" class="mobile-link">Metas</a>
+                    </div>
+                </div>
+
+                <div class="mobile-menu-section">
+                    <button class="mobile-menu-section-toggle" aria-expanded="false" aria-controls="mobile-section-comunidades">
+                        <i class="fas fa-users"></i> Comunidades <i class="fas fa-chevron-down arrow"></i>
+                    </button>
+                    <div id="mobile-section-comunidades" class="mobile-menu-subsection">
+                        <a href="/community/forums" class="mobile-link">Fóruns</a>
+                        <a href="/community/clubs" class="mobile-link">Clubes</a>
+                        <a href="/community/feed" class="mobile-link">Feed</a>
+                    </div>
+                </div>
+                <hr class="mobile-menu-divider">
+                <a href="/profile" class="mobile-link">
+                    {% if session.user.avatar %}
+                        <img src="{{ session.user.avatar }}" alt="Avatar" class="user-avatar mobile-avatar">
+                    {% else %}
+                        <i class="fas fa-user-circle"></i>
+                    {% endif %}
+                    Meu Perfil
+                </a>
+            {% else %}
+                <a href="/login" class="mobile-link"><i class="fas fa-sign-in-alt"></i> Entrar</a>
+            {% endif %}
+        </nav>
+    </div>
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+</header>
+
+{% block scripts %}
+  <script src="/assets/js/layouts/header.js" defer></script>
+{% endblock %}

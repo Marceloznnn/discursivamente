@@ -4,55 +4,68 @@
 
 {% block styles %}
     {# CSS específico para listagem de turmas do aluno #}
-    {# <link rel="stylesheet" href="/assets/css/classroom/aluno.css"> #}
 {% endblock %}
 
 {% block content %}
-    <div class="classroom-container">
+<main class="classroom-container">
+    <header>
         <h1>Turmas Disponíveis</h1>
+    </header>
 
-        <div class="filter-options">
-            <button class="btn filter active" data-filter="all">Todas</button>
-            <button class="btn filter" data-filter="enrolled">Matriculadas</button>
-            <button class="btn filter" data-filter="open">Abertas</button>
-            <button class="btn filter" data-filter="invited">Convites</button>
-        </div>
+    <section class="filter-options" aria-label="Filtrar turmas">
+        <button class="btn filter active" data-filter="all">Todas</button>
+        <button class="btn filter" data-filter="enrolled">Matriculadas</button>
+        <button class="btn filter" data-filter="open">Abertas</button>
+        <button class="btn filter" data-filter="invited">Convites</button>
+    </section>
 
+    <section class="turmas-list" aria-live="polite">
         {% if turmas is empty %}
             <div class="empty-state">
                 <p>Não há turmas disponíveis no momento.</p>
             </div>
         {% else %}
-            <div class="turmas-list">
-                {% for turma in turmas %}
-                    <div class="turma-card">
-                        <h3>{{ turma.nome }}</h3>
-                        <p class="description">{{ turma.descricao }}</p>
-                        <div class="meta">
-                            <span class="status {{ turma.status }}">{{ turma.status }}</span>
-                            <span class="privacidade">{{ turma.privacidade }}</span>
-                        </div>
-                        <div class="actions">
-                            <a href="#" class="btn">Ver Detalhes</a>
-                            <a href="#" class="btn primary">Ingressar</a>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
+            {% for turma in turmas %}
+            <article class="turma-card" data-status="{{ turma.status }}">
+                <h2>{{ turma.nome }}</h2>
+                <p class="description">{{ turma.descricao }}</p>
+                <div class="meta">
+                    <span class="status {{ turma.status }}">{{ turma.status|capitalize }}</span>
+                    <span class="privacidade">{{ turma.privacidade|capitalize }}</span>
+                </div>
+                <div class="actions">
+                    <a href="/classes/{{ turma.id }}" class="btn">Ver Detalhes</a>
+                    {% if turma.status == 'open' %}
+                        <a href="/classes/{{ turma.id }}/join" class="btn primary">Ingressar</a>
+                    {% elseif turma.status == 'invited' %}
+                        <a href="/classes/{{ turma.id }}/accept" class="btn primary">Aceitar Convite</a>
+                    {% endif %}
+                </div>
+            </article>
+            {% endfor %}
         {% endif %}
+    </section>
 
-        <div class="navigation-menu">
-            <h2>Navegação</h2>
-            <div class="buttons">
-                <a href="/" class="btn">Home</a>
-                <a href="/dashboard/aluno" class="btn">Dashboard</a>
-                <a href="/logout" class="btn">Sair</a>
-            </div>
-        </div>
-    </div>
+    <nav class="navigation-menu" aria-label="Navegação Rápida">
+        <a href="/" class="btn">Home</a>
+        <a href="/dashboard/aluno" class="btn">Dashboard</a>
+        <a href="/logout" class="btn btn-logout">Sair</a>
+    </nav>
+</main>
+
 {% endblock %}
 
 {% block scripts %}
-    {# JS específico para listagem de turmas do aluno #}
-    {# <script src="/assets/js/classroom/aluno.js"></script> #}
+<script>
+    document.querySelectorAll('.filter').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelector('.filter.active').classList.remove('active');
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+        document.querySelectorAll('.turma-card').forEach(card => {
+          card.style.display = (filter === 'all' || card.dataset.status === filter) ? '' : 'none';
+        });
+      });
+    });
+</script>
 {% endblock %}

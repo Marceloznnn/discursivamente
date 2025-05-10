@@ -2,24 +2,43 @@
 {% extends 'layouts/base.twig' %}
 {% block title %}Meu Perfil{% endblock %}
 
+{% block styles %}
+    <link rel="stylesheet" href="/assets/css/pages/profile/index.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+{% endblock %}
+
 {% block content %}
-<div class="container mx-auto py-8">
+<div class="container mx-auto py-8 mt-8">
   <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+    <!-- Header with avatar and user info -->
     <div class="flex items-center px-6 py-4 bg-gray-100">
-      <img class="w-24 h-24 rounded-full object-cover border-2 border-gray-300" src="{{ user.avatar ?: '/assets/default-avatar.png' }}" alt="Avatar de {{ user.name }}">
+      <div class="relative">
+        <img id="profile-avatar" class="w-24 h-24 rounded-full object-cover border-2 border-gray-300" src="{{ user.avatar ?: '/assets/default-avatar.png' }}" alt="Avatar de {{ user.name }}">
+        <!-- Botão para trocar foto -->
+        <form action="/profile/avatar" method="post" enctype="multipart/form-data" class="absolute bottom-0 right-0">
+          <label for="avatar-upload" class="cursor-pointer p-1 bg-white rounded-full shadow hover:bg-gray-200">
+            <i class="fas fa-camera"></i>
+            <input type="file" id="avatar-upload" name="avatar" accept="image/*" class="hidden" onchange="this.form.submit()">
+          </label>
+        </form>
+      </div>
       <div class="ml-4">
         <h2 class="text-2xl font-semibold text-gray-800">{{ user.name }}</h2>
         <p class="text-gray-600">{{ user.email }}</p>
       </div>
     </div>
+
+    <!-- Biografia -->
     <div class="px-6 py-4">
       <h3 class="text-lg font-medium text-gray-700 mb-2">Biografia</h3>
       <p class="text-gray-600 whitespace-pre-wrap">{{ user.bio ?: 'Ainda não adicionou uma biografia.' }}</p>
     </div>
-    <div class="px-6 py-4 bg-gray-50 text-right">
+
+    <!-- Ações: editar perfil e logout -->
+    <div class="px-6 py-4 bg-gray-50 flex justify-end space-x-4">
+      <a href="/logout" class="inline-block px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow">Sair</a>
       <a href="/profile/edit" class="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow">Editar Perfil</a>
     </div>
   </div>
 </div>
 {% endblock %}
-

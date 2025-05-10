@@ -1,68 +1,100 @@
 {% extends 'layouts/base.twig' %}
 
-{% block title %}Discursivamente - Dashboard Aluno{% endblock %}
+{% block title %}Discursivamente - Dashboard do Aluno{% endblock %}
 
 {% block styles %}
     {# CSS específico para dashboard do aluno #}
-    {# <link rel="stylesheet" href="/assets/css/dashboard/aluno.css"> #}
 {% endblock %}
 
 {% block content %}
-    <div class="dashboard-container">
-        <h1>Dashboard do Aluno</h1>
+<main class="dashboard-container">
+    <header class="dashboard-header">
+        <h1>Bem-vindo, {{ user.nome }}!</h1>
+        <p class="subheading">Aqui está seu panorama de estudos.</p>
+    </header>
 
+    <section aria-labelledby="summary-cards" class="summary-section">
+        <h2 id="summary-cards">Visão Geral</h2>
         <div class="summary-cards">
+            {% for card in [
+                { title: 'Turmas Matriculadas', value: dashboard.turmasMatriculadas, link: '/classes/aluno' },
+                { title: 'Atividades Pendentes', value: dashboard.atividadesPendentes, link: '/atividades/pendentes' },
+                { title: 'Feedbacks Recentes', value: dashboard.feedbacksRecentes, link: '/feedbacks' },
+                { title: 'Metas Pessoais', value: dashboard.metasPessoais, link: '/metas' }
+            ] %}
             <div class="card">
-                <h3>Turmas Matriculadas</h3>
-                <p class="number">{{ dashboard.turmasMatriculadas }}</p>
-                <a href="/classes/aluno" class="btn">Ver Turmas</a>
+                <h3>{{ card.title }}</h3>
+                <p class="number">{{ card.value }}</p>
+                <a href="{{ card.link }}" class="btn">Ver {{ card.title|lower }}</a>
             </div>
+            {% endfor %}
+        </div>
+    </section>
 
-            <div class="card">
-                <h3>Atividades Pendentes</h3>
-                <p class="number">{{ dashboard.atividadesPendentes }}</p>
-                <a href="#" class="btn">Ver Atividades</a>
+    <section aria-labelledby="performance" class="performance-section">
+        <h2 id="performance">Seu Desempenho</h2>
+        <div class="indicators">
+            <div class="indicator">
+                <h3>Média de Notas</h3>
+                <p class="value">{{ dashboard.indicadoresDesempenho.media_notas }}</p>
             </div>
-
-            <div class="card">
-                <h3>Feedbacks Recentes</h3>
-                <p class="number">{{ dashboard.feedbacksRecentes }}</p>
-                <a href="#" class="btn">Ver Feedbacks</a>
+            <div class="indicator">
+                <h3>Percentual de Entregas</h3>
+                <p class="value">{{ dashboard.indicadoresDesempenho.percentual_entregas }}%</p>
             </div>
-
-            <div class="card">
-                <h3>Metas Pessoais</h3>
-                <p class="number">{{ dashboard.metasPessoais }}</p>
-                <a href="#" class="btn">Ver Metas</a>
+            <div class="indicator">
+                <h3>Tempo Médio de Conclusão</h3>
+                <p class="value">{{ dashboard.indicadoresDesempenho.tempo_medio_conclusao }}h</p>
             </div>
         </div>
+    </section>
 
-        <div class="performance-indicators">
-            <h2>Seu Desempenho</h2>
-            <div class="indicators">
-                <div class="indicator">
-                    <h3>Média de Notas</h3>
-                    <p class="value">{{ dashboard.indicadoresDesempenho.media_notas }}</p>
-                </div>
-                <div class="indicator">
-                    <h3>Percentual de Entregas</h3>
-                    <p class="value">{{ dashboard.indicadoresDesempenho.percentual_entregas }}%</p>
-                </div>
-            </div>
-        </div>
+    <section aria-labelledby="upcoming-deadlines" class="deadlines-section">
+        <h2 id="upcoming-deadlines">Próximos Prazos</h2>
+        {% if dashboard.proximosPrazos is not empty %}
+        <ul class="deadline-list">
+            {% for item in dashboard.proximosPrazos %}
+            <li>
+                <strong>{{ item.titulo }}</strong> — entrega em {{ item.data_entrega|date("d/m/Y") }}
+                <a href="/atividades/{{ item.id }}" class="link">Ver atividade</a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>Você não tem prazos próximos. Continue se dedicando!</p>
+        {% endif %}
+    </section>
 
-        <div class="navigation-menu">
-            <h2>Navegação</h2>
-            <div class="buttons">
-                <a href="/" class="btn">Home</a>
-                <a href="/classes/aluno" class="btn">Minhas Turmas</a>
-                <a href="/logout" class="btn">Sair</a>
-            </div>
-        </div>
-    </div>
+    <section aria-labelledby="recent-forum" class="forum-section">
+        <h2 id="recent-forum">Discussões Recentes</h2>
+        {% if dashboard.topicosRecentes is not empty %}
+        <ul class="forum-list">
+            {% for topico in dashboard.topicosRecentes %}
+            <li>
+                <a href="/forum/topico/{{ topico.id }}">{{ topico.titulo }}</a>
+                <span class="meta">por {{ topico.autor }} em {{ topico.data|date("d/m/Y") }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>Sem novas discussões. Participe dos fóruns!</p>
+        {% endif %}
+    </section>
+
+    <nav aria-label="Navegação Rápida" class="navigation-menu">
+        <h2>Navegação Rápida</h2>
+        <ul class="nav-buttons">
+            <li><a href="/" class="btn">Home</a></li>
+            <li><a href="/classes/aluno" class="btn">Minhas Turmas</a></li>
+            <li><a href="/atividades" class="btn">Atividades</a></li>
+            <li><a href="/forum" class="btn">Fórum</a></li>
+            <li><a href="/perfil" class="btn">Meu Perfil</a></li>
+            <li><a href="/logout" class="btn btn-logout">Sair</a></li>
+        </ul>
+    </nav>
+</main>
 {% endblock %}
 
 {% block scripts %}
     {# JS específico para dashboard do aluno #}
-    {# <script src="/assets/js/dashboard/aluno.js"></script> #}
 {% endblock %}

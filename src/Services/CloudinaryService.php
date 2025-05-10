@@ -103,25 +103,26 @@ class CloudinaryService {
         return $this->uploadFile($filePath, $fileType, $folder);
     }
     
-    /**
-     * Deleta um arquivo do Cloudinary
-     * 
-     * @param string $publicId ID público do arquivo no Cloudinary
-     * @param string $fileType Tipo do arquivo ('image' ou 'video')
-     * @return array Resposta do Cloudinary
-     */
-    public function deleteFile($publicId, $fileType = 'image') {
-        $cloudinary = ($fileType === 'video') ? $this->cloudinaryVideos : $this->cloudinaryImages;
+   /**
+ * Deleta um arquivo do Cloudinary
+ *
+ * @param string $publicId ID público do arquivo no Cloudinary
+ * @param string $fileType Tipo do arquivo ('image' ou 'video')
+ * @return array Resposta do Cloudinary
+ */
+public function deleteFile($publicId) {
+    try {
+        $result = $this->cloudinaryImages->uploadApi()->destroy($publicId);
         
-        // Realiza a exclusão
-        $result = $cloudinary->uploadApi()->destroy($publicId, [
-            'resource_type' => $fileType
-        ]);
-
-        // Extrai a resposta e retorna como array
         return [
-            'result' => $result['result'],  // Retorna 'ok' ou 'not found'
-            'public_id' => $result['public_id'],  // ID do arquivo excluído
+            'result' => $result['result'],
+        ];
+    } catch (\Exception $e) {
+        return [
+            'result' => 'error',
+            'message' => $e->getMessage()
         ];
     }
+}
+
 }

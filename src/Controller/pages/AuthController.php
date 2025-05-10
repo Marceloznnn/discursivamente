@@ -52,9 +52,6 @@ class AuthController
             switch ($type) {
                 case 'admin':
                     $dest = '/admin'; break;
-                case 'instituicao':
-                case 'teacher':
-                case 'student':
                 default:
                     $dest = '/'; break;
             }
@@ -71,10 +68,14 @@ class AuthController
 
     // === REGISTRO ===
 
+
     public function register()
     {
         $this->log("Página de registro acessada");
-        echo $this->twig->render('auth/register.twig');
+        $prefillEmail = isset($_GET['email']) ? $_GET['email'] : '';
+        echo $this->twig->render('auth/register.twig', [
+            'prefillEmail' => $prefillEmail
+        ]);
     }
 
     public function registerPost()
@@ -89,7 +90,8 @@ class AuthController
         if (!$name || !$email || !$password) {
             $this->log("Registro falhou: campos vazios");
             echo $this->twig->render('auth/register.twig', [
-                'error' => 'Preencha todos os campos.'
+                'error' => 'Preencha todos os campos.',
+                'prefillEmail' => $email
             ]);
             return;
         }
@@ -97,7 +99,8 @@ class AuthController
         if ($this->userRepository->findByEmail($email)) {
             $this->log("Registro falhou: e-mail já existe");
             echo $this->twig->render('auth/register.twig', [
-                'error' => 'E-mail já cadastrado.'
+                'error' => 'E-mail já cadastrado.',
+                'prefillEmail' => $email
             ]);
             return;
         }
@@ -111,9 +114,6 @@ class AuthController
         switch ($type) {
             case 'admin':
                 $dest = '/admin'; break;
-            case 'instituicao':
-            case 'teacher':
-            case 'student':
             default:
                 $dest = '/'; break;
         }
@@ -176,6 +176,30 @@ class AuthController
         $this->log("Página 'Redefinir senha' acessada");
         echo $this->twig->render('auth/reset.twig');
     }
+
+    // Dentro de Controller\pages\AuthController
+
+    public function checkEmail()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            exit;
+        }
+
+        $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+        header('Content-Type: application/json; charset=utf-8');
+
+        if (!$email) {
+            http_response_code(400);
+            echo json_encode(['error' => 'E-mail inválido']);
+            exit;
+        }
+
+        $exists = $this->userRepository->findByEmail($email) !== null;
+        echo json_encode(['exists' => $exists]);
+        exit;
+    }
+
 
     // 4) Processa reset e, em caso de sucesso, redireciona para /
     public function resetPost()

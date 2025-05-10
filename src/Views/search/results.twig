@@ -1,0 +1,23 @@
+<h1>Resultados da busca por "{{ query }}"</h1>
+
+{% if users is not empty %}
+    <h2>Usuários</h2>
+    <ul>
+        {% for user in users %}
+            <li>{{ user.getName() }} - {{ user.getEmail() }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if classes is not empty %}
+    <h2>Turmas</h2>
+    <ul>
+        {% for turma in classes %}
+            <li>{{ turma.nome }} (Professor: {{ turma.professor_nome }})</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if users is empty and classes is empty %}
+    <p>Nenhum resultado encontrado.</p>
+{% endif %}

@@ -1,119 +1,506 @@
-{% extends 'layouts/base.twig' %}
-
-{% block styles %}
-    <link rel="stylesheet" href="/assets/css/pages/static/about.css">
-{% endblock %}
+ {% extends 'layouts/base.twig' %}
 
 {% block content %}
-<div id="about">
 
-    <section id="o-projeto">
-        <h2>O Projeto</h2>
-        <p>Através da leitura acadêmica, estudantes e pesquisadores acessam um universo de informações cruciais para o avanço do conhecimento. Reconhecendo o potencial das tecnologias digitais para enriquecer o aprendizado, este projeto visa desenvolver um Material Didático Digital (MDD) inovador para o ensino de leitura acadêmica sob uma perspectiva crítica-discursiva.</p>
-    </section>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discursivamente</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="stylesheet" href="/assets/css/pages/static/about.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
 
-    <section id="nossa-missao">
-        <h2>Nossa Missão</h2>
-        <p>Nossa missão é capacitar estudantes do Ensino Médio a desenvolverem habilidades de leitura acadêmica crítica e reflexiva, utilizando um Material Didático Digital interativo e engajador, que considere o contexto da cybercultura e a relevância dos gêneros acadêmicos no mundo digital.</p>
-    </section>
-
-    <section id="nossa-visao">
-        <h2>Nossa Visão</h2>
-        <p>Almejamos ser uma referência na produção de materiais didáticos digitais para o ensino de leitura acadêmica, contribuindo para a formação de cidadãos mais críticos, engajados e aptos a interagir com o conhecimento científico e acadêmico na era digital.</p>
-    </section>
-
-    <section id="justificativa">
-        <h2>Justificativa</h2>
-        <p>A leitura acadêmica desempenha um papel fundamental na formação intelectual e no desenvolvimento do pensamento crítico. As tecnologias digitais oferecem ferramentas poderosas para criar materiais educativos mais dinâmicos e acessíveis. Este projeto surge da necessidade de integrar essas tecnologias ao ensino da leitura acadêmica, preparando os estudantes para os desafios do ensino superior e do mundo profissional.</p>
-    </section>
-
-    <section id="como-funciona">
-        <h2>Nossa Abordagem</h2>
-        <p>Fundamentamos nosso trabalho na Análise de Discurso Crítica (Fairclough, 2003), que nos permite compreender a leitura como um processo ativo e influenciado por fatores socioculturais e políticos. Para o desenvolvimento do Material Didático Digital, seguimos as etapas propostas por Falkembach (2005) para a criação de material educacional digital: Análise e Planejamento, Modelagem, Implementação, Avaliação e Manutenção, e Distribuição.</p>
-    </section>
-
-    <section id="o-mdd">
-        <h2>O Material Didático Digital (MDD)</h2>
-        <p>O produto central deste projeto é um Material Didático Digital (MDD) especialmente desenvolvido para o ensino de leitura acadêmica. Este material será interativo, lúdico e adaptado ao universo digital, buscando engajar os estudantes do Ensino Médio e auxiliar os professores de Língua Portuguesa na abordagem de gêneros acadêmicos relevantes para a sua formação.</p>
-        <p>Este MDD incorpora aprendizados e aplicações da pesquisa de iniciação científica “Educação e Cyberespaço: o discurso sobre (a #) leitura no tiktok” (2023-2024), buscando conectar as práticas de leitura no ambiente digital com as exigências da leitura acadêmica.</p>
-    </section>
-
-    <section id="nossa-abordagem-pedagogica">
-        <h2>Nossa Abordagem Pedagógica</h2>
-        <p>Adotamos uma abordagem pedagógica que valoriza a leitura crítica e reflexiva, incentivando os estudantes a questionarem, analisarem e interpretarem os textos acadêmicos em seu contexto social e discursivo. Consideramos a influência da cybercultura nas práticas de leitura e buscamos integrar elementos digitais que tornem o aprendizado mais significativo e relevante para os jovens.</p>
-    </section>
-
-    <section id="resultados-esperados">
-        <h2>Resultados Esperados</h2>
-        <p>Esperamos que este projeto contribua para:</p>
-        <ul>
-            <li>Melhorar a compreensão e a interpretação de textos acadêmicos por parte dos estudantes do Ensino Médio.</li>
-            <li>Desenvolver habilidades de análise crítica do discurso acadêmico.</li>
-            <li>Fornecer aos professores de Língua Portuguesa um recurso didático digital inovador e eficaz.</li>
-            <li>Estimular o interesse pela leitura acadêmica no contexto da cultura digital.</li>
-            <li>Promover uma maior interação dos estudantes com os gêneros acadêmicos relevantes para o seu futuro acadêmico e profissional.</li>
-        </ul>
-    </section>
-
-    <section id="nossa-equipe">
-        <h2>Nossa Equipe</h2>
-        <p>Apresentamos os membros principais que dedicam seu conhecimento e experiência a este projeto:</p>
-        <div class="membros-lista">
-            <div class="membro">
-                <h3>[Nome do Membro 1]</h3>
-                <p>Função no Projeto</p>
-                <p>[Breve descrição da experiência e expertise]</p>
-                </div>
-            <div class="membro">
-                <h3>[Nome do Membro 2]</h3>
-                <p>Função no Projeto</p>
-                <p>[Breve descrição da experiência e expertise]</p>
+    <!-- Banner Principal -->
+    <section class="banner">
+        <div class="container">
+            <div class="banner-content">
+                <h2>Análise de Discurso Crítica e Educação</h2>
+                <p>Fortalecendo o ensino de leitura acadêmica através de uma perspectiva crítica-discursiva</p>
+                <div class="banner-buttons">
+                    <a href="#repositorio" class="btn-primary">Acessar Recursos</a>
+                    <a href="#sobre" class="btn-secondary">Saiba Mais</a>
                 </div>
             </div>
+        </div>
     </section>
 
-    <section id="membros">
-        <h2>Membros</h2>
-        <p>Contamos com a valiosa participação dos seguintes estudantes e pesquisadores:</p>
-        <ul class="membros-lista-nomes">
-            <li>[Nome do Membro 3] - [Breve Contribuição]</li>
-            <li>[Nome do Membro 4] - [Breve Contribuição]</li>
-            </ul>
-    </section>
-
-    <section id="colaboradores">
-        <h2>Colaboradores</h2>
-        <p>Agradecemos a colaboração de:</p>
-        <ul class="colaboradores-lista">
-            <li>[Nome do Colaborador 1] - [Natureza da Colaboração]</li>
-            <li>[Nome do Colaborador 2] - [Natureza da Colaboração]</li>
-            </ul>
-    </section>
-
-    <section id="nossos-parceiros">
-        <h2>Nossos Parceiros</h2>
-        <p>Este projeto conta com a parceria de:</p>
-        <div class="parceiros-lista">
-            <div class="parceiro">
-                <h3>[Nome do Parceiro 1]</h3>
-                <p>[Breve descrição da parceria]</p>
+    <!-- Seção Sobre -->
+    <section id="sobre" class="sobre">
+        <div class="container">
+            <div class="section-header">
+                <h2>Sobre o Projeto</h2>
+                <div class="divider"></div>
+            </div>
+            <div class="sobre-content">
+                <div class="sobre-text">
+                    <p class="destaque">O projeto Discursivamente surge como um repositório interativo para a publicação de Objetos Digitais de Aprendizagem, Materiais Didáticos Digitais e Projetos de letramento em perspectiva crítica.</p>
+                    
+                    <p>O termo "Discursivamente" é a união de "discurso" (referência à Análise de Discurso Crítica) e "mente" (pensamento crítico e reflexão). Com isso queremos dizer que toda mente é discursiva, portanto, não há visão de mundo que não seja atravessada por discursos, não existe leitura e escrita neutras, todo sujeito é permeado por ideologias.</p>
+                    
+                    <p>Através da leitura acadêmica, os estudantes e pesquisadores têm acesso a uma ampla gama de informações, teorias e descobertas que contribuem para o avanço do conhecimento em diferentes áreas de estudo. Sabendo disso e considerando que os recursos oferecidos pelas tecnologias digitais possibilitam criar materiais educativos cada vez mais lúdicos e interativos, esta pesquisa objetiva desenvolver um Material Didático Digital (MDD) para o ensino de leitura acadêmica em uma perspectiva crítica-discursiva.</p>
+                    
+                    <p>Diante dos índices negativos em relação à leitura e escrita no estado do Maranhão, marcado por pesquisas como o Índice de Desenvolvimento da Educação Básica (IDEB), que coloca a região entre os piores do país no que se refere ao ensino-aprendizagem de língua portuguesa, buscamos investigar como a Análise de Discurso Crítica (ADC) pode contribuir para o ensino de leitura e escrita na educação básica.</p>
+                </div>
+                <div class="sobre-identidade">
+                    <h3>Nossa Identidade Visual</h3>
+                    <div class="identidade-visual">
+                        <img src="/assets/images/partners/indentidadevisual.jpg" alt="Identidade Visual do Projeto Discursivamente">
+                        <p>A identidade visual do projeto representa a relação entre discurso e mente através de um símbolo de cérebro composto por balões de diálogo, representando os discursos e, por conseguinte, o modo de ler o mundo de cada indivíduo. O nome "Discursivamente" aparece em uma tipografia cursiva original, elaborada especificamente para o projeto.</p>
+                    </div>
                 </div>
             </div>
+        </div>
     </section>
 
-    <section id="apoio">
-        <h2>Apoio</h2>
-        <p>Este projeto é realizado com o apoio de:</p>
-        <ul class="apoio-lista">
-            <li>[Nome da Instituição/Organização de Apoio 1]</li>
-            </ul>
+    <!-- Seção Objetivos -->
+    <section id="objetivos" class="objetivos">
+        <div class="container">
+            <div class="section-header">
+                <h2>Objetivos</h2>
+                <div class="divider"></div>
+            </div>
+            <div class="objetivos-content">
+                <div class="objetivo-principal">
+                    <h3>Objetivo Geral</h3>
+                    <p>Desenvolver um Material Didático Digital (MDD) para o ensino de leitura acadêmica em uma perspectiva crítica-discursiva, baseado na Análise de Discurso Crítica (ADC).</p>
+                </div>
+                <div class="objetivos-especificos">
+                    <h3>Objetivos Específicos</h3>
+                    <ul>
+                        <li>Criar um repositório interativo para a publicação de Objetos Digitais de Aprendizagem;</li>
+                        <li>Disponibilizar Materiais Didáticos Digitais para professores e alunos;</li>
+                        <li>Desenvolver Projetos de letramento em perspectiva crítica;</li>
+                        <li>Fortalecer a relação entre linguística e educação básica;</li>
+                        <li>Promover o ensino e a aprendizagem com base em evidências científicas;</li>
+                        <li>Estimular a intelecção de gêneros acadêmicos no Ensino Médio.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <section id="contato">
-        <h2>Contato</h2>
-        <p>Para mais informações sobre o projeto, entre em contato conosco através de:</p>
-        <p>Email: [Seu Email]</p>
-        </section>
+    <!-- Seção Fundamentação Teórica -->
+    <section id="fundamentacao" class="fundamentacao">
+        <div class="container">
+            <div class="section-header">
+                <h2>Fundamentação Teórica</h2>
+                <div class="divider"></div>
+            </div>
+            <div class="fundamentacao-content">
+                <div class="fundamentacao-item">
+                    <h3>Análise de Discurso Crítica (ADC)</h3>
+                    <p>Temos como base teórico-metodológica a Análise de Discurso Crítica (FAIRCLOUGH, 2003) que fornece uma base conceitual valiosa para entender a importância da leitura crítica e reflexiva em diferentes espaços, incluindo o meio acadêmico, pois considera a leitura como processo ativo e crítico de interpretação e compreensão do discurso, enfatizando que o ato de ler não ocorre em um vácuo, mas é influenciada por fatores sociais, culturais e políticos que moldam a produção e a recepção do texto.</p>
+                </div>
+                <div class="fundamentacao-item">
+                    <h3>Material Educacional Digital</h3>
+                    <p>Nos alicerçamos nos estudos de Falkembach (2005) sobre o processo de elaboração de material educacional digital, que leva em conta cinco etapas, quais sejam: 1. Análise e Planejamento; 2. Modelagem; 3. Implementação; 4. Avaliação e manutenção e 5. Distribuição.</p>
+                </div>
+                <div class="fundamentacao-item">
+                    <h3>Educação e Cyberespaço</h3>
+                    <p>Para construção do MDD iremos considerar os resultados da pesquisa de iniciação científica intitulada "Educação e Cyberespaço: o discurso sobre (a #) leitura no tiktok", realizada entre 2023-2024, buscando compartilhar e aplicar o que foi apreendido, a partir de um produto educacional digital.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
+    <!-- Seção Metodologia -->
+    <section id="metodologia" class="metodologia">
+        <div class="container">
+            <div class="section-header">
+                <h2>Metodologia</h2>
+                <div class="divider"></div>
+            </div>
+            <div class="metodologia-content">
+                <p>Esta pesquisa se caracteriza quanto à natureza como aplicada, quantos aos objetivos como descritiva e intervencionista, quanto aos meios e procedimentos técnicos como pesquisa-ação e quanto à abordagem como qualitativa.</p>
+                
+                <div class="etapas">
+                    <h3>Etapas do Desenvolvimento do Material Didático Digital</h3>
+                    <div class="etapas-grid">
+                        <div class="etapa">
+                            <div class="etapa-numero">1</div>
+                            <h4>Análise e Planejamento</h4>
+                            <p>Levantamento de necessidades e definição dos objetivos pedagógicos.</p>
+                        </div>
+                        <div class="etapa">
+                            <div class="etapa-numero">2</div>
+                            <h4>Modelagem</h4>
+                            <p>Estruturação do conteúdo e definição da interface do material.</p>
+                        </div>
+                        <div class="etapa">
+                            <div class="etapa-numero">3</div>
+                            <h4>Implementação</h4>
+                            <p>Desenvolvimento do material digital conforme planejado.</p>
+                        </div>
+                        <div class="etapa">
+                            <div class="etapa-numero">4</div>
+                            <h4>Avaliação e Manutenção</h4>
+                            <p>Teste e aprimoramento do material produzido.</p>
+                        </div>
+                        <div class="etapa">
+                            <div class="etapa-numero">5</div>
+                            <h4>Distribuição</h4>
+                            <p>Disponibilização do material para o público-alvo.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="areas-atuacao">
+                    <h3>Áreas de Atuação</h3>
+                    <ul class="areas-grid">
+                        <li>Teorias da Aprendizagem</li>
+                        <li>Didática e metodologias de ensino</li>
+                        <li>Teorias do Currículo</li>
+                        <li>Políticas e ideologias educacionais</li>
+                        <li>Avaliação da aprendizagem</li>
+                        <li>História do ensino</li>
+                        <li>Formação inicial, continuada e identidade docente</li>
+                        <li>Letramentos</li>
+                        <li>Tecnologias educacionais</li>
+                        <li>Ensino e aprendizagem de leitura e escrita</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Equipe -->
+    <section id="equipe" class="equipe">
+        <div class="container">
+            <div class="section-header">
+                <h2>Nossa Equipe</h2>
+                <div class="divider"></div>
+            </div>
+            <div class="equipe-content">
+                <div class="coordenacao">
+                    <h3>Coordenação</h3>
+                    <div class="membro-destaque">
+                        <div class="membro-foto">
+                            <img src="/assets/images/partners/carloseduardo.jpg" alt="Prof. Dr. Carlos Eduardo de Paula Santos">
+                        </div>
+                        <div class="membro-info">
+                            <h4>Prof. Dr. Carlos Eduardo de Paula Santos</h4>
+                            <p class="membro-cargo">Coordenador Geral</p>
+                            <p>Professor-pesquisador do Programa de Pós-graduação em Letras da Universidade Federal do Piauí (PPGEL-UFPI).</p>
+                            
+<div class="membro-redes">
+  <a href="https://lattes.cnpq.br/SEU_ID_LATTES" 
+     class="rede-social" 
+     target="_blank" 
+     rel="noopener noreferrer" 
+     aria-label="Currículo Lattes do Prof. Dr. Carlos Eduardo">
+    <i class="fas fa-graduation-cap"></i> Lattes
+  </a>
+  <a href="https://www.researchgate.net/profile/SEU_NOME" 
+     class="rede-social" 
+     target="_blank" 
+     rel="noopener noreferrer" 
+     aria-label="Perfil ResearchGate do Prof. Dr. Carlos Eduardo">
+    <i class="fab fa-researchgate"></i> ResearchGate
+  </a>
+  <a href="https://orcid.org/SEU_ORCID_ID" 
+     class="rede-social" 
+     target="_blank" 
+     rel="noopener noreferrer" 
+     aria-label="Perfil ORCID do Prof. Dr. Carlos Eduardo">
+    <i class="fab fa-orcid"></i> ORCID
+  </a>
 </div>
+
+                        </div>
+                    </div>
+                </div>
+                
+              <div class="membros">
+  <h3>Membros Pesquisadores</h3>
+  <div class="membros-grid">
+    <div class="membro">
+      <img src="/assets/images/partners/anapatricia.png" alt="Ana Patrícia Sá Martins">
+      <h4>Ana Patrícia Sá Martins</h4>
+      <p class="bio">
+        Doutora em Linguística Aplicada pela Universidade do Vale do Rio dos Sinos
+         Graduada em Letras Licenciatura Plena em Espanhol e em História Licenciatura. Possui  especialização em Língua Portuguesa. É pesquisadora Associada na Associação Nacional de Pós-Graduação e Pesquisa em Educação (ANPEd), na Associação Brasileira de Linguística Aplicada (ALAB), bem como a Associação Brasileira de Linguística (ABRALIN).
+      </p>
+    </div>
+    <div class="membro">
+      <img src="/assets/images/partners/joseribamar.png" alt="José Ribamar Lopes Batista Júnior">
+      <h4>José Ribamar Lopes Batista Júnior</h4>
+      <p class="José Ribamar Lopes Batista Júnior</p>
+      <p class="bio">
+        Doutor e Mestre em Línguas pela Universidade de Brasília. É membro do Grupo de Estudos Linguísticos e Literários do Nordeste (GELNE). Professor do ensino básico, técnico e tecnológico da Universidade Federal do Piauí (UFPI), fundador e coordenador do Laboratório Experimental de Ensino e Pesquisa em Leitura e Produção Textual (LPT/CNPq) do Colégio Técnico de Floriano (CTF/UFPI). 
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="alunos">
+  <h3>Alunos Pesquisadores</h3>
+  <div class="alunos-grid">
+    <div class="aluno">
+      <img src="/assets/images/partners/marcelo.jpg" alt="Pedro Santos">
+      <h4>João Marcelo</h4>
+      <p class="status">Desenvolvedor</p>
+      <p class="bio">
+        estudante do Instituto Federal do Maranhão - Campus Codó-MA, cursando o ensino médio técnico em informática e programador do site.
+      </p>
+    </div>
+    <div class="aluno">
+      <img src="/assets/images/partners/beatriztorres.png" alt="Beatriz Torres Silva">
+      <h4>Beatriz Torres Silva</h4>
+      <p class="bio">
+        estudante do Instituto Federal do Maranhão - Campus Codó-MA, cursando o ensino médio técnico em informática e pesquisadora na área da Análise de Discurso Crítica. Auxiliar no planejamento e na pesquisa para o desenvolvimento do site. 
+      </p>
+    </div>
+    <div class="aluno">
+      <img src="/assets/images/partners/wanda.png" alt="Wanda Bezerra Silva">
+      <h4>Wanda Bezerra Silva</h4>
+      <p class="bio">
+        estudante do Instituto Federal do Maranhão - Campus Codó-MA, cursando o ensino médio técnico em informática e pesquisadora na área da Análise de Discurso Crítica. Auxiliar no planejamento e na pesquisa para o desenvolvimento do site.
+
+      </p>
+    </div>
+    <div class="aluno">
+      <img src="/assets/images/partners/nicole.png" alt="Nicole Ketelly da Silva Souza">
+      <h4>Nicole Ketelly da Silva Souza</h4>
+      <p class="status">Doutoranda em Linguística</p>
+      <p class="bio">
+        estudante do Instituto Federal do Maranhão - Campus Codó-MA, cursando o ensino médio técnico em informática e pesquisadora na área da Análise de Discurso Crítica. Auxiliar no planejamento e na pesquisa para o desenvolvimento do site. 
+      </p>
+    </div>
+  </div>
+</div>
+<!-- Seção Parceiros -->
+<section id="parceiros" class="parceiros">
+    <div class="container">
+        <div class="section-header">
+            <h2>Parceiros e Colaboradores</h2>
+            <div class="divider"></div>
+        </div>
+        <div class="parceiros-content">
+            <div class="instituicoes">
+                <h3>Instituições Parceiras</h3>
+                <div class="instituicoes-grid">
+                    <a href="https://lptacademico.me/sobre-2/" class="partner-link" aria-label="LPT ACADÊMICO">
+                        <div class="instituicao">
+                            <img src="/assets/images/partners/lpt.png" alt="UFPI">
+                            <h4>LPT ACADÊMICO</h4>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="apoiadores">
+                <h3>Apoiadores</h3>
+                <div class="apoiadores-grid">
+                    <a href="https://lptextual.me/necril/" class="partner-link" aria-label="Necrio">
+                        <div class="apoiador">
+                            <img src="/assets/images/partners/necril.png" alt="Necril">
+                            <h4>Necril</h4>
+                        </div>
+                    </a>
+                    <a href="https://www.fapema.br/" class="partner-link" aria-label="Fapema">
+                        <div class="apoiador">
+                            <img src="/assets/images/partners/fapema.png" alt="Fapema">
+                            <h4>Fapema</h4>
+                        </div>
+                    </a>
+                    <a href="https://ppgel.ufpi.br/" class="partner-link" aria-label="ppgel">
+                        <div class="apoiador">
+                            <img src="/assets/images/partners/ppgel.png" alt="PPGEL">
+                            <h4>PPGEL</h4>
+                        </div>
+                    </a>
+                    <a href="https://www.ifpi.edu.br/" class="partner-link" aria-label="Instituto Federal do Piauí">
+                        <div class="apoiador">
+                            <img src="/assets/images/partners/ifpi.png" alt="IFPI">
+                            <h4>IFPI</h4>
+                        </div>
+                    </a>
+                    <a href="https://ppgel.ufpi.br/" class="partner-link" aria-label="Universidade Federal do Piauí">
+                        <div class="apoiador">
+                            <img src="/assets/images/partners/ufpi.png" alt="UFPI">
+                            <h4>UFPI</h4>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- Seção Repositório -->
+    <section id="repositorio" class="repositorio">
+        <div class="container">
+            <div class="section-header">
+                <h2>Repositório</h2>
+                <div class="divider"></div>
+            </div>
+            <div class="repositorio-content">
+                <p class="destaque">Nosso site serve como repositório de atividades, cursos, sequências didáticas, planos de aula, oficinas, jogos e demais produtos pedagógicos que sejam fruto de reflexão-ação-reflexão, mediante os pressupostos e princípios críticos.</p>
+                
+                <div class="recursos">
+                    <h3>Recursos Disponíveis</h3>
+                    <div class="recursos-grid">
+                        <div class="recurso">
+                            <div class="recurso-icone">
+                                <img src="/api/placeholder/60/60" alt="Ícone Biblioteca Virtual">
+                            </div>
+                            <h4>Biblioteca Virtual</h4>
+                            <p>Acesso a artigos, teses e dissertações sobre ADC e ensino.</p>
+                            <a href="#" class="btn-recurso">Acessar</a>
+                        </div>
+                        <div class="recurso">
+                            <div class="recurso-icone">
+                                <img src="/api/placeholder/60/60" alt="Ícone Materiais Didáticos">
+                            </div>
+                            <h4>Materiais Didáticos</h4>
+                            <p>Materiais Didáticos Digitais para o ensino de leitura acadêmica.</p>
+                            <a href="#" class="btn-recurso">Acessar</a>
+                        </div>
+                        <div class="recurso">
+                            <div class="recurso-icone">
+                                <img src="/api/placeholder/60/60" alt="Ícone Planos de Aula">
+                            </div>
+                            <h4>Planos de Aula</h4>
+                            <p>Planos de aula elaborados com base na ADC.</p>
+                            <a href="#" class="btn-recurso">Acessar</a>
+                        </div>
+                        <div class="recurso">
+                            <div class="recurso-icone">
+                                <img src="/api/placeholder/60/60" alt="Ícone Jogos Educativos">
+                            </div>
+                            <h4>Jogos Educativos</h4>
+                            <p>Jogos educativos para o ensino de leitura e escrita.</p>
+                            <a href="#" class="btn-recurso">Acessar</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="publicar">
+                    <h3>Publicar Recursos</h3>
+                    <p>Você é professor-pesquisador e tem interesse em publicar recursos pedagógicos com base na ADC? Entre em contato conosco!</p>
+                    <a href="#contato" class="btn-publicar">Saiba Como Publicar</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Resultados Esperados -->
+    <section id="resultados" class="resultados">
+        <div class="container">
+            <div class="section-header">
+                <h2>Resultados Esperados</h2>
+                <div class="divider"></div>
+            </div>
+            <div class="resultados-content">
+                <p class="destaque">Espera-se que o site fortaleça as ações que relacionam ADC e ensino, bem como a relação entre linguística e educação básica de modo que o ensino e a aprendizagem a cada dia mais se façam com base em evidências científicas e não por meio de repetições comportamentais sem fundamento.</p>
+                
+                <div class="impactos">
+                    <h3>Impactos Esperados</h3>
+                    <ul class="impactos-lista">
+                        <li>
+                            <div class="impacto-icone">
+                                <img src="/api/placeholder/40/40" alt="Ícone Impacto 1">
+                            </div>
+                            <div class="impacto-texto">
+                                <h4>Melhoria nos índices de leitura e escrita</h4>
+                                <p>Contribuir para a melhoria dos índices de desenvolvimento da educação básica no estado do Maranhão, especialmente no que se refere ao ensino-aprendizagem de língua portuguesa.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="impacto-icone">
+                                <img src="/api/placeholder/40/40" alt="Ícone Impacto 2">
+                            </div>
+                            <div class="impacto-texto">
+                                <h4>Formação de leitores críticos</h4>
+                                <p>Formar leitores críticos capazes de identificar discursos e ideologias presentes nos textos, desenvolvendo a "Consciência Linguística Crítica".</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="impacto-icone">
+                                <img src="/api/placeholder/40/40" alt="Ícone Impacto 3">
+                            </div>
+                            <div class="impacto-texto">
+                                <h4>Fortalecimento da pesquisa acadêmica</h4>
+                                <p>Fortalecer a pesquisa acadêmica na interface entre linguística e educação, contribuindo para o avanço do conhecimento nessa área.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="impacto-icone">
+                                <img src="/api/placeholder/40/40" alt="Ícone Impacto 4">
+                            </div>
+                            <div class="impacto-texto">
+                                <h4>Aplicação pedagógica das ciências da linguagem</h4>
+                                <p>Promover aplicações pedagógicas das ciências da linguagem em perspectiva crítica, aproximando a teoria da prática docente.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Contato -->
+    <section id="contato" class="contato">
+        <div class="container">
+            <div class="section-header">
+                <h2>Contato</h2>
+                <div class="divider"></div>
+            </div>
+            <div class="contato-content">
+                <div class="contato-info">
+                    <h3>Entre em Contato</h3>
+                    <ul class="contato-lista">
+                        <li>
+                            <span class="contato-icone">📧</span>
+                            <span class="contato-texto">contato@discursivamente.com.br</span>
+                        </li>
+                        <li>
+                            <span class="contato-icone">📱</span>
+                            <span class="contato-texto">(98) 99999-9999</span>
+                        </li>
+                        <li>
+                            <span class="contato-icone">📍</span>
+                            <span class="contato-texto">Universidade Federal do Piauí, Campus Ministro Petrônio Portella, Teresina - PI</span>
+                        </li>
+                    </ul>
+                    <div class="redes-sociais">
+                        <h4>Siga-nos</h4>
+                        <div class="redes-icons">
+                            <a href="#" class="rede-icon">FB</a>
+                            <a href="#" class="rede-icon">IG</a>
+                            <a href="#" class="rede-icon">YT</a>
+                            <a href="#" class="rede-icon">TW</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="contato-form">
+                    <h3>Envie uma Mensagem</h3>
+                    <form>
+                        <div class="form-group">
+                            <label for="nome">Nome</label>
+                            <input type="text" id="nome" name="nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">E-mail</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="assunto">Assunto</label>
+                            <input type="text" id="assunto" name="assunto" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="mensagem">Mensagem</label>
+                            <textarea id="mensagem" name="mensagem" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn-enviar">Enviar Mensagem</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
 {% endblock %}

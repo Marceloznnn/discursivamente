@@ -1,0 +1,92 @@
+{% extends 'layouts/base.twig' %}
+
+{% block styles %}
+  <link rel="stylesheet" href="/assets/css/pages/curso/detail.css">
+{% endblock %}
+
+{% block content %}
+<div class="course-detail">
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="breadcrumb">
+    <ul>
+      <li><a href="/curso">Cursos</a></li>
+      <li>/</li>
+      <li>{{ course.title }}</li>
+    </ul>
+  </nav>
+
+  <!-- Header do Curso -->
+  <header class="course-header">
+    <h1>{{ course.title }}</h1>
+    <a href="/curso" class="btn-back">← Voltar</a>
+  </header>
+
+  <!-- Imagem de capa -->
+  {% if course.coverImage %}
+    <div class="cover-image">
+      <img src="{{ course.coverImage }}" alt="Capa de {{ course.title }}">
+    </div>
+  {% endif %}
+
+  <!-- Info rápida -->
+  <div class="quick-info">
+    <div><span>Status:</span> {{ course.status|capitalize }}</div>
+    <div><span>Preço:</span> {{ course.getFormattedPrice() }}</div>
+    <div><span>Inscrição:</span> {{ course.enrollmentMethod|capitalize }}</div>
+    <div><span>Membros:</span> {{ course.memberCount }}</div>
+  </div>
+
+  <!-- Seções de descrição -->
+  <div class="sections">
+    {% if course.shortDescription %}
+      <section>
+        <h2>Descrição Curta</h2>
+        <p>{{ course.shortDescription }}</p>
+      </section>
+    {% endif %}
+
+    {% if course.longDescription %}
+      <section>
+        <h2>Descrição Longa</h2>
+        <p>{{ course.longDescription }}</p>
+      </section>
+    {% endif %}
+
+    {% if course.courseRequirements %}
+      <section>
+        <h2>Requisitos</h2>
+        <p>{{ course.courseRequirements }}</p>
+      </section>
+    {% endif %}
+
+    {% if course.learningObjectives %}
+      <section>
+        <h2>Objetivos de Aprendizagem</h2>
+        <p>{{ course.learningObjectives }}</p>
+      </section>
+    {% endif %}
+  </div>
+
+  <!-- Ações -->
+  <div class="actions">
+    {% if userId and not isMember and course.enrollmentMethod == 'open' %}
+      <form action="/curso/{{ course.id }}/membros" method="post">
+        <button type="submit" class="btn-primary">Entrar no curso</button>
+      </form>
+    {% elseif userId and isMember %}
+      <p class="enrolled-note">Você já está matriculado neste curso.</p>
+    {% endif %}
+
+    <div class="admin-actions">
+      <a href="/curso/{{ course.id }}/edit" class="btn-secondary">Editar</a>
+      <form action="/curso/{{ course.id }}/delete" method="post" onsubmit="return confirm('Confirma exclusão deste curso?');">
+        <button type="submit" class="btn-danger">Excluir</button>
+      </form>
+    </div>
+
+    <a href="/curso/{{ course.id }}/membros" class="btn-detail">Ver Membros</a>
+  </div>
+
+</div>
+{% endblock %}

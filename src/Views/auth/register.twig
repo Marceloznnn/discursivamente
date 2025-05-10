@@ -1,7 +1,7 @@
 {% extends 'layouts/base.twig' %}
 
 {% block styles %}
-    <link rel="stylesheet" href="/assets/css/pages/auth/register.css">
+    <link rel="stylesheet" href="/assets/css/pages/auth/auth.css">
 {% endblock %}
 
 {% block content %}
@@ -17,8 +17,12 @@
                 <i class="icon-warning"></i>
                 <div id="alert-content" class="alert-content">
                     <strong>Erro no cadastro:</strong> {{ error }}
-                    {% if error == "E-mail já cadastrado" %}
-                        <p id="alert-help">Este e-mail já está em uso. <a id="link-login" href="/login">Faça login</a> ou <a id="link-forgot" href="/forgot-password">recupere sua senha</a>.</p>
+                    {% if error == "E-mail já cadastrado." %}
+                        <p id="alert-help">
+                            Este e-mail já está em uso.
+                            <a id="link-login" href="/login">Faça login</a> ou
+                            <a id="link-forgot" href="/forgot-password">recupere sua senha</a>.
+                        </p>
                     {% endif %}
                 </div>
             </div>
@@ -29,7 +33,14 @@
                 <label for="name">Nome completo</label>
                 <div id="input-name" class="input-with-icon">
                     <i class="icon-user"></i>
-                    <input type="text" id="name" name="name" required placeholder="Seu nome completo">
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        required
+                        placeholder="Seu nome completo"
+                        value="{{ name|default('') }}"
+                    >
                 </div>
             </div>
 
@@ -37,18 +48,36 @@
                 <label for="email">E-mail</label>
                 <div id="input-email" class="input-with-icon">
                     <i class="icon-mail"></i>
-                    <input type="email" id="email" name="email" required placeholder="seu@email.com">
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        required
+                        placeholder="seu@email.com"
+                        {% if prefillEmail is defined and prefillEmail %}
+                            value="{{ prefillEmail }}"
+                            disabled
+                        {% else %}
+                            value="{{ email|default('') }}"
+                        {% endif %}
+                    >
                 </div>
+                {% if prefillEmail is defined and prefillEmail %}
+                    <button type="button" id="change-email" class="btn small">Alterar e-mail</button>
+                {% endif %}
             </div>
 
             <div id="group-password" class="form-group">
                 <label for="password">Senha</label>
                 <div id="input-password" class="input-with-icon">
                     <i class="icon-lock"></i>
-                    <input type="password" id="password" name="password" required placeholder="••••••••">
-                    <button type="button" id="toggle-password" class="toggle-password" aria-label="Mostrar senha">
-                        <i class="icon-eye"></i>
-                    </button>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        required
+                        placeholder="••••••••"
+                    >
                 </div>
             </div>
 
@@ -56,7 +85,13 @@
                 <label for="confirm-password">Confirmar Senha</label>
                 <div id="input-confirm-password" class="input-with-icon">
                     <i class="icon-lock"></i>
-                    <input type="password" id="confirm-password" name="confirm_password" required placeholder="••••••••">
+                    <input
+                        type="password"
+                        id="confirm-password"
+                        name="confirm_password"
+                        required
+                        placeholder="••••••••"
+                    >
                 </div>
             </div>
 
@@ -84,5 +119,28 @@
 {% endblock %}
 
 {% block scripts %}
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // Toggle de visibilidade da senha
+        const toggleBtn = document.getElementById('toggle-password');
+        const pwdInput = document.getElementById('password');
+        toggleBtn.addEventListener('click', () => {
+          const isPwd = pwdInput.type === 'password';
+          pwdInput.type = isPwd ? 'text' : 'password';
+          toggleBtn.querySelector('i').classList.toggle('icon-eye-off');
+        });
+
+        // Botão para alterar e-mail pré-preenchido
+        const changeBtn = document.getElementById('change-email');
+        const emailInput = document.getElementById('email');
+        if (changeBtn) {
+          changeBtn.addEventListener('click', () => {
+            emailInput.disabled = false;
+            emailInput.focus();
+            changeBtn.remove();
+          });
+        }
+      });
+    </script>
     <script src="/assets/js/pages/auth/auth.js"></script>
 {% endblock %}

@@ -1,304 +1,298 @@
 {% extends 'layouts/base.twig' %}
 
-{% block title %}Discursivamente - Portal de Aprendizado e Desenvolvimento Intelectual{% endblock %}
+ {% block styles %}
+     <link rel="stylesheet" href="/assets/css/pages/home/index.css">
+ {% endblock %}
 
-{% block meta %}
-    <meta name="description" content="Discursivamente é sua plataforma completa para cursos online, eventos educacionais e desenvolvimento intelectual. Aprenda, compartilhe e cresça com nossa comunidade.">
-    <meta name="keywords" content="cursos online, eventos educacionais, aprendizado, desenvolvimento intelectual, comunidade acadêmica">
-    <meta property="og:title" content="Discursivamente - Portal de Aprendizado">
-    <meta property="og:description" content="Sua plataforma completa para cursos online e desenvolvimento intelectual.">
-    <meta property="og:image" content="/assets/images/social-share.jpg">
-    <meta property="og:url" content="{{ current_url() }}">
-    <meta name="twitter:card" content="summary_large_image">
-    
-    <!-- Schema.org markup for Google -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "Discursivamente",
-        "url": "https://www.discursivamente.com.br",
-        "potentialAction": {
-            "@type": "SearchAction",
-            "target": "https://www.discursivamente.com.br/search?q={search_term_string}",
-            "query-input": "required name=search_term_string"
-        }
-    }
-    </script>
-{% endblock %}
+ {% block content %}
+     <section class="hero-slider" aria-label="Destaques da plataforma">
+         <div class="slider-container">
+             <div class="slider-item active">
+                 <div class="slider-content">
+                     <h1>Bem-vindo à Discursivamente</h1>
+                     <p>Seu portal para o aprendizado e desenvolvimento intelectual</p>
+                     <div class="slider-cta">
+                         <a href="/curso" class="btn btn-primary">Explorar Cursos</a>
+                         <a href="/about" class="btn btn-outline">Conheça-nos</a>
+                     </div>
+                 </div>
+                 <div class="slider-bg">
+                     <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8ZWR1Y2ElQzMlQTclQzMlQjVhfGVufDB8fDB8fHww" alt="Estudantes em ambiente de aprendizado colaborativo" loading="lazy">
+                 </div>
+             </div>
 
-{% block styles %}
-    <link rel="stylesheet" href="/assets/css/pages/home/index.css">
-{% endblock %}
+             <div class="slider-item">
+                 <div class="slider-content">
+                     <h1>Amplie seus horizontes</h1>
+                     <p>Descubra novos conhecimentos e perspectivas</p>
+                     <div class="slider-cta">
+                         <a href="/biblioteca" class="btn btn-primary">Acessar Biblioteca</a>
+                     </div>
+                 </div>
+                 <div class="slider-bg">
+                     <img src="https://images.unsplash.com/photo-1581726707445-75cbe4efc586?q=80&w=1476&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Pessoa lendo livro com vista para montanhas" loading="lazy">
+                 </div>
+             </div>
 
-{% block breadcrumbs %}
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item active" aria-current="page">Home</li>
-        </ol>
-    </nav>
-{% endblock %}
+             {# #}
+         </div>
 
-{% block content %}
-    <!-- Hero Slider Section - Melhoria 1 -->
-    <section class="hero-slider" aria-label="Destaques da plataforma">
-        <div class="slider-container">
-            <div class="slider-item active">
-                <div class="slider-content">
-                    <h1>Bem-vindo à Discursivamente</h1>
-                    <p>Seu portal para o aprendizado e desenvolvimento intelectual</p>
-                    <div class="slider-cta">
-                        <a href="/cursos" class="btn btn-primary">Explorar Cursos</a>
-                        <a href="/sobre" class="btn btn-outline">Conheça-nos</a>
-                    </div>
-                </div>
-                <div class="slider-bg">
-                    <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8ZWR1Y2ElQzMlQTclQzMlQjVhfGVufDB8fDB8fHww" alt="Estudantes em ambiente de aprendizado colaborativo" loading="lazy">
-                </div>
-            </div>
-            
-            <div class="slider-item">
-                <div class="slider-content">
-                    <h1>Amplie seus horizontes</h1>
-                    <p>Descubra novos conhecimentos e perspectivas</p>
-                    <div class="slider-cta">
-                        <a href="/biblioteca" class="btn btn-primary">Acessar Biblioteca</a>
-                    </div>
-                </div>
-                <div class="slider-bg">
-                    <img src="https://images.unsplash.com/photo-1581726707445-75cbe4efc586?q=80&w=1476&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Pessoa lendo livro com vista para montanhas" loading="lazy">
-                </div>
-            </div>
-            
-            <!-- Outros slides -->
-        </div>
-        
-        <div class="slider-controls">
-            <button class="slider-prev" aria-label="Slide anterior"><i class="fas fa-chevron-left"></i></button>
-            <div class="slider-dots" role="tablist"></div>
-            <button class="slider-next" aria-label="Próximo slide"><i class="fas fa-chevron-right"></i></button>
-        </div>
-    </section>
+         <div class="slider-controls">
+             <button class="slider-prev" aria-label="Slide anterior"><i class="fas fa-chevron-left"></i></button>
+             <div class="slider-dots" role="tablist"></div>
+             <button class="slider-next" aria-label="Próximo slide"><i class="fas fa-chevron-right"></i></button>
+         </div>
+     </section>
 
-    <!-- Newsletter Section - Melhoria 4 -->
-    <section class="newsletter-section" aria-labelledby="newsletter-heading">
-        <div class="container">
-            <div class="newsletter-wrapper">
-                <div class="newsletter-content">
-                    <h2 id="newsletter-heading">Fique por dentro das novidades</h2>
-                    <p>Receba atualizações sobre novos cursos, eventos e conteúdos exclusivos</p>
-                    <ul class="newsletter-benefits">
-                        <li><i class="fas fa-check" aria-hidden="true"></i> Conteúdos exclusivos para assinantes</li>
-                        <li><i class="fas fa-check" aria-hidden="true"></i> Descontos em cursos e eventos</li>
-                        <li><i class="fas fa-check" aria-hidden="true"></i> Primeiro acesso a novas funcionalidades</li>
-                    </ul>
-                    <div class="social-links">
-                        <p>Siga-nos também:</p>
-                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-                <div class="newsletter-form">
-                    <form action="/newsletter/subscribe" method="POST" id="newsletterForm">
-                        <div class="form-group">
-                            <label for="newsletter-email" class="sr-only">Email</label>
-                            <input type="email" id="newsletter-email" name="email" placeholder="Seu melhor e-mail" required aria-required="true">
-                            <div class="preference-checkboxes">
-                                <label><input type="checkbox" name="pref_cursos" checked> Cursos</label>
-                                <label><input type="checkbox" name="pref_eventos" checked> Eventos</label>
-                                <label><input type="checkbox" name="pref_conteudos"> Conteúdos</label>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Inscrever</button>
-                        </div>
-                        <div class="privacy-notice">
-                            <small>Respeitamos sua privacidade. Você pode cancelar a qualquer momento.</small>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
+     {# Início das Novas Seções #}
 
-    <!-- FAQ Section - Melhoria 5 -->
-    <section class="faq-section" aria-labelledby="faq-heading">
-        <div class="container">
-            <h2 id="faq-heading" class="section-title">Perguntas Frequentes</h2>
-            <p class="section-subtitle">Encontre respostas para as dúvidas mais comuns</p>
-            
-            <div class="faq-search">
-                <label for="faq-search-input" class="sr-only">Buscar perguntas</label>
-                <input type="text" id="faq-search-input" placeholder="Buscar em perguntas frequentes..." aria-label="Buscar perguntas">
-                <button aria-label="Buscar"><i class="fas fa-search"></i></button>
-            </div>
-            
-            <div class="faq-categories" role="tablist">
-                <button class="category-btn active" data-category="all" role="tab" aria-selected="true">Todas</button>
-                <button class="category-btn" data-category="account" role="tab" aria-selected="false">Conta</button>
-                <button class="category-btn" data-category="courses" role="tab" aria-selected="false">Cursos</button>
-                <button class="category-btn" data-category="events" role="tab" aria-selected="false">Eventos</button>
-                <button class="category-btn" data-category="payment" role="tab" aria-selected="false">Pagamentos</button>
-            </div>
-            
-            <div class="faq-accordion">
-                <div class="faq-item" data-category="courses">
-                    <div class="faq-question" role="button" aria-expanded="false" aria-controls="faq-answer-1">
-                        <h3>Como posso me inscrever em um curso?</h3>
-                        <span class="faq-icon" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
-                    </div>
-                    <div id="faq-answer-1" class="faq-answer" aria-hidden="true">
-                        <p>Para se inscrever em um curso, navegue até a página de cursos, escolha o curso desejado e clique em "Inscrever-se". Você precisará estar logado para completar a inscrição.</p>
-                    </div>
-                </div>
-                
-                <!-- Outras FAQs -->
-            </div>
-            
-            <div class="faq-footer">
-                <div class="faq-more">
-                    <a href="/faq" class="btn btn-outline">Ver todas as perguntas</a>
-                </div>
-                <div class="faq-contact">
-                    <p>Não encontrou o que procurava?</p>
-                    <a href="/contato" class="btn btn-text">Envie sua dúvida <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
-                </div>
-            </div>
-        </div>
-    </section>
+     <section class="features-section" aria-labelledby="features-heading">
+         <div class="container">
+             <h2 id="features-heading">Por que escolher a Discursivamente?</h2>
+             <div class="features-list">
+                 <div class="feature-item">
+                     <i class="fas fa-book-open"></i>
+                     <h3>Conteúdo Curado</h3>
+                     <p>Acesso a materiais didáticos de alta qualidade e relevância.</p>
+                 </div>
+                 <div class="feature-item">
+                     <i class="fas fa-users"></i>
+                     <h3>Comunidade Ativa</h3>
+                     <p>Interaja com outros estudantes e especialistas na área.</p>
+                 </div>
+                 <div class="feature-item">
+                     <i class="fas fa-calendar-alt"></i>
+                     <h3>Eventos Exclusivos</h3>
+                     <p>Participe de webinars, workshops e palestras ao vivo.</p>
+                 </div>
+                 <div class="feature-item">
+                     <i class="fas fa-certificate"></i>
+                     <h3>Certificação</h3>
+                     <p>Obtenha certificados de conclusão para comprovar seu aprendizado.</p>
+                 </div>
+             </div>
+         </div>
+     </section>
 
-    
-<div class="eventos-container">
-  <h2 class="eventos-header">Próximos Eventos e Atividades</h2>
-  <p class="eventos-subheader">Não perca as oportunidades de aprendizado ao vivo</p>
+     <section class="popular-courses-section" aria-labelledby="popular-courses-heading">
+         <div class="container">
+             <h2 id="popular-courses-heading">Cursos Populares</h2>
+             <p>Descubra os cursos mais procurados por nossa comunidade.</p>
+             <div class="course-list">
+                 {# Loop through popular courses if available #}
+                 {% if popularCourses is defined and popularCourses is not empty %}
+                     {% for course in popularCourses %}
+                         <div class="course-item">
+                             <div class="course-image">
+                                 {% if course.image %}
+                                     <img src="{{ course.image }}" alt="{{ course.title }}">
+                                 {% endif %}
+                             </div>
+                             <div class="course-content">
+                                 <h3 class="course-title">{{ course.title }}</h3>
+                                 <p class="course-description">
+                                     {{ course.description|length > 100 ? course.description|slice(0, 100) ~ '...' : course.description }}
+                                 </p>
+                                 <a href="{{ course.url|default('#') }}" class="course-link">Saiba mais</a>
+                             </div>
+                         </div>
+                     {% endfor %}
+                 {% else %}
+                     <div class="course-empty">
+                         Nenhum curso popular disponível no momento.
+                     </div>
+                 {% endif %}
+             </div>
+             <div class="courses-ver-todos">
+                 <a href="/curso" class="btn-ver-todos">Ver todos os cursos</a>
+             </div>
+         </div>
+     </section>
 
-  {% if recentEvents is empty %}
-    <div class="eventos-empty">
-      Não há eventos programados no momento. Fique ligado!
+{% for course in popularCourses %}
+  <div class="course-item">
+    <div class="course-image">
+      {% if course.image %}
+        <img src="{{ course.image }}" alt="{{ course.title }}">
+      {% endif %}
     </div>
-  {% else %}
-    <div class="eventos-slider">
-      <button class="slider-btn prev-btn">&larr;</button>
-      <div class="slider-wrapper">
-        {% for event in recentEvents %}
-        <div class="evento-item">
-          <div class="evento-image">
-            {% if event.image %}
-              <img src="{{ event.image }}" alt="{{ event.title }}">
-            {% endif %}
-          </div>
-          <div class="evento-content">
-            <h3 class="evento-title">{{ event.title }}</h3>
-            <div class="evento-date">{{ event.dateTime|date('d/m/Y H:i') }}</div>
-            <p class="evento-description">
-              {{ event.description|length > 120 ? event.description|slice(0, 120) ~ '...' : event.description }}
-            </p>
-            <a href="{{ event.url|default('#') }}" class="evento-link">Saiba mais</a>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-      <button class="slider-btn next-btn">&rarr;</button>
+    <div class="course-content">
+      <h3 class="course-title">{{ course.title }}</h3>
+      <p class="course-description">
+        {% if course.description|length > 100 %}
+          {{ course.description|slice(0, 100) ~ '...' }}
+        {% else %}
+          {{ course.description }}
+        {% endif %}
+      </p>
+      <a href="{{ course.url|default('#') }}" class="course-link">Saiba mais</a>
     </div>
-  {% endif %}
-
-  <div class="eventos-ver-todos">
-    <a href="/events" class="btn-ver-todos">Ver todos os eventos</a>
   </div>
-</div>
+{% endfor %}
 
+<section class="testimonials-section" aria-labelledby="testimonials-heading">
+  <div class="container">
+    <h2 id="testimonials-heading">O que nossos alunos dizem</h2>
 
+    <div class="testimonials-wrapper">
+      <div class="testimonial-item active">
+        <p>"A Discursivamente transformou minha forma de aprender. Os cursos são excelentes!"</p>
+        <cite>- Maria Silva</cite>
+      </div>
+      <div class="testimonial-item">
+        <p>"Eventos incríveis e uma comunidade muito acolhedora. Recomendo!"</p>
+        <cite>- João Santos</cite>
+      </div>
+      <div class="testimonial-item">
+        <p>"Adorei a variedade de conteúdos e a didática dos instrutores. Já sou fã!"</p>
+        <cite>- Pedro Lima</cite>
+      </div>
+      <div class="testimonial-item">
+        <p>"O suporte e a interface são impecáveis. Aprendo muito a cada dia."</p>
+        <cite>- Ana Oliveira</cite>
+      </div>
+    </div>
 
-    <!-- Login CTA Section - Melhoria 6 -->
-    <section class="login-cta-section" aria-labelledby="join-community-heading">
-        <div class="container">
-            <div class="login-cta-wrapper">
-                {% if not user.isLoggedIn %}
-                    <div class="login-cta-content">
-                        <h2 id="join-community-heading">Junte-se à nossa comunidade</h2>
-                        <p>Crie uma conta para ter acesso completo a todos os recursos da plataforma</p>
-                        
-                        <div class="community-activity">
-                            <h3>Atividade recente da comunidade</h3>
-                            <div class="activity-feed">
-                                <div class="activity-item">
-                                    <img src="/assets/images/avatars/user1.jpg" alt="Foto de perfil de Maria" loading="lazy">
-                                    <p>Maria completou o curso <strong>Introdução à Filosofia</strong></p>
-                                </div>
-                                <div class="activity-item">
-                                    <img src="/assets/images/avatars/user2.jpg" alt="Foto de perfil de João" loading="lazy">
-                                    <p>João publicou um novo tópico no fórum</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="partners">
-                            <p>Parceiros e instituições que confiam em nós:</p>
-                            <div class="partner-logos">
-                                <img src="/assets/images/partners/partner1.png" alt="Logo Universidade X" loading="lazy">
-                                <img src="/assets/images/partners/partner2.png" alt="Logo Instituto Y" loading="lazy">
-                            </div>
-                        </div>
-                        
-                        <div class="login-cta-buttons">
-                            <a href="/login" class="btn btn-primary">Entrar</a>
-                            <a href="/registro" class="btn btn-outline">Criar conta</a>
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-    </section>
+    <div class="testimonials-controls">
+      <button id="test-prev" aria-label="Depoimento anterior">&larr;</button>
+      <button id="test-next" aria-label="Próximo depoimento">&rarr;</button>
+    </div>
+  </div>
+</section>
 
-
-    <!-- Chatbot de Atendimento -->
-    <div class="chatbot-container" role="dialog" aria-labelledby="chatbot-heading">
-        <button class="chatbot-toggle" aria-expanded="false" aria-controls="chatbot-window">
-            <i class="fas fa-comments" aria-hidden="true"></i>
-            <span class="sr-only">Abrir chat de atendimento</span>
-        </button>
-        <div id="chatbot-window" class="chatbot-window" aria-hidden="true">
-            <div class="chatbot-header">
-                <h3 id="chatbot-heading">Atendimento Discursivamente</h3>
-                <button class="chatbot-close" aria-label="Fechar chat">
-                    <i class="fas fa-times" aria-hidden="true"></i>
-                </button>
-            </div>
-            <div class="chatbot-messages"></div>
-            <div class="chatbot-input">
-                <input type="text" placeholder="Digite sua mensagem..." aria-label="Digite sua mensagem">
-                <button aria-label="Enviar mensagem"><i class="fas fa-paper-plane"></i></button>
-            </div>
+<section class="split-section">
+    <div class="image-side">
+        <div class="image-container">
+            <img src="https://images.unsplash.com/photo-1636202339022-7d67f7447e3a?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Educação">
         </div>
     </div>
-{% endblock %}
+    <div class="text-side">
+        <h2>Educação transforma o mundo</h2>
+        <p>
+            “A educação é a arma mais poderosa que você pode usar para mudar o mundo.”<br>
+            <strong>– Nelson Mandela</strong>
+        </p>
+    </div>
+</section>
 
-{% block scripts %}
-    <!-- Scripts otimizados com defer/async -->
-    <script src="/assets/js/pages/pages-scripts/slider.js" defer></script>
-    <script src="/assets/js/pages/pages-scripts/newsletter.js" defer></script>
-    <script src="/assets/js/pages/pages-scripts/faq.js" defer></script>
-    <script src="/assets/js/pages/pages-scripts/chatbot.js" defer></script>
-    
-    <!-- Font Awesome com carga otimizada -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js" integrity="sha512-fzff82+8pzHnwA1mQ0dzz9/E0B+ZRizq08yZfya66INZBz86qKTCt9MLU0NCNIgaMJCgeyhujhasnFUsYMsi0Q==" crossorigin="anonymous" referrerpolicy="no-referrer" async></script>
-    
-    <!-- Schema.org para FAQ -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-            {
-                "@type": "Question",
-                "name": "Como posso me inscrever em um curso?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Para se inscrever em um curso, navegue até a página de cursos, escolha o curso desejado e clique em 'Inscrever-se'. Você precisará estar logado para completar a inscrição."
-                }
-            }
-            <!-- Outras perguntas -->
-        ]
-    }
-    </script>
-{% endblock %}
+
+     <section class="cta-section" aria-labelledby="cta-heading">
+         <div class="container">
+             <div class="cta-content">
+                 <h2 id="cta-heading">Pronto para começar sua jornada de aprendizado?</h2>
+                 <p>Explore nosso catálogo completo de cursos e descubra novas possibilidades.</p>
+                 <a href="/curso" class="btn btn-primary btn-large">Comece Agora</a>
+             </div>
+         </div>
+     </section>
+
+     {# Fim das Novas Seções #}
+
+     <section class="newsletter-section" aria-labelledby="newsletter-heading">
+         <div class="container">
+             <div class="newsletter-wrapper">
+                 <div class="newsletter-content">
+                     <h2 id="newsletter-heading">Fique por dentro das novidades</h2>
+                     <p>Receba atualizações sobre novos cursos, eventos e conteúdos exclusivos</p>
+                     <ul class="newsletter-benefits">
+                         <li><i class="fas fa-check" aria-hidden="true"></i> Conteúdos exclusivos para assinantes</li>
+                         <li><i class="fas fa-check" aria-hidden="true"></i> Descontos em cursos e eventos</li>
+                         <li><i class="fas fa-check" aria-hidden="true"></i> Primeiro acesso a novas funcionalidades</li>
+                     </ul>
+                     <div class="social-links">
+                         <p>Siga-nos também:</p>
+                         <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                         <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                         <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                         <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                     </div>
+                 </div>
+                 <div class="newsletter-form">
+                     <form action="/newsletter/subscribe" method="POST" id="newsletterForm">
+                         <div class="form-group">
+                             <label for="newsletter-email" class="sr-only">Email</label>
+                             <input type="email" id="newsletter-email" name="email" placeholder="Seu melhor e-mail" required aria-required="true">
+                             <div class="preference-checkboxes">
+                                 <label><input type="checkbox" name="pref_cursos" checked> Cursos</label>
+                                 <label><input type="checkbox" name="pref_eventos" checked> Eventos</label>
+                                 <label><input type="checkbox" name="pref_conteudos"> Conteúdos</label>
+                             </div>
+                             <button type="submit" class="btn btn-primary">Inscrever</button>
+                         </div>
+                         <div class="privacy-notice">
+                             <small>Respeitamos sua privacidade. Você pode cancelar a qualquer momento.</small>
+                         </div>
+                     </form>
+                 </div>
+             </div>
+         </div>
+     </section>
+
+
+     <div class="eventos-container">
+       <h2 class="eventos-header">Próximos Eventos e Atividades</h2>
+       <p class="eventos-subheader">Não perca as oportunidades de aprendizado ao vivo</p>
+
+       {% if recentEvents is empty %}
+         <div class="eventos-empty">
+           Não há eventos programados no momento. Fique ligado!
+         </div>
+       {% else %}
+         <div class="eventos-slider">
+           <button class="slider-btn prev-btn">&larr;</button>
+           <div class="slider-wrapper">
+             {% for event in recentEvents %}
+             <div class="evento-item">
+               <div class="evento-image">
+                 {% if event.image %}
+                   <img src="{{ event.image }}" alt="{{ event.title }}">
+                 {% endif %}
+               </div>
+               <div class="evento-content">
+                 <h3 class="evento-title">{{ event.title }}</h3>
+                 <div class="evento-date">{{ event.dateTime|date('d/m/Y H:i') }}</div>
+                 <p class="evento-description">
+                   {{ event.description|length > 120 ? event.description|slice(0, 120) ~ '...' : event.description }}
+                 </p>
+                 <a href="{{ event.url|default('#') }}" class="evento-link">Saiba mais</a>
+               </div>
+             </div>
+             {% endfor %}
+           </div>
+           <button class="slider-btn next-btn">&rarr;</button>
+         </div>
+       {% endif %}
+
+       <div class="eventos-ver-todos">
+         <a href="/events" class="btn-ver-todos">Ver todos os eventos</a>
+       </div>
+     </div>
+
+     <div class="chatbot-container" role="dialog" aria-labelledby="chatbot-heading">
+         <button class="chatbot-toggle" aria-expanded="false" aria-controls="chatbot-window">
+             <i class="fas fa-comments" aria-hidden="true"></i>
+             <span class="sr-only">Abrir chat de atendimento</span>
+         </button>
+         <div id="chatbot-window" class="chatbot-window" aria-hidden="true">
+             <div class="chatbot-header">
+                 <h3 id="chatbot-heading">Atendimento Discursivamente</h3>
+                 <button class="chatbot-close" aria-label="Fechar chat">
+                     <i class="fas fa-times" aria-hidden="true"></i>
+                 </button>
+             </div>
+             <div class="chatbot-messages"></div>
+             <div class="chatbot-input">
+                 <input type="text" placeholder="Digite sua mensagem..." aria-label="Digite sua mensagem">
+                 <button aria-label="Enviar mensagem"><i class="fas fa-paper-plane"></i></button>
+             </div>
+         </div>
+     </div>
+ {% endblock %}
+ {% block scripts %}
+     <script src="/assets/js/pages/pages-scripts/slider.js" defer></script>
+     <script src="/assets/js/pages/pages-scripts/newsletter.js" defer></script>
+     <script src="/assets/js/pages/pages-scripts/faq.js" defer></script> {# Mantido caso o FAQ fosse adicionado #}
+     <script src="/assets/js/pages/pages-scripts/chatbot.js" defer></script>
+
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js" integrity="sha512-fzff82+8pzHnwA1mQ0dzz9/E0B+ZRizq08yZfya66INZBz86qKTCt9MLU0NCNIgaMJCgeyhujhasnFUsYMsi0Q==" crossorigin="anonymous" referrerpolicy="no-referrer" async></script>
+ {% endblock %}

@@ -73,3 +73,42 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+  const form       = document.querySelector('.auth-form');
+  const emailGroup = document.getElementById('email-group');
+  const passGroup  = document.getElementById('password-group');
+  const btnSubmit  = form.querySelector('button[type="submit"]');
+
+  form.addEventListener('submit', async (e) => {
+    // se estivermos na etapa de email, intercepta
+    if (form.dataset.step === 'email') {
+      e.preventDefault();
+      const email = form.email.value.trim();
+      if (!email) return;
+
+      try {
+        const res = await fetch('/login/check-email', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+          body: new URLSearchParams({email})
+        });
+        const json = await res.json();
+
+        if (json.exists) {
+          // existe: mostra campo senha e passa pra etapa 2
+          passGroup.style.display = '';
+          form.dataset.step = 'password';
+          form.password.required = true;
+          form.password.focus();
+        } else {
+          // não existe: manda para /register?email=...
+          window.location.href = `/register?email=${encodeURIComponent(email)}`;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    // se já estivermos na etapa de senha, deixa submeter
+  });
+});

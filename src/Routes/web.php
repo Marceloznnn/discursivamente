@@ -12,6 +12,8 @@ use Middleware\AdminMiddleware;
 use Middleware\AuthMiddleware;
 use Middleware\GuestMiddleware;
 use Controller\PagesController;
+use Controller\pages\CourseController;
+use Controller\pages\CourseMemberController;
 
 // ==========================================
 // Rotas públicas (sem autenticação)
@@ -64,6 +66,13 @@ $r->addRoute('GET',  '/reset-password',     function($twig) {
 $r->addRoute('POST', '/reset-password',     function($twig) {
     GuestMiddleware::handle();
     (new AuthController($twig))->resetPost();
+});
+
+// Checagem de e-mail por AJAX
+$r->addRoute('POST', '/login/check-email', function($twig) {
+    GuestMiddleware::handle();                   // só visitantes podem acessar
+    (new \Controller\pages\AuthController($twig))
+        ->checkEmail();
 });
 
 // ==========================================
@@ -444,3 +453,70 @@ $r->addRoute('GET', '/terms', [PagesController::class, 'terms']);
 $r->addRoute('GET', '/contact', [PagesController::class, 'contact']);
 $r->addRoute('GET', '/cookies', [PagesController::class, 'cookies']);
 $r->addRoute('GET', '/privacy', [PagesController::class, 'privacy']);
+
+// Rotas de Curso
+$r->addRoute('GET', '/curso', function($twig) {
+    AuthMiddleware::handle();
+    (new CourseController($twig))->index();
+});
+
+$r->addRoute('GET', '/curso/create', function($twig) {
+    AuthMiddleware::handle();
+    (new CourseController($twig))->create();
+});
+
+$r->addRoute('POST', '/curso/store', function($twig) {
+    AuthMiddleware::handle();
+    (new CourseController($twig))->store();
+});
+
+$r->addRoute('GET', '/curso/{id}/edit', function($twig, $_, $id) {
+    AuthMiddleware::handle();
+    (new CourseController($twig))->edit((int)$id);
+});
+
+$r->addRoute('POST', '/curso/{id}/update', function($twig, $_, $id) {
+    AuthMiddleware::handle();
+    (new CourseController($twig))->update((int)$id);
+});
+
+$r->addRoute('POST', '/curso/{id}/delete', function($twig, $_, $id) {
+    AuthMiddleware::handle();
+    (new CourseController($twig))->delete((int)$id);
+});
+
+// ————————
+// **A rota estática de pesquisa DEVE vir antes** da rota variável abaixo:
+// ————————
+$r->addRoute('GET', '/curso/search', function($twig) {
+    AuthMiddleware::handle();
+    (new CourseController($twig))->search();
+});
+
+// Rota variável que “pega” qualquer /curso/{id}
+/* NÃO mova esta acima da /curso/search */
+$r->addRoute('GET', '/curso/{id}', function($twig, $_, $id) {
+    AuthMiddleware::handle();
+    (new CourseController($twig))->show((int)$id);
+});
+
+// Rotas de Membros de Curso (Auth obrigatório)
+$r->addRoute('GET', '/curso/{courseId}/membros', function($twig, $_, $courseId) {
+    AuthMiddleware::handle();
+    (new \Controller\pages\CourseMemberController($twig))->index((int)$courseId);
+});
+
+$r->addRoute('GET', '/curso/{courseId}/membros/create', function($twig, $_, $courseId) {
+    AuthMiddleware::handle();
+    (new \Controller\pages\CourseMemberController($twig))->addForm((int)$courseId);
+});
+
+$r->addRoute('POST', '/curso/{courseId}/membros', function($twig, $_, $courseId) {
+    AuthMiddleware::handle();
+    (new \Controller\pages\CourseMemberController($twig))->store((int)$courseId);
+});
+
+$r->addRoute('POST', '/curso/{courseId}/membros/{memberId}/delete', function($twig, $_, $courseId, $memberId) {
+    AuthMiddleware::handle();
+    (new \Controller\pages\CourseMemberController($twig))->delete((int)$courseId, (int)$memberId);
+});
