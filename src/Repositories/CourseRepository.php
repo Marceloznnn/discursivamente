@@ -78,6 +78,7 @@ class CourseRepository
         $stmt = $this->pdo->prepare("DELETE FROM course_main WHERE id = ?");
         $stmt->execute([$id]);
     }
+    
 
     private function hydrate(array $data): Course
     {

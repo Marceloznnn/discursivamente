@@ -13,7 +13,9 @@ use Middleware\AuthMiddleware;
 use Middleware\GuestMiddleware;
 use Controller\PagesController;
 use Controller\pages\CourseController;
-use Controller\pages\CourseMemberController;
+use Controller\Pages\CourseMaterialController;
+use Repositories\CourseMaterialRepository;
+use Services\CloudinaryService;
 
 // ==========================================
 // Rotas públicas (sem autenticação)
@@ -519,4 +521,81 @@ $r->addRoute('POST', '/curso/{courseId}/membros', function($twig, $_, $courseId)
 $r->addRoute('POST', '/curso/{courseId}/membros/{memberId}/delete', function($twig, $_, $courseId, $memberId) {
     AuthMiddleware::handle();
     (new \Controller\pages\CourseMemberController($twig))->delete((int)$courseId, (int)$memberId);
+});
+// Para a rota '/curso/{courseId}/materiais'
+$r->addRoute('GET', '/curso/{courseId}/materiais', function($twig, $_pdo, $courseId) {
+    AuthMiddleware::handle();
+    $repo  = new CourseMaterialRepository($_pdo);
+    $cloud = new CloudinaryService();
+    // Agora passa o $twig para o controlador
+    (new CourseMaterialController($repo, $cloud, $twig))
+        ->index((int)$courseId);
+});
+
+// Para a rota '/curso/{courseId}/materiais/create'
+$r->addRoute('GET', '/curso/{courseId}/materiais/create', function($twig, $_pdo, $courseId) {
+    AuthMiddleware::handle();
+    $repo  = new CourseMaterialRepository($_pdo);
+    $cloud = new CloudinaryService();
+    // Passando $twig para o controlador
+    (new CourseMaterialController($repo, $cloud, $twig))
+        ->create((int)$courseId);
+});
+
+// Para a rota '/curso/{courseId}/materiais/store'
+$r->addRoute('POST', '/curso/{courseId}/materiais/store', function($twig, $_pdo, $courseId) {
+    AuthMiddleware::handle();
+    $repo  = new CourseMaterialRepository($_pdo);
+    $cloud = new CloudinaryService();
+    // Passando $twig para o controlador
+    (new CourseMaterialController($repo, $cloud, $twig))
+        ->store(
+            (int)$courseId,
+            $_POST,
+            $_FILES['media'] ?? []
+        );
+});
+
+// Para a rota '/curso/{courseId}/materiais/{id}'
+$r->addRoute('GET', '/curso/{courseId}/materiais/{id}', function($twig, $_pdo, $courseId, $id) {
+    AuthMiddleware::handle();
+    $repo  = new CourseMaterialRepository($_pdo);
+    $cloud = new CloudinaryService();
+    // Passando $twig para o controlador
+    (new CourseMaterialController($repo, $cloud, $twig))
+        ->show((int)$id);
+});
+
+// Para a rota '/curso/{courseId}/materiais/{id}/edit'
+$r->addRoute('GET', '/curso/{courseId}/materiais/{id}/edit', function($twig, $_pdo, $courseId, $id) {
+    AuthMiddleware::handle();
+    $repo  = new CourseMaterialRepository($_pdo);
+    $cloud = new CloudinaryService();
+    // Passando $twig para o controlador
+    (new CourseMaterialController($repo, $cloud, $twig))
+        ->edit((int)$id);
+});
+
+// Para a rota '/curso/{courseId}/materiais/{id}/update'
+$r->addRoute('POST', '/curso/{courseId}/materiais/{id}/update', function($twig, $_pdo, $courseId, $id) {
+    AuthMiddleware::handle();
+    $repo  = new CourseMaterialRepository($_pdo);
+    $cloud = new CloudinaryService();
+    // Passando $twig para o controlador
+    (new CourseMaterialController($repo, $cloud, $twig))
+        ->update(
+            (int)$id,
+            $_POST,
+            $_FILES['media'] ?? null
+        );
+});
+
+// Para a rota '/curso/{courseId}/materiais/{id}/delete'
+$r->addRoute('POST', '/curso/{courseId}/materiais/{id}/delete', function($twig, $_pdo, $courseId, $id) {
+    AuthMiddleware::handle();
+    $repo  = new CourseMaterialRepository($_pdo);
+    $cloud = new CloudinaryService();
+    // Passando $twig para o controlador
+    (new CourseMaterialController($repo, $cloud, $twig))
+        ->destroy((int)$id);
 });

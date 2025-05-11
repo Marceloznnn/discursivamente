@@ -167,6 +167,15 @@ class CourseMemberRepository
             certificateAwarded: (bool)$row['certificate_awarded']
         );
     }
+    public function addMember(int $courseId, int $userId, string $role = 'member'): void
+{
+    $stmt = $this->pdo->prepare("
+        INSERT INTO course_members (course_id, user_id, role)
+        VALUES (?, ?, ?)
+    ");
+    $stmt->execute([$courseId, $userId, $role]);
+}
+
         // Novo método
 public function countByCourseId(int $courseId): int
 {

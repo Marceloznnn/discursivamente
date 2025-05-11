@@ -938,39 +938,113 @@ input[type="email"]:focus {
 .mt-5 {
   margin-top: 3rem;
 }
+/* Responsividade Aprimorada - Breakpoints organizados por tamanho de tela */
 
-/* Responsive Adjustments */
-@media (max-width: 992px) {
-  .features-list {
-    grid-template-columns: repeat(2, 1fr);
+/* Large screens (992px - 1200px) */
+@media (max-width: 1200px) {
+  .container {
+    max-width: 960px;
   }
   
+  .features-list {
+    gap: 1.5rem;
+  }
+  
+  .course-list, 
+  .eventos-slider .slider-wrapper {
+    gap: 1.5rem;
+  }
+  
+  .newsletter-wrapper {
+    gap: 2rem;
+  }
+}
+
+/* Medium screens (768px - 992px) */
+@media (max-width: 992px) {
+  .container {
+    max-width: 720px;
+  }
+  
+  /* Hero slider */
+  .hero-slider {
+    height: 550px;
+  }
+  
+  .slider-content {
+    width: 65%;
+    padding: 1.75rem;
+  }
+  
+  .slider-content h1 {
+    font-size: 2.5rem;
+  }
+  
+  /* Features grid */
+  .features-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  /* Courses grid */
   .course-list {
     grid-template-columns: repeat(2, 1fr);
   }
   
+  /* Split section */
+  .split-section {
+    height: auto;
+  }
+  
+  .image-side {
+    flex: 1;
+    /* Ajuste na forma do clip-path para telas médias */
+    clip-path: polygon(0 0, 100% 0, 90% 100%, 0% 100%);
+  }
+  
+  /* Newsletter section */
   .newsletter-wrapper {
     flex-direction: column;
+    gap: 2rem;
   }
   
-  .slider-content {
-    width: 70%;
+  .newsletter-content,
+  .newsletter-form {
+    width: 100%;
   }
   
+  /* Eventos slider */
   .evento-item {
     min-width: calc(50% - 1rem);
   }
+  
+  .slider-btn {
+    width: 40px;
+    height: 40px;
+  }
 }
 
+/* Small screens (576px - 768px) */
 @media (max-width: 768px) {
+  .container {
+    max-width: 540px;
+    padding: 0 1rem;
+  }
+  
+  /* Typography adjustments */
   h1 {
-    font-size: 2.5rem;
+    font-size: 2.25rem;
   }
   
   h2 {
-    font-size: 2rem;
+    font-size: 1.75rem;
   }
   
+  h3 {
+    font-size: 1.25rem;
+  }
+  
+  /* Hero slider */
   .hero-slider {
     height: 500px;
   }
@@ -978,44 +1052,272 @@ input[type="email"]:focus {
   .slider-content {
     width: 80%;
     margin-left: 10%;
-  }
-  
-  .course-list,
-  .features-list {
-    grid-template-columns: 1fr;
-  }
-  
-  .evento-item {
-    min-width: 100%;
-  }
-  
-  .newsletter-content,
-  .newsletter-form {
-    width: 100%;
-  }
-}
-
-@media (max-width: 576px) {
-  .slider-content {
-    width: 90%;
-    margin-left: 5%;
     padding: 1.5rem;
   }
   
   .slider-content h1 {
     font-size: 2rem;
+    margin-bottom: 0.75rem;
   }
   
-  .slider-cta {
-    flex-direction: column;
-    gap: 0.5rem;
+  .slider-content p {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
   }
   
+  /* Buttons */
+  .btn {
+    padding: 0.6rem 1.25rem;
+    font-size: 0.85rem;
+  }
+  
+  .btn-large {
+    padding: 0.75rem 1.75rem;
+    font-size: 1rem;
+  }
+  
+  /* Features and courses */
   .feature-item {
     padding: 1.5rem;
   }
   
+  .feature-item i {
+    font-size: 2rem;
+  }
+  
+  .course-list,
+  .features-list {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  
+  /* Testimonials */
+  .testimonials-wrapper {
+    max-width: 90%;
+    height: 170px;
+  }
+  
+  .testimonial-item p {
+    font-size: 1rem;
+  }
+  
+  /* Split section */
+  .split-section {
+    flex-direction: column;
+    height: auto;
+  }
+  
+  .image-side {
+    /* Remove clip-path in mobile */
+    clip-path: none;
+    height: 250px;
+  }
+  
+  .text-side {
+    padding: 2rem 1.5rem;
+  }
+  
+  /* CTA Section */
+  .cta-section {
+    padding: 3rem 0;
+  }
+  
+  .cta-content h2 {
+    font-size: 2rem;
+  }
+  
+  .cta-content p {
+    font-size: 1.1rem;
+  }
+  
+  /* Eventos slider */
+  .evento-item {
+    min-width: 100%;
+  }
+  
+  .slider-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+  
+  /* Newsletter */
+  .newsletter-benefits {
+    margin-bottom: 1.5rem;
+  }
+  
+  .newsletter-form {
+    padding: 1.5rem;
+  }
+  
+  .preference-checkboxes {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  /* Chatbot */
   .chatbot-window {
     width: 300px;
+    height: 400px;
+    right: -10px;
+  }
+}
+
+/* Extra small screens (< 576px) */
+@media (max-width: 576px) {
+  /* Container e espaçamentos */
+  .container {
+    padding: 0 0.75rem;
+  }
+  
+  [class$="-section"],
+  .eventos-container {
+    padding: 3rem 0;
+  }
+  
+  /* Hero slider */
+  .hero-slider {
+    height: 450px;
+  }
+  
+  .slider-content {
+    width: 90%;
+    margin-left: 5%;
+    padding: 1.25rem;
+  }
+  
+  .slider-content h1 {
+    font-size: 1.75rem;
+  }
+  
+  .slider-content p {
+    font-size: 1rem;
+  }
+  
+  .slider-cta {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: stretch;
+  }
+  
+  .slider-controls {
+    bottom: 1rem;
+    gap: 1rem;
+  }
+  
+  .slider-prev,
+  .slider-next {
+    width: 36px;
+    height: 36px;
+  }
+  
+  /* Feature items */
+  .feature-item {
+    padding: 1.25rem;
+  }
+  
+  /* Split section */
+  .image-side {
+    height: 200px;
+  }
+  
+  /* Testimonials */
+  .testimonials-wrapper {
+    height: 190px;
+  }
+  
+  .testimonials-controls {
+    margin-top: 1rem;
+  }
+  
+  /* CTA Section */
+  .cta-content h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+  }
+  
+  .cta-content p {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Newsletter */
+  .social-links a {
+    width: 36px;
+    height: 36px;
+  }
+  
+  /* Eventos */
+  .eventos-slider {
+    padding: 0 0.5rem;
+  }
+  
+  .prev-btn {
+    left: -0.25rem;
+  }
+  
+  .next-btn {
+    right: -0.25rem;
+  }
+  
+  /* Chatbot */
+  .chatbot-container {
+    right: 1rem;
+    bottom: 1rem;
+  }
+  
+  .chatbot-toggle {
+    width: 50px;
+    height: 50px;
+    font-size: 1.25rem;
+  }
+  
+  .chatbot-window {
+    width: calc(100vw - 2rem);
+    right: -1rem;
+  }
+  
+  /* Form elements */
+  input[type="email"] {
+    padding: 0.75rem;
+  }
+  
+  .btn-ver-todos {
+    padding: 0.6rem 1.5rem;
+  }
+}
+
+/* Optimized for very small screens */
+@media (max-width: 375px) {
+  h1 {
+    font-size: 1.6rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  .hero-slider {
+    height: 420px;
+  }
+  
+  .slider-content {
+    padding: 1rem;
+  }
+  
+  .newsletter-section h2,
+  .cta-content h2,
+  .eventos-header,
+  #popular-courses-heading,
+  #features-heading {
+    font-size: 1.5rem;
+  }
+  
+  .testimonials-wrapper {
+    height: 210px;
+  }
+  
+  .eventos-slider {
+    margin: 0 -0.75rem;
   }
 }

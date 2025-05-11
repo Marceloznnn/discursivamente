@@ -27,11 +27,6 @@
       </div>
 
       <div>
-        <label for="creator_id">Criador (ID)</label><br>
-        <input type="number" id="creator_id" name="creator_id" value="{{ course.creatorId|default('') }}" required />
-      </div>
-
-      <div>
         <label for="status">Status</label><br>
         <select id="status" name="status">
           {% for s in ['active','draft','archived'] %}

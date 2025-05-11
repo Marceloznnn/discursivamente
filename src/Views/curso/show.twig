@@ -78,14 +78,40 @@
       <p class="enrolled-note">Você já está matriculado neste curso.</p>
     {% endif %}
 
+    <!-- Seções de ações administrativas -->
     <div class="admin-actions">
-      <a href="/curso/{{ course.id }}/edit" class="btn-secondary">Editar</a>
+      <a href="/curso/{{ course.id }}/edit" class="btn-secondary">Editar Curso</a>
       <form action="/curso/{{ course.id }}/delete" method="post" onsubmit="return confirm('Confirma exclusão deste curso?');">
-        <button type="submit" class="btn-danger">Excluir</button>
+        <button type="submit" class="btn-danger">Excluir Curso</button>
       </form>
     </div>
 
     <a href="/curso/{{ course.id }}/membros" class="btn-detail">Ver Membros</a>
+  </div>
+
+  <!-- Botão de "Ver Materiais" -->
+  <div class="actions">
+    <a href="/curso/{{ course.id }}/materiais" class="btn-primary">Ver Materiais</a>
+  </div>
+
+  <!-- Materiais do curso -->
+  <section class="course-materials">
+    <h2>Materiais do Curso</h2>
+    {% if course.materials is not empty %}
+      <ul>
+        {% for material in course.materials %}
+          <li><a href="{{ material.url }}" target="_blank">{{ material.title }}</a></li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Não há materiais disponíveis para este curso.</p>
+    {% endif %}
+  </section>
+
+  <!-- Navegação entre páginas -->
+  <div class="pagination-actions">
+    <a href="/curso/{{ course.id }}/materiais/create" class="btn-primary">Adicionar Novo Material</a>
+    <a href="/curso/{{ course.id }}/materiais" class="btn-secondary">Ver Todos os Materiais</a>
   </div>
 
 </div>
