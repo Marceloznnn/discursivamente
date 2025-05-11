@@ -4,17 +4,28 @@
   "description": "Plataforma de aprendizado e discussão acadêmica",
   "scripts": {
     "clean": "rm -rf var/cache/* var/log/* public/assets/build/*",
-    "build": "npm run build:js && npm run build:css",
+    "lint:js": "eslint \"public/assets/js/**/*.js\" --fix",
+    "lint:css": "stylelint \"public/assets/css/**/*.css\" --fix",
+    "lint": "npm run lint:js && npm run lint:css",
+    "test:js": "jest",
+    "test": "npm run test:js",
     "build:js": "uglifyjs public/assets/js/*.js -o public/assets/build/app.min.js",
     "build:css": "cleancss -o public/assets/build/app.min.css public/assets/css/*.css",
-    "watch:js": "watch 'npm run build:js' public/assets/js/",
-    "watch:css": "watch 'npm run build:css' public/assets/css/",
-    "watch": "npm run watch:js & npm run watch:css",
-    "dev": "npm run watch"
+    "build": "npm run clean && npm run lint && npm run build:js && npm run build:css",
+    "watch:js": "watch \"npm run build:js\" public/assets/js/",
+    "watch:css": "watch \"npm run build:css\" public/assets/css/",
+    "watch": "concurrently \"npm run watch:js\" \"npm run watch:css\"",
+    "dev": "npm run watch",
+    "deploy:assets": "npm ci && npm run build",
+    "deploy": "npm run deploy:assets && ssh user@servidor \"cd /var/www/discursivamente && git pull && composer install --no-dev --optimize-autoloader && php bin/console doctrine:migrations:migrate --no-interaction && php bin/console cache:clear --env=prod\""
   },
   "devDependencies": {
     "uglify-js": "^3.17.4",
     "clean-css-cli": "^5.6.2",
-    "watch": "^1.0.2"
+    "watch": "^1.0.2",
+    "eslint": "^8.0.0",
+    "stylelint": "^15.0.0",
+    "concurrently": "^7.0.0",
+    "jest": "^29.0.0"
   }
 }

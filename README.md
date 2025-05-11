@@ -10,206 +10,6 @@ Plataforma de aprendizado e discussão acadêmica.
 - Node.js 14 ou superior
 - XAMPP (para ambiente de desenvolvimento)
 
-## Instalação
-
-1. Clone o repositório:
-```bash
-git clone https://github.com/marcelo/Discursivamente2.1.git
-cd Discursivamente2.1
-```
-
-2. Instale as dependências do PHP:
-```bash
-composer install
-```
-
-3. Instale as dependências do Node.js:
-```bash
-npm install
-```
-
-4. Copie o arquivo de ambiente:
-```bash
-cp .env.example .env
-```
-
-5. Configure o arquivo `.env` com suas credenciais:
-```env
-APP_ENV=development
-APP_DEBUG=true
-
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_NAME=discursivamente_db
-DB_USER=root
-DB_PASS=
-
-MAIL_HOST=smtp.gmail.com
-MAIL_PORT=587
-MAIL_USERNAME=projeto.discursivamente@gmail.com
-MAIL_PASSWORD=frue xhal ioqg oqvq
-MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS=projeto.discursivamente@gmail.com
-MAIL_FROM_NAME=Discursivamente
-```
-
-6. Crie o banco de dados:
-```bash
-mysql -u root -p
-CREATE DATABASE discursivamente_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
-
-7. Execute as migrações:
-```bash
-php src/Database/migrate.php
-```
-
-8. Configure as tarefas agendadas (como administrador):
-```bash
-php src/Scripts/install_cron.php
-```
-
-## Estrutura do Projeto
-
-```
-Discursivamente2.1/
-├── .env                   # Configurações de ambiente
-├── .gitignore             # Arquivos ignorados pelo Git
-├── README.md              # Este arquivo
-├── composer.json          # Dependências PHP
-├── composer.lock          # Versões exatas das dependências PHP
-├── package.json           # Dependências Node.js
-├── package-lock.json      # Versões exatas das dependências Node.js
-├── phpunit.xml            # Configuração do PHPUnit
-├── robots.txt             # Configuração para crawlers
-├── database/              # Migrações e backups
-│   └── backups/           # Backups do banco de dados
-│       ├── backup_discursivamente_db_2025-04-21_060002.sql
-│       ├── backup_discursivamente_db_2025-04-22_083404.sql
-│       ├── backup_discursivamente_db_2025-04-26_060002.sql
-│       ├── backup_discursivamente_db_2025-04-27_065039.sql
-│       └── backup_discursivamente_db_2025-04-27_090001.sql
-├── node_modules/          # Dependências Node.js
-├── public/                # Arquivos públicos
-│   ├── .htaccess          # Configurações do Apache
-│   ├── assets/            # Assets compilados (CSS, JS, imagens)
-│   │   ├── build/
-│   │   ├── css/
-│   │   ├── images/
-│   │   └── js/
-│   ├── favicon.ico
-│   ├── favicon-16x16.png
-│   ├── favicon-32x32.png
-│   ├── android-chrome-192x192.png
-│   ├── android-chrome-512x512.png
-│   ├── apple-touch-icon.png
-│   ├── index.php          # Ponto de entrada da aplicação
-│   ├── manifest.json      # Manifest para PWA
-│   ├── service-worker.js  # Service Worker para PWA
-│   ├── site.webmanifest
-│   └── uploads/           # Uploads de usuários
-│       └── avatars/
-├── src/                   # Código fonte
-│   ├── App/               # Lógica da aplicação
-│   │   └── Models/        # Modelos de dados
-│   ├── Cache/             # Sistema de cache
-│   │   └── FileCache.php
-│   ├── Config/            # Configurações
-│   │   ├── Config.php
-│   │   ├── cron.php
-│   │   ├── database.php
-│   │   └── routes.php
-│   ├── Controllers/       # Controladores
-│   │   ├── Controller.php
-│   │   └── Web/
-│   ├── Core/              # Classes principais
-│   │   ├── Database/
-│   │   ├── Twig/
-│   │   └── View.php
-│   ├── Database/          # Classes de banco de dados
-│   │   ├── Connection.php
-│   │   ├── Migrations/
-│   │   └── admin_setup.sql
-│   ├── Infrastructure/    # Infraestrutura
-│   │   ├── Database/
-│   │   ├── Mail/
-│   │   ├── Persistence/
-│   ├── Middleware/        # Middlewares
-│   │   ├── AdminMiddleware.php
-│   │   ├── AuthMiddleware.php
-│   │   └── SecurityHeadersMiddleware.php
-│   ├── Routes/            # Rotas
-│   │   ├── Router.php
-│   │   └── web.php
-│   ├── Scripts/           # Scripts de manutenção
-│   │   ├── backup_database.php
-│   │   ├── clean_cache.php
-│   │   ├── create_admin.php
-│   │   ├── install_cron.php
-│   │   ├── maintenance.php
-│   │   └── rotate_logs.php
-│   ├── Security/          # Classes de segurança
-│   │   ├── Auth.php
-│   │   ├── CacheManager.php
-│   │   ├── Csrf.php
-│   │   ├── Logger.php
-│   │   └── SecurityMiddleware.php
-│   ├── Services/          # Serviços
-│   │   ├── AuthService.php
-│   │   ├── BaseService.php
-│   │   ├── CloudinaryService.php
-│   │   └── SecurityLogService.php
-│   ├── Utils/             # Utilitários
-│   │   └── Logger.php
-│   └── Views/             # Views
-│       ├── admin/
-│       ├── auth/
-│       ├── biblioteca/
-│       ├── compromissos/
-│       ├── comunidade/
-│       ├── errors/
-│       ├── home/
-│       ├── layouts/
-│       ├── legal/
-│       ├── perfil/
-│       └── quem-somos/
-├── var/                   # Arquivos variáveis
-│   ├── cache/             # Cache
-│   │   └── twig/
-│   ├── log/               # Logs
-│   │   ├── cache-cleaner.log
-│   │   ├── cache_clean.log
-│   │   ├── cache_clean.log.gz
-│   │   ├── database-backup.log
-│   │   ├── log-rotator.log
-│   │   └── maintenance.log
-│   └── sessions/          # Sessões
-├── vendor/                # Dependências PHP
-│   ├── autoload.php
-│   ├── bin/
-│   ├── cloudinary/
-│   ├── composer/
-│   ├── doctrine/
-│   ├── graham-campbell/
-│   ├── guzzlehttp/
-│   ├── intervention/
-│   ├── matthiasmullie/
-│   ├── monolog/
-│   ├── myclabs/
-│   ├── nikic/
-│   ├── phar-io/
-│   ├── phpmailer/
-│   ├── phpoption/
-│   ├── phpunit/
-│   ├── predis/
-│   ├── psr/
-│   ├── ralouphie/
-│   ├── sebastian/
-│   ├── symfony/
-│   ├── theseer/
-│   ├── twig/
-│   └── vlucas/
-
 ## Scripts de Manutenção
 
 O sistema inclui vários scripts de manutenção que são executados automaticamente:
@@ -238,90 +38,114 @@ O sistema inclui vários scripts de manutenção que são executados automaticam
    - Mantém histórico configurável
    - Executa diariamente às 01:00
 
-## Desenvolvimento
+# Discursivamente2.1 — Guia de Scripts
 
-1. Inicie o servidor de desenvolvimento:
+Este documento lista e explica os scripts disponíveis no projeto **Discursivamente2.1**, tanto do **npm** (front‑end) quanto do **Composer** (back‑end).
+
+---
+
+## 1. Configuração Inicial
+
+Antes de qualquer coisa, instale as dependências do projeto:
+
 ```bash
-php -S localhost:8000 -t public/
+# Front‑end
+npm install
+
+# Back‑end
+composer install
 ```
 
-2. Compile os assets:
+---
+
+## 2. Scripts de Desenvolvimento (Front‑end)
+
+Use o prefixo `npm run` seguido do nome do script.
+
+| Script             | Comando                 | O que faz                                                                           |
+| ------------------ | ----------------------- | ----------------------------------------------------------------------------------- |
+| **clean**          | `npm run clean`         | Remove caches, logs e build antigo: `var/cache/* var/log/* public/assets/build/*`   |
+| **lint\:js**       | `npm run lint:js`       | Executa ESLint em `public/assets/js/**/*.js` e corrige problemas simples            |
+| **lint\:css**      | `npm run lint:css`      | Executa Stylelint em `public/assets/css/**/*.css` e corrige problemas simples       |
+| **lint**           | `npm run lint`          | Combina `lint:js` + `lint:css`                                                      |
+| **test\:js**       | `npm run test:js`       | Roda os testes JS com Jest                                                          |
+| **test**           | `npm test`              | Alias para `npm run test:js`                                                        |
+| **build\:js**      | `npm run build:js`      | Minifica e concatena JS em `public/assets/build/app.min.js`                         |
+| **build\:css**     | `npm run build:css`     | Minifica CSS em `public/assets/build/app.min.css`                                   |
+| **build**          | `npm run build`         | Limpa + Lint + Build de JS e CSS                                                    |
+| **watch\:js**      | `npm run watch:js`      | Observa alterações em JS e recompila automaticamente                                |
+| **watch\:css**     | `npm run watch:css`     | Observa alterações em CSS e recompila automaticamente                               |
+| **watch**          | `npm run watch`         | Roda `watch:js` e `watch:css` simultaneamente (via concurrently)                    |
+| **dev**            | `npm run dev`           | Alias para `npm run watch`                                                          |
+| **deploy\:assets** | `npm run deploy:assets` | Instala dependências e gera assets (`npm ci && npm run build`)                      |
+| **deploy**         | `npm run deploy`        | Deploy completo front‑end + comandos SSH no servidor (build, pull, composer, cache) |
+
+Exemplo de uso em dev:
+
 ```bash
 npm run dev
 ```
 
-3. Para produção:
+---
+
+## 3. Scripts de Desenvolvimento (Back‑end)
+
+Use `composer run-script <nome>` ou apenas `composer <nome>` quando for script direto.
+
+| Script                        | Comando                            | O que faz                                                               |
+| ----------------------------- | ---------------------------------- | ----------------------------------------------------------------------- |
+| **test**                      | `composer test`                    | Executa PHPUnit (`phpunit --colors`)                                    |
+| **clean**                     | `composer run-script clean`        | Remove arquivos em `var/cache/*.php` e `var/log/*.log`                  |
+| **build-assets**              | `composer run-script build-assets` | Chama `npm ci` + `npm run build`                                        |
+| **post-root-package-install** | (automático)                       | Copia `.env.example` para `.env`, se não existir                        |
+| **post-update-cmd**           | (automático)                       | Publica assets de vendor (`artisan vendor:publish`)                     |
+| **serve**                     | `composer serve`                   | Inicia servidor PHP embutido em `localhost:8000`                        |
+| **deploy**                    | `composer run-script deploy`       | Pipeline: install otimizado, build-assets, migrations e cache para prod |
+
+Exemplo de uso em ambiente local:
+
 ```bash
-npm run build
+composer serve
 ```
 
-## Testes
+---
 
-Execute os testes com PHPUnit:
+## 4. Fluxos Comuns
+
+### Desenvolvimento Completo
+
 ```bash
+# Front‑end e back‑end
+npm install && composer install
+npm run dev        # front‑end em watch
+composer serve     # back‑end em localhost:8000
+```
+
+### Testes
+
+```bash
+# Testes JS
+npm test
+
+# Testes PHP
 composer test
 ```
 
-## Segurança
+### Build para Produção
 
-- Todas as senhas são hasheadas com bcrypt
-- Proteção contra CSRF em todos os formulários
-- Sanitização de entrada de dados
-- Proteção contra XSS
-- Rate limiting nas APIs
-- Sessões seguras com lifetime configurável
-- Logs de atividades suspeitas
+```bash
+npm run build       # gera assets otimizados
+composer run-script build-assets
+composer run-script clean
+```
 
-## Contribuindo
+### Deploy (Servidor)
 
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
+```bash
+# No servidor:
+git pull origin main
+npm run deploy      # front‑end + SSH + composer + cache
+composer run-script deploy   # back‑end completo
+```
 
-## Licença
-
-Este projeto está licenciado sob a licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
-
-## Suporte
-
-Para suporte, envie um email para projeto.discursivamente@gmail.com
-
-## indentidade visual
-
- Estilo Visual e Estrutura
-- A plataforma deve segue um estilo moderno, limpo e focado em experiência do usuário. - Utiliza bastante espaçamento, seções bem separadas e elementos visuais como banners, cards, ícones e botões grandes. - Tipografia clara, com títulos em negrito e textos de fácil leitura. - Layout responsivo, adaptando-se bem a diferentes tamanhos de tela (media queries presentes).
-
-Seções em destaque:
-Banner principal (hero) com chamada para ação.
-Seção de pilares (Leitura, Comunidade, Metas) com ícones.
-Depoimentos, eventos, perguntas frequentes, etc.
-2. Cores Utilizadas (paleta principal)
-Definidas em :root no CSS:
-
-Primária: #5F0F40 (roxo escuro/vinho) – usada em botões, títulos e destaques.
-Secundária: #615279 (roxo acinzentado) – usada para complementar elementos e fundos.
-Texto: #333333 (cinza escuro) – cor principal dos textos.
-Fundo claro: #f9f9f9 – para áreas de destaque, cartões e seções.
-Branco: #ffffff – para fundos de cards, caixas e áreas internas.
-Cinza médio: #707070 – para textos secundários e detalhes.
-Cinza claro: #e5e5e5 – para bordas, divisores e fundos suaves.
-Outros elementos:
-
-Sombreamento sutil (rgba(0, 0, 0, 0.08)) para dar profundidade a cards e seções.
-Transições suaves nos elementos interativos (all 0.3s ease).
-3. Identidade Visual
-- A identidade visual transmite modernidade, acolhimento e profissionalismo, com foco em leitura, comunidade e evolução. - Ícones de livro, usuários, metas e conquistas reforçam o tema educacional e de comunidade. - O uso de roxo/vinho como cor principal sugere criatividade, inspiração e um toque sofisticado, diferenciando-se de plataformas mais “frias”. - Botões e CTAs (call-to-action) são destacados com a cor primária, incentivando a navegação e engajamento.
-
-4. Tipografia
-Fonte principal: 'Segoe UI', Arial, sans-serif – moderna, legível e amigável.
-Títulos em negrito, tamanhos grandes para seções principais.
-Textos com espaçamento confortável, facilitando a leitura.
-5. Outros Elementos Visuais
-Cards com sombra e bordas arredondadas.
-Ícones em SVG ou FontAwesome para reforçar a comunicação visual.
-Animações suaves (ex: .fade-in, .animated-title) para dar vida à interface.
-Imagens de fundo e ilustrações para criar um ambiente acolhedor e inspirador.
-6. Resumo Profissional
-Sua home utiliza uma identidade visual moderna, acolhedora e inspiradora, com foco em tons de roxo/vinho, branco e cinza, reforçando a proposta de comunidade e evolução na leitura. O design é responsivo, limpo e utiliza elementos visuais que facilitam o engajamento e a navegação.
+---
