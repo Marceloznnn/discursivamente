@@ -17,15 +17,22 @@
         </a>
 
         <div class="nav-links-desktop">
-            <a href="/about" class="nav-link {% if current_page == 'about' %}active{% endif %}" aria-current="{% if current_page == 'about' %}page{% endif %}">
+            <a href="/about"
+               class="nav-link {% if current_page == 'about' %}active{% endif %}"
+               aria-current="{% if current_page == 'about' %}page{% endif %}">
                 <i class="fas fa-info-circle nav-icon"></i>
                 <span>Sobre</span>
             </a>
 
             {% if session.user %}
+                {# Pega o tipo de usuário (default '' se não existir), e normaliza para lowercase #}
+                {% set userType = session.user.type|default('')|lower %}
+                {% set isTeacher = userType == 'teacher' %}
+
                 {% macro dropdown(label, icon, pagePrefix, items) %}
                     <div class="nav-dropdown">
-                        <button class="dropdown-toggle {% if current_page starts with pagePrefix %}active{% endif %}" aria-haspopup="true" aria-expanded="false">
+                        <button class="dropdown-toggle {% if current_page starts with pagePrefix %}active{% endif %}"
+                                aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-{{ icon }} nav-icon"></i>
                             <span>{{ label }}</span>
                             <i class="fas fa-chevron-down dropdown-arrow"></i>
@@ -38,24 +45,40 @@
                     </div>
                 {% endmacro %}
 
-                {{ _self.dropdown('Turmas', 'chalkboard-teacher', 'classes', [
-                    { href: '/dashboard/aluno', text: 'Painel do Aluno' },
-                    { href: '/curso', text: 'Explorar Cursos' }
-                ]) }}
+                {# Turmas #}
+                {{ _self.dropdown(
+                    'Turmas',
+                    'chalkboard-teacher',
+                    'classes',
+                    isTeacher
+                        ? [
+                            { href: '/teacher/classes/manage', text: 'Gerenciar Turmas' },
+                            { href: '/teacher/courses', text: 'Gerenciar Cursos' }
+                          ]
+                        : [
+                            { href: '/dashboard/aluno', text: 'Painel do Aluno' },
+                            { href: '/courses', text: 'Explorar Cursos' }
+                          ]
+                ) }}
 
+                {# Compromissos #}
                 {{ _self.dropdown('Compromissos', 'tasks', 'commitments', [
                     { href: '/commitments/goals', text: 'Metas' }
                 ]) }}
 
+                {# Comunidades #}
                 {{ _self.dropdown('Comunidades', 'users', 'community', [
                     { href: '/community/forums', text: 'Fóruns' },
                     { href: '/community/clubs', text: 'Clubes' },
                     { href: '/community/feed', text: 'Feed' }
                 ]) }}
 
-                <a href="/profile" class="nav-link profile-link {% if current_page == 'profile' %}active{% endif %}" aria-current="{% if current_page == 'profile' %}page{% endif %}">
+                <a href="/profile"
+                   class="nav-link profile-link {% if current_page == 'profile' %}active{% endif %}"
+                   aria-current="{% if current_page == 'profile' %}page{% endif %}">
                     {% if session.user.avatar %}
-                        <img src="{{ session.user.avatar }}" alt="Avatar de {{ session.user.name }}" class="user-avatar">
+                        <img src="{{ session.user.avatar }}" alt="Avatar de {{ session.user.name }}"
+                             class="user-avatar">
                     {% else %}
                         <i class="fas fa-user-circle nav-icon user-avatar-icon"></i>
                     {% endif %}
@@ -64,14 +87,14 @@
             {% else %}
                 <div class="auth-buttons">
                     <a href="/login" class="btn btn-secondary">
-                        <i class="fas fa-sign-in-alt"></i>
-                        Entrar
+                        <i class="fas fa-sign-in-alt"></i> Entrar
                     </a>
                 </div>
             {% endif %}
         </div>
 
-        <button id="mobile-menu-toggle" class="mobile-menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-menu">
+        <button id="mobile-menu-toggle" class="mobile-menu-toggle"
+                aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-menu">
             <i class="fas fa-bars"></i>
         </button>
     </nav>
@@ -84,33 +107,48 @@
             </button>
         </div>
         <nav class="mobile-nav-links">
-            <a href="/about" class="mobile-link {% if current_page == 'about' %}active{% endif %}">
+            <a href="/about"
+               class="mobile-link {% if current_page == 'about' %}active{% endif %}">
                 <i class="fas fa-info-circle"></i> Sobre
             </a>
 
             {% if session.user %}
+                {% set userType = session.user.type|default('')|lower %}
+                {% set isTeacher = userType == 'teacher' %}
+
                 <div class="mobile-menu-section">
-                    <button class="mobile-menu-section-toggle" aria-expanded="false" aria-controls="mobile-section-turmas">
-                        <i class="fas fa-chalkboard-teacher"></i> Turmas <i class="fas fa-chevron-down arrow"></i>
+                    <button class="mobile-menu-section-toggle" aria-expanded="false"
+                            aria-controls="mobile-section-turmas">
+                        <i class="fas fa-chalkboard-teacher"></i> Turmas
+                        <i class="fas fa-chevron-down arrow"></i>
                     </button>
                     <div id="mobile-section-turmas" class="mobile-menu-subsection">
-                        <a href="/dashboard/aluno" class="mobile-link">Painel do Aluno</a>
-                        <a href="/classes/explore" class="mobile-link">Explorar Turmas</a>
+                        {% if isTeacher %}
+                            <a href="/teacher/classes/manage" class="mobile-link">Gerenciar Turmas</a>
+                            <a href="/teacher/courses" class="mobile-link">Gerenciar Cursos</a>
+                        {% else %}
+                            <a href="/dashboard/aluno" class="mobile-link">Painel do Aluno</a>
+                            <a href="/courses" class="mobile-link">Explorar Cursos</a>
+                        {% endif %}
                     </div>
                 </div>
 
                 <div class="mobile-menu-section">
-                     <button class="mobile-menu-section-toggle" aria-expanded="false" aria-controls="mobile-section-compromissos">
-                        <i class="fas fa-tasks"></i> Compromissos <i class="fas fa-chevron-down arrow"></i>
-                    </button>
-                    <div id="mobile-section-compromissos" class="mobile-menu-subsection">
-                        <a href="/commitments/goals" class="mobile-link">Metas</a>
-                    </div>
+                     <button class="mobile-menu-section-toggle" aria-expanded="false"
+                             aria-controls="mobile-section-compromissos">
+                         <i class="fas fa-tasks"></i> Compromissos
+                         <i class="fas fa-chevron-down arrow"></i>
+                     </button>
+                     <div id="mobile-section-compromissos" class="mobile-menu-subsection">
+                         <a href="/commitments/goals" class="mobile-link">Metas</a>
+                     </div>
                 </div>
 
                 <div class="mobile-menu-section">
-                    <button class="mobile-menu-section-toggle" aria-expanded="false" aria-controls="mobile-section-comunidades">
-                        <i class="fas fa-users"></i> Comunidades <i class="fas fa-chevron-down arrow"></i>
+                    <button class="mobile-menu-section-toggle" aria-expanded="false"
+                            aria-controls="mobile-section-comunidades">
+                        <i class="fas fa-users"></i> Comunidades
+                        <i class="fas fa-chevron-down arrow"></i>
                     </button>
                     <div id="mobile-section-comunidades" class="mobile-menu-subsection">
                         <a href="/community/forums" class="mobile-link">Fóruns</a>

@@ -1,0 +1,47 @@
+{# templates/teacher/materials/create.twig #}
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Adicionar Material{% endblock %}
+
+{% block content %}
+  <div class="container mx-auto p-6 bg-white rounded shadow">
+    <h1 class="text-2xl font-semibold mb-4">Adicionar Material ao Curso: {{ course.title }}</h1>
+
+    {# Feedback de sucesso/erro usando flash messages #}
+    {% for type, messages in app.flashes %}
+      <div class="alert alert-{{ type }} mb-4">
+        {% for message in messages %}
+          <p>{{ message }}</p>
+        {% endfor %}
+      </div>
+    {% endfor %}
+
+    <form action="/teacher/courses/{{ course.id }}/materials" method="post" enctype="multipart/form-data" class="space-y-4">
+      {# CSRF Token passado pelo controlador como 'csrfToken' #}
+      <input type="hidden" name="_csrf_token" value="{{ csrfToken }}">
+
+      <div>
+        <label for="title" class="block font-medium">Título <span class="text-red-500">*</span></label>
+        <input type="text" name="title" id="title" required value="{{ old.title ?? '' }}" class="w-full border rounded p-2">
+        {% if errors.title %}<span class="text-red-600 text-sm">{{ errors.title }}</span>{% endif %}
+      </div>
+
+      <div>
+        <label for="file" class="block font-medium">Arquivo (imagem/video)</label>
+        <input type="file" name="file" id="file" accept="image/*,video/*" class="w-full">
+        {% if errors.file %}<span class="text-red-600 text-sm">{{ errors.file }}</span>{% endif %}
+      </div>
+
+      <div>
+        <label for="content" class="block font-medium">Ou link externo</label>
+        <input type="url" name="content" id="content" placeholder="https://" value="{{ old.content ?? '' }}" class="w-full border rounded p-2">
+        {% if errors.content %}<span class="text-red-600 text-sm">{{ errors.content }}</span>{% endif %}
+      </div>
+
+      <div class="flex items-center space-x-4">
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Salvar Material</button>
+        <a href="/teacher/courses/{{ course.id }}/materials" class="text-gray-600 hover:underline">Cancelar</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}

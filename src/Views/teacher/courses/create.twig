@@ -1,0 +1,18 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Criar Curso{% endblock %}
+
+{% block content %}
+<h1>Criar Curso</h1>
+
+<form action="/teacher/courses" method="post">
+    <label for="title">Título:</label><br>
+    <input type="text" name="title" id="title" required><br><br>
+
+    <label for="description">Descrição:</label><br>
+    <textarea name="description" id="description" rows="4"></textarea><br><br>
+
+    <button type="submit">Salvar</button>
+    <a href="/teacher/courses">Cancelar</a>
+</form>
+{% endblock %}

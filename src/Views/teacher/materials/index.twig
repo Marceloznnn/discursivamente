@@ -1,0 +1,50 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Materiais do Curso{% endblock %}
+
+{% block content %}
+  <div class="container mx-auto p-6 bg-white rounded shadow">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-semibold">Materiais: {{ course.title }}</h1>
+      <div>
+        <a href="/teacher/courses" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">← Voltar aos cursos</a>
+        <a href="/teacher/courses/{{ course.id }}/materials/create" class="ml-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Adicionar Material</a>
+      </div>
+    </div>
+
+    {% if materials is empty %}
+      <p class="text-gray-500">Não há materiais cadastrados.</p>
+    {% else %}
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% for mat in materials %}
+          <div class="border rounded p-4 shadow-sm">
+            <h2 class="font-semibold mb-2">{{ mat.title }}</h2>
+
+            {# Verifica MIME tipo ao invés de resource_type genérico #}
+            {% if mat.contentType starts with 'video/' %}
+              <video src="{{ mat.content }}" controls class="w-full rounded"></video>
+            {% elseif mat.contentType starts with 'image/' %}
+              <img src="{{ mat.content }}" alt="{{ mat.title }}" class="w-full h-auto rounded">
+            {% elseif mat.contentType starts with 'audio/' %}
+              <audio controls class="w-full">
+                <source src="{{ mat.content }}" type="{{ mat.contentType }}">
+                Seu navegador não suporta áudio.
+              </audio>
+            {% elseif mat.contentType == 'application/pdf' %}
+              <embed src="{{ mat.content }}" type="application/pdf" width="100%" height="400px" />
+            {% else %}
+              <a href="{{ mat.content }}" target="_blank" class="text-blue-600 hover:underline">Baixar {{ mat.title }}</a>
+            {% endif %}
+
+            <div class="mt-4 flex justify-end space-x-2">
+              <form action="/teacher/courses/{{ course.id }}/materials/{{ mat.id }}/delete" method="post" onsubmit="return confirm('Remover este material?')">
+                <input type="hidden" name="_csrf_token" value="{{ csrfToken }}">
+                <button type="submit" class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">Excluir</button>
+              </form>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

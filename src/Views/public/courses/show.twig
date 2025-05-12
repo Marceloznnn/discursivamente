@@ -1,0 +1,53 @@
+{# templates/public/courses/show.twig #}
+{% extends 'layouts/base.twig' %}
+
+{% block title %}{{ course.title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ course.title }}</h1>
+  <p>{{ course.description }}</p>
+
+  {# Botão para página de materiais #}
+  <p>
+    <a href="/courses/{{ course.id }}/materials" class="button">
+      Ver Materiais
+    </a>
+  </p>
+
+  <h2 id="comments">Comentários</h2>
+  <ul>
+    {% for c in comments %}
+      <li style="margin-bottom:1em;">
+        <strong>{{ c.userName }}</strong>
+        <span>({{ c.createdAt|date("d/m/Y H:i") }})</span><br>
+        <small>Avaliação: {{ c.rating }} / 5</small>
+        <p>{{ c.comment }}</p>
+      </li>
+    {% else %}
+      <li>Seja o primeiro a comentar!</li>
+    {% endfor %}
+  </ul>
+
+  {% if session.user %}
+    <h3>Deixe seu comentário</h3>
+    <form action="/courses/{{ course.id }}/comment" method="post">
+      <div>
+        <label for="comment">Comentário:</label><br>
+        <textarea id="comment" name="comment" rows="4" style="width:100%"></textarea>
+      </div>
+      <div style="margin-top:0.5em;">
+        <label for="rating">Avaliação:</label>
+        <select id="rating" name="rating">
+          {% for i in 1..5 %}
+            <option value="{{ i }}">{{ i }} estrela{{ i > 1 ? 's' : '' }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button type="submit" style="margin-top:0.5em;">Enviar comentário</button>
+    </form>
+  {% else %}
+    <p><a href="/login">Faça login</a> para deixar um comentário.</p>
+  {% endif %}
+
+  <p><a href="/courses">← Voltar a todos os cursos</a></p>
+{% endblock %}

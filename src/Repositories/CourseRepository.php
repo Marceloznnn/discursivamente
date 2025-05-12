@@ -1,5 +1,5 @@
 <?php
-// src/Repositories/CourseRepository.php
+
 namespace Repositories;
 
 use App\Models\Course;
@@ -7,97 +7,82 @@ use PDO;
 
 class CourseRepository
 {
-    public function __construct(private PDO $pdo) {}
+    private PDO $pdo;
 
-    public function findAll(): array
+    public function __construct(PDO $pdo)
     {
-        $stmt = $this->pdo->query("SELECT * FROM course_main ORDER BY created_at DESC");
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return array_map(fn($r) => $this->hydrate($r), $rows);
+        $this->pdo = $pdo;
     }
 
     public function findById(int $id): ?Course
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM course_main WHERE id = ?");
-        $stmt->execute([$id]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt = $this->pdo->prepare('SELECT * FROM courses WHERE id = :id LIMIT 1');
+        $stmt->execute([':id' => $id]);
+        $row = $stmt->fetch();
         return $row ? $this->hydrate($row) : null;
+    }
+
+    public function findByCreatorId(int $creatorId): array
+    {
+        $stmt = $this->pdo->prepare('SELECT * FROM courses WHERE creator_id = :id ORDER BY created_at DESC');
+        $stmt->execute([':id' => $creatorId]);
+        $rows = $stmt->fetchAll();
+        return array_map(fn(array $r) => $this->hydrate($r), $rows);
+    }
+
+    public function findAll(): array
+    {
+        $stmt = $this->pdo->query('SELECT * FROM courses ORDER BY created_at DESC');
+        $rows = $stmt->fetchAll();
+        return array_map(fn(array $row) => $this->hydrate($row), $rows);
     }
 
     public function save(Course $course): void
     {
-        if ($course->getId() === null) {
-            $sql = "INSERT INTO course_main
-                (title, short_description, long_description, category_id, creator_id, status,
-                 cover_image, course_requirements, learning_objectives, enrollment_method,
-                 search_hits, click_throughs)
-             VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
-            $stmt = $this->pdo->prepare($sql);
+        if ($course->getId()) {
+            $stmt = $this->pdo->prepare(
+                'UPDATE courses
+                 SET title = :title,
+                     description = :description,
+                     creator_id = :creator_id,
+                     updated_at = NOW()
+                 WHERE id = :id'
+            );
             $stmt->execute([
-                $course->getTitle(),
-                $course->getShortDescription(),
-                $course->getLongDescription(),
-                $course->getCategoryId(),
-                $course->getCreatorId(),
-                $course->getStatus(),
-                $course->getCoverImage(),
-                $course->getCourseRequirements(),
-                $course->getLearningObjectives(),
-                $course->getEnrollmentMethod(),
-                $course->getSearchHits(),
-                $course->getClickThroughs(),
+                ':title'       => $course->getTitle(),
+                ':description' => $course->getDescription(),
+                ':creator_id'  => $course->getCreatorId(),
+                ':id'          => $course->getId(),
             ]);
-            $courseId = (int)$this->pdo->lastInsertId();
-            $course->setId($courseId);
         } else {
-            $sql = "UPDATE course_main SET
-                title = ?, short_description = ?, long_description = ?, category_id = ?, status = ?,
-                cover_image = ?, course_requirements = ?, learning_objectives = ?, enrollment_method = ?,
-                search_hits = ?, click_throughs = ?
-             WHERE id = ?";
-            $stmt = $this->pdo->prepare($sql);
+            $stmt = $this->pdo->prepare(
+                'INSERT INTO courses (title, description, creator_id, price, created_at, updated_at)
+                 VALUES (:title, :description, :creator_id, 0.00, NOW(), NOW())'
+            );
             $stmt->execute([
-                $course->getTitle(),
-                $course->getShortDescription(),
-                $course->getLongDescription(),
-                $course->getCategoryId(),
-                $course->getStatus(),
-                $course->getCoverImage(),
-                $course->getCourseRequirements(),
-                $course->getLearningObjectives(),
-                $course->getEnrollmentMethod(),
-                $course->getSearchHits(),
-                $course->getClickThroughs(),
-                $course->getId(),
+                ':title'       => $course->getTitle(),
+                ':description' => $course->getDescription(),
+                ':creator_id'  => $course->getCreatorId(),
             ]);
         }
     }
 
     public function delete(int $id): void
     {
-        $stmt = $this->pdo->prepare("DELETE FROM course_main WHERE id = ?");
-        $stmt->execute([$id]);
+        $stmt = $this->pdo->prepare('DELETE FROM courses WHERE id = :id');
+        $stmt->execute([':id' => $id]);
     }
-    
 
-    private function hydrate(array $data): Course
+    private function hydrate(array $row): Course
     {
         return new Course(
-            $data['title'],
-            $data['short_description'],
-            (int)$data['creator_id'],
-            $data['status'],
-            $data['enrollment_method'],
-            $data['category_id'] !== null ? (int)$data['category_id'] : null,
-            $data['long_description'],
-            $data['cover_image'],
-            $data['course_requirements'],
-            $data['learning_objectives'],
-            (int)$data['id'],
-            new \DateTime($data['created_at']),
-            new \DateTime($data['updated_at']),
-            (int)$data['search_hits'],
-            (int)$data['click_throughs']
+            $row['title'],                             // string $title
+            $row['description'],                       // string $description
+            (int) $row['creator_id'],                  // int    $creatorId
+            (int) $row['id'],                          // ?int   $id
+            (float) $row['price'],                     // float  $price
+            $row['created_at'],                        // ?string $createdAt
+            $row['updated_at']                         // ?string $updatedAt
         );
     }
 }

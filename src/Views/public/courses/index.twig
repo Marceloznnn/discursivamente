@@ -1,0 +1,18 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Todos os Cursos{% endblock %}
+{% block content %}
+  <h1>Todos os Cursos</h1>
+  <ul>
+    {% for course in courses %}
+      <li>
+        <a href="/courses/{{ course.id }}">
+          <strong>{{ course.title }}</strong>
+        </a><br>
+        {{ course.description|slice(0, 100) ~ '...' }}
+      </li>
+    {% else %}
+      <li>Nenhum curso disponível.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

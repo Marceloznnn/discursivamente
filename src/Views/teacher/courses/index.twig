@@ -1,0 +1,28 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Meus Cursos{% endblock %}
+
+{% block content %}
+  <h1>Meus Cursos</h1>
+
+  <p>
+    <a href="/teacher/courses/create" class="btn btn-primary">
+      Criar novo curso
+    </a>
+  </p>
+
+  <ul class="course-list">
+    {% for course in courses %}
+      <li class="course-item">
+        <span class="course-title">
+          {{ course.getTitle() }}
+        </span>
+        <a href="/teacher/courses/{{ course.getId() }}" class="btn btn-secondary btn-sm">
+          Ver detalhes
+        </a>
+      </li>
+    {% else %}
+      <li>Você ainda não criou nenhum curso.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
