@@ -1,12 +1,12 @@
-/* style.css - Versão Atualizada com Esquema de Cores Vinho e Areia */
+/* Estilos atualizados para responsividade do header - Esquema de Cores Vinho e Areia */
 
 /*--------------------------------------------------------------
 # Variáveis Globais e Reset Básico
 --------------------------------------------------------------*/
 :root {
   /* Esquema de cores atualizado */
-  --primary-color: #55100b; /* Vinho como cor primária */
-  --primary-color-dark: #5E0B0B; /* Vinho escuro */
+  --primary-color: #410f0b; /* Vinho como cor primária */
+  --primary-color-dark: #380505; /* Vinho escuro */
   --secondary-color: #D6AD60; /* Dourado/areia escuro para ações secundárias */
   --accent-color: #B68D40; /* Dourado mais escuro para destaque */
   --text-color: #1C1C1C; /* Preto carvão para texto principal */
@@ -44,10 +44,11 @@ html {
 body {
   font-family: var(--font-family-base);
   color: var(--text-color);
-  background-color: var(--bg-color); /* Alterado para branco gelo */
+  background-color: var(--bg-color);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden; /* Previne scrollbars horizontais */
 }
 
 a {
@@ -69,45 +70,11 @@ main {
   padding-top: calc(var(--header-height) + 1px);
 }
 
-section:not(.hero-slider),
-div.section {
-  margin-top: calc(var(--header-height) + 20px);
-}
-
-.spaced-section {
-  margin-top: calc(var(--header-height) + 20px);
-}
-
-.site-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 1rem;   /* margens laterais mínimas */
-  width: 100%;
-}
-.logo-container {
-  flex-shrink: 0;    /* nunca deixe o logo encolher */
-}
-.nav-links-desktop {
-  flex-grow: 1;      /* links ocupam o restante do espaço */
-  justify-content: flex-end;
-}
-
-/* permitir também .open, já que o JS usa esse nome */
-.mobile-menu.open {
-  right: 0 !important;
-}
-
-.mobile-menu-overlay.open {
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-
 /*--------------------------------------------------------------
 # Header Principal - Esquema de Cores Vinho
 --------------------------------------------------------------*/
 .site-header {
-  background-color: var(--primary-color); /* Fundo vinho */
+  background-color: var(--primary-color);
   padding: 0;
   position: fixed;
   top: 0;
@@ -129,69 +96,77 @@ div.section {
   justify-content: space-between;
   align-items: center;
   height: 100%;
+  padding: 0 1rem; /* Margens laterais padronizadas */
+  width: 100%;
+  max-width: 1400px; /* Largura máxima para telas grandes */
+  margin: 0 auto; /* Centraliza o conteúdo */
 }
 
 /* Logo */
 .logo-container {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 10px; /* Reduzido o espaço entre logo e título */
+  flex-shrink: 0; /* Previne que o logo seja comprimido */
 }
 
 .site-logo {
   height: 35px;
   width: auto;
   transition: height var(--transition-speed) ease;
-  /* Filtro invertido para logos escuros em fundo vinho */
-  filter: brightness(0) invert(1);
+  filter: brightness(0) invert(1); /* Mantém filtro para logos escuros em fundo vinho */
 }
 
 .site-title {
   height: 25px;
   width: auto;
   transition: height var(--transition-speed) ease;
-  /* Filtro invertido para logos escuros em fundo vinho */
   filter: brightness(0) invert(1);
 }
 
 .site-header.scrolled .site-logo {
   height: 30px;
 }
+
 .site-header.scrolled .site-title {
   height: 22px;
 }
 
 /*--------------------------------------------------------------
-# Navegação Desktop - Cores Actualizadas
+# Navegação Desktop - Layouts Aprimorados
 --------------------------------------------------------------*/
 .nav-links-desktop {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px; /* Reduzido o espaço entre itens de navegação */
+  margin-left: auto; /* Empurra para a direita */
+  flex-grow: 1; /* Permite crescer */
+  justify-content: flex-end; /* Alinha à direita */
 }
 
 .nav-link,
 .dropdown-toggle {
   display: flex;
   align-items: center;
-  padding: 10px 15px;
-  color: #F8F8F8; /* Branco gelo para texto em fundo vinho */
+  padding: 8px 12px; /* Reduzido para melhor ajuste em telas menores */
+  color: #F8F8F8;
   font-weight: 500;
-  font-size: 0.95rem;
+  font-size: 0.9rem; /* Tamanho ligeiramente reduzido */
   border-radius: var(--border-radius-sm);
   transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
   position: relative;
+  white-space: nowrap; /* Previne quebra de linha */
 }
 
 .nav-link:hover,
 .dropdown-toggle:hover {
-  background-color: rgba(245, 235, 221, 0.1); /* Bege claro com transparência */
-  color: #F5EBDD; /* Bege claro/areia */
+  background-color: rgba(245, 235, 221, 0.1);
+  color: #F5EBDD;
 }
 
 .nav-link.active,
 .dropdown-toggle.active {
-  color: #F5EBDD; /* Bege claro/areia */
+  color: #F5EBDD;
   font-weight: 600;
 }
 
@@ -204,7 +179,7 @@ div.section {
   transform: translateX(-50%);
   width: 60%;
   height: 3px;
-  background-color: #F5EBDD; /* Bege claro/areia */
+  background-color: #F5EBDD;
   border-radius: 2px;
 }
 
@@ -219,7 +194,7 @@ div.section {
 }
 
 .nav-icon {
-  margin-right: 8px;
+  margin-right: 6px; /* Reduzido espaço */
   font-size: 1.1em;
   color: currentColor;
 }
@@ -233,10 +208,11 @@ div.section {
   background-color: transparent;
   border: none;
   cursor: pointer;
+  padding: 8px 12px; /* Mantendo consistência com nav-link */
 }
 
 .dropdown-arrow {
-  margin-left: 8px;
+  margin-left: 5px; /* Reduzido espaço */
   font-size: 0.8em;
   transition: transform var(--transition-speed) ease;
 }
@@ -249,11 +225,11 @@ div.section {
   position: absolute;
   top: calc(100% + 10px);
   left: 0;
-  background-color: var(--bg-color); /* Branco gelo */
+  background-color: var(--bg-color);
   border: 1px solid var(--border-color-light);
   border-radius: var(--border-radius-md);
   box-shadow: var(--box-shadow-medium);
-  min-width: 220px;
+  min-width: 200px; /* Reduzido ligeiramente */
   padding: 8px 0;
   z-index: 1001;
   opacity: 0;
@@ -271,53 +247,48 @@ div.section {
 
 .dropdown-menu a {
   display: block;
-  padding: 10px 20px;
+  padding: 10px 15px; /* Reduzido padding */
   color: var(--text-color);
   font-size: 0.9rem;
   white-space: nowrap;
 }
 
 .dropdown-menu a:hover {
-  background-color: var(--bg-color-alt); /* Bege claro/areia */
-  color: var(--primary-color); /* Vinho */
+  background-color: var(--bg-color-alt);
+  color: var(--primary-color);
 }
 
 /* Perfil do Usuário Desktop */
 .profile-link {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-left: 15px;
+  gap: 8px; /* Reduzido espaço */
+  margin-left: 10px; /* Reduzido margem */
 }
 
 .user-avatar {
-  width: 36px;
-  height: 36px;
+  width: 32px; /* Reduzido tamanho */
+  height: 32px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #F5EBDD; /* Bege claro/areia para destacar */
+  border: 2px solid #F5EBDD;
 }
 
 .user-avatar-icon {
-  font-size: 2em;
-  color: #F8F8F8; /* Branco gelo */
-}
-
-.profile-link:hover .user-avatar-icon,
-.profile-link.active .user-avatar-icon {
-  color: #F5EBDD; /* Bege claro/areia */
+  font-size: 1.8em; /* Reduzido tamanho */
+  color: #F8F8F8;
 }
 
 /* Botões de Autenticação */
 .auth-buttons {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-left: 15px;
+  gap: 8px; /* Reduzido espaço */
+  margin-left: 10px; /* Reduzido margem */
 }
 
 .btn {
-  padding: 8px 18px;
+  padding: 7px 15px; /* Reduzido padding */
   border-radius: var(--border-radius-md);
   font-weight: 500;
   font-size: 0.9rem;
@@ -325,54 +296,55 @@ div.section {
   border: 1px solid transparent;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px; /* Reduzido espaço */
 }
 
 .btn-primary {
-  background-color: #F5EBDD; /* Bege claro/areia */
-  color: var(--primary-color); /* Vinho */
+  background-color: #F5EBDD;
+  color: var(--primary-color);
   border-color: #F5EBDD;
 }
 
 .btn-primary:hover {
-  background-color: #E8DCCC; /* Bege um pouco mais escuro */
+  background-color: #E8DCCC;
   border-color: #E8DCCC;
   color: var(--primary-color-dark);
 }
 
 .btn-secondary {
   background-color: transparent;
-  color: #F8F8F8; /* Branco gelo */
+  color: #F8F8F8;
   border: 1px solid #F8F8F8;
 }
 
 .btn-secondary:hover {
-  background-color: rgba(245, 235, 221, 0.2); /* Bege com transparência */
-  color: #F5EBDD; /* Bege claro/areia */
+  background-color: rgba(245, 235, 221, 0.2);
+  color: #F5EBDD;
   border-color: #F5EBDD;
 }
 
 /*--------------------------------------------------------------
-# Menu Mobile - Cores Atualizadas
+# Menu Mobile - Melhorias de Responsividade
 --------------------------------------------------------------*/
 .mobile-menu-toggle {
   display: none;
   background-color: transparent;
   border: none;
-  font-size: 1.8rem;
-  color: #F8F8F8; /* Branco gelo */
+  font-size: 1.6rem; /* Reduzido tamanho */
+  color: #F8F8F8;
   padding: 5px;
   z-index: 1002;
+  cursor: pointer;
 }
 
 .mobile-menu {
-  position: absolute;
+  position: fixed; /* Fixo em vez de absolute para melhor comportamento */
   top: 0;
   right: -100%;
-  width: 300px;
-  max-width: 80%;
+  width: 280px; /* Padrão menor para melhor experiência */
+  max-width: 85%;
   height: 100vh;
-  background-color: #F8F8F8; /* Branco gelo */
+  background-color: #F8F8F8;
   box-shadow: -5px 0 15px rgba(0, 0, 0, 0.15);
   z-index: 1010;
   transition: right var(--transition-speed) ease-in-out;
@@ -381,6 +353,7 @@ div.section {
   flex-direction: column;
 }
 
+.mobile-menu.open,
 .mobile-menu.active {
   right: 0;
 }
@@ -391,30 +364,31 @@ div.section {
   align-items: center;
   padding: 15px 20px;
   border-bottom: 1px solid var(--border-color-light);
-  background-color: var(--primary-color); /* Vinho */
-  color: #F8F8F8; /* Branco gelo */
+  background-color: var(--primary-color);
+  color: #F8F8F8;
 }
 
 .mobile-menu-title {
-  font-size: 1.2rem;
+  font-size: 1.1rem; /* Reduzido tamanho */
   font-weight: 600;
-  color: #F8F8F8; /* Branco gelo */
+  color: #F8F8F8;
 }
 
 .mobile-menu-close {
   background-color: transparent;
   border: none;
-  font-size: 1.5rem;
-  color: #F8F8F8; /* Branco gelo */
+  font-size: 1.4rem; /* Reduzido tamanho */
+  color: #F8F8F8;
   padding: 5px;
+  cursor: pointer;
 }
 
 .mobile-menu-close:hover {
-  color: #F5EBDD; /* Bege claro/areia */
+  color: #F5EBDD;
 }
 
 .mobile-nav-links {
-  padding: 15px 0;
+  padding: 12px 0; /* Reduzido padding */
   flex-grow: 1;
 }
 
@@ -422,38 +396,39 @@ div.section {
 .mobile-menu-section-toggle {
   display: flex;
   align-items: center;
-  padding: 12px 20px;
-  color: var(--text-color); /* Preto carvão */
-  font-size: 1rem;
+  padding: 11px 18px; /* Reduzido padding */
+  color: var(--text-color);
+  font-size: 0.95rem; /* Reduzido tamanho */
   border: none;
   background: none;
   width: 100%;
   text-align: left;
   position: relative;
+  cursor: pointer;
 }
 
 .mobile-link i,
 .mobile-menu-section-toggle i:first-child {
-  margin-right: 15px;
+  margin-right: 12px; /* Reduzido margem */
   font-size: 1.1em;
   width: 20px;
   text-align: center;
-  color: var(--primary-color); /* Vinho */
+  color: var(--primary-color);
 }
 
 .mobile-link:hover,
 .mobile-menu-section-toggle:hover {
-  background-color: var(--bg-color-alt); /* Bege claro/areia */
-  color: var(--primary-color); /* Vinho */
+  background-color: var(--bg-color-alt);
+  color: var(--primary-color);
 }
 
 .mobile-link.active {
-  background-color: var(--primary-color); /* Vinho */
-  color: #F8F8F8 !important; /* Branco gelo */
+  background-color: var(--primary-color);
+  color: #F8F8F8 !important;
 }
 
 .mobile-link.active i {
-  color: #F8F8F8 !important; /* Branco gelo */
+  color: #F8F8F8 !important;
 }
 
 .mobile-menu-section-toggle .arrow {
@@ -469,17 +444,13 @@ div.section {
 .mobile-menu-subsection {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.35s ease-in-out, padding var(--transition-speed) ease-in-out;
-  background-color: var(--bg-color-alt); /* Bege claro/areia */
-}
-
-.mobile-menu-subsection.open {
-  /* max-height será definido dinamicamente pelo JS */
+  transition: max-height 0.35s ease-in-out, padding 0.2s ease-in-out;
+  background-color: var(--bg-color-alt);
 }
 
 .mobile-menu-subsection .mobile-link {
   font-size: 0.9rem;
-  padding-left: 55px;
+  padding-left: 50px; /* Reduzido para melhor hierarquia visual */
 }
 
 .mobile-menu-subsection .mobile-link i {
@@ -489,21 +460,21 @@ div.section {
 .mobile-menu-divider {
   height: 1px;
   background-color: var(--border-color);
-  margin: 15px 20px;
+  margin: 12px 18px; /* Reduzido margem */
 }
 
 .mobile-avatar {
-  width: 24px;
-  height: 24px;
+  width: 22px; /* Reduzido tamanho */
+  height: 22px;
   border-radius: 50%;
   object-fit: cover;
-  margin-right: 15px;
-  border: 1px solid var(--primary-color); /* Borda vinho */
+  margin-right: 12px; /* Reduzido margem */
+  border: 1px solid var(--primary-color);
 }
 
 /* Overlay para o menu mobile */
 .mobile-menu-overlay {
-  position: absolute;
+  position: fixed; /* Fixo em vez de absolute */
   top: 0;
   left: 0;
   width: 100%;
@@ -515,14 +486,45 @@ div.section {
   transition: opacity var(--transition-speed) ease-in-out, visibility var(--transition-speed) ease-in-out;
 }
 
+.mobile-menu-overlay.open,
 .mobile-menu-overlay.active {
   opacity: 1;
   visibility: visible;
 }
 
 /*--------------------------------------------------------------
-# Media Queries - Responsividade
+# Media Queries - Responsividade Aprimorada
 --------------------------------------------------------------*/
+/* Telas Extra Grandes */
+@media (min-width: 1400px) {
+  .site-nav {
+    padding: 0 2rem; /* Mais espaço nas laterais para telas grandes */
+  }
+  
+  .nav-links-desktop {
+    gap: 10px; /* Mais espaço entre itens para telas grandes */
+  }
+}
+
+/* Telas Grandes e Médias */
+@media (max-width: 1199.98px) {
+  .nav-link, 
+  .dropdown-toggle {
+    padding: 8px 10px; /* Reduz padding */
+    font-size: 0.85rem; /* Reduz tamanho de fonte */
+  }
+  
+  .nav-icon {
+    margin-right: 5px; /* Menos espaço */
+  }
+  
+  .user-avatar {
+    width: 30px; /* Menor avatar */
+    height: 30px;
+  }
+}
+
+/* Tablets */
 @media (max-width: 991.98px) {
   .nav-links-desktop {
     display: none;
@@ -533,37 +535,73 @@ div.section {
   }
 
   .site-logo {
-    height: 30px;
+    height: 28px; /* Menor logo */
   }
   
   .site-title {
-    height: 22px;
+    height: 20px; /* Menor título */
+  }
+  
+  .site-header {
+    height: 60px; /* Header menor em tablets */
+  }
+  
+  .site-header.scrolled {
+    height: 55px; /* Header scrolled ainda menor */
   }
 }
 
+/* Tablets Pequenos */
 @media (max-width: 767.98px) {
-  .container {
-    padding-left: 10px;
-    padding-right: 10px;
+  .site-nav {
+    padding: 0 12px; /* Menos padding lateral */
   }
 
   .mobile-menu {
-    width: 280px;
+    width: 260px; /* Menu menor */
   }
 
   .btn {
-    padding: 8px 12px;
+    padding: 6px 12px;
     font-size: 0.85rem;
   }
   
-  .auth-buttons {
-    margin-left: 10px;
+  .site-header {
+    height: 55px; /* Header ainda menor */
+  }
+  
+  .site-header.scrolled {
+    height: 50px;
   }
 }
 
+/* Smartphones */
+@media (max-width: 575.98px) {
+  .site-logo {
+    height: 26px;
+  }
+  
+  .site-title {
+    height: 18px;
+  }
+  
+  .site-header {
+    height: 50px; /* Header mais compacto para celulares */
+  }
+  
+  .site-header.scrolled {
+    height: 45px;
+  }
+  
+  .mobile-menu {
+    width: 240px;
+  }
+}
+
+/* Smartphones Pequenos */
 @media (max-width: 480px) {
   .site-title {
-    display: none;
+    display: none; /* Esconde o título textual para ganhar espaço */
   }
   
   .logo-container {
@@ -571,12 +609,19 @@ div.section {
   }
   
   .site-logo {
-    height: 28px;
+    height: 24px;
   }
-}
-
-/* Sobreescreve o filtro brightness anterior para garantir que logo fique visível no fundo vinho */
-.logo-container .site-logo,
-.logo-container .site-title {
-  filter: brightness(0) invert(1);
+  
+  .mobile-menu-toggle {
+    font-size: 1.4rem; /* Botão menu menor */
+  }
+  
+  .mobile-menu {
+    max-width: 90%; /* Quase full width */
+  }
+  
+  .mobile-link, 
+  .mobile-menu-section-toggle {
+    padding: 10px 15px; /* Menor padding, áreas de toque maiores */
+  }
 }

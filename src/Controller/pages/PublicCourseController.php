@@ -37,15 +37,23 @@ class PublicCourseController
      * Lista todos os cursos públicos
      */
     public function index(): void
-    {
+{
+    $q = trim($_GET['q'] ?? '');
+
+    if ($q !== '') {
+        error_log(__METHOD__ . " - Searching courses for '{$q}'");
+        $courses = $this->courseRepo->search($q);
+    } else {
         error_log(__METHOD__ . " - Fetching all courses");
         $courses = $this->courseRepo->findAll();
-        error_log(__METHOD__ . " - Found " . count($courses) . " courses");
-
-        echo $this->twig->render('public/courses/index.twig', [
-            'courses' => $courses,
-        ]);
     }
+
+    echo $this->twig->render('public/courses/index.twig', [
+        'courses' => $courses,
+        'q'       => $q,
+    ]);
+}
+
 
     /**
      * Mostra detalhes do curso e comentários
@@ -151,6 +159,8 @@ class PublicCourseController
             'material' => $material,
         ]);
     }
+
+    
 
     /**
      * Salva comentário enviado via POST

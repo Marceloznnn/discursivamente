@@ -1,0 +1,108 @@
+/* events.css - Estilização profissional para página de Eventos */
+
+.eventos-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.eventos-header {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #663e19;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.eventos-subheader {
+  font-size: 1.2rem;
+  color: #7f8c8d;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.eventos-empty {
+  font-size: 1rem;
+  color: #e74c3c;
+  text-align: center;
+  padding: 20px;
+  border: 1px dashed #e74c3c;
+  background-color: #fceae8;
+  border-radius: 8px;
+}
+
+.evento-item {
+  display: flex;
+  flex-direction: row;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.evento-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.evento-image {
+  flex: 0 0 200px;
+  height: 150px;
+  overflow: hidden;
+}
+
+.evento-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.evento-content {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.evento-title {
+  font-size: 1.5rem;
+  color: #34495e;
+  margin: 0 0 10px;
+}
+
+.evento-date {
+  font-size: 0.9rem;
+  color: #95a5a6;
+  margin-bottom: 10px;
+}
+
+.evento-description {
+  font-size: 1rem;
+  color: #555555;
+  flex-grow: 1;
+  margin-bottom: 15px;
+}
+
+.evento-link {
+  font-size: 0.95rem;
+  font-weight: 600;
+  background-color: #012035;
+  color: #ffffff;
+  text-decoration: none;
+  text-align: center;
+  padding: 10px 15px;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.evento-link:hover {
+
+    color: #000000;
+  background-color: #2984b9;
+}

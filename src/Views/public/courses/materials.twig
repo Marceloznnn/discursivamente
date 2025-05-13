@@ -1,21 +1,25 @@
 {% extends 'layouts/base.twig' %}
 
-{% block title %}Materiais: {{ course.title }}{% endblock %}
+{% block styles %}
+  <link rel="stylesheet" href="/assets/css/pages/curso/aluno/materials.css">
+{% endblock %}
 
 {% block content %}
-  <h1>Lista de Materiais: {{ course.title }}</h1>
+  <div class="materials-container">
+    <h1>Lista de Materiais: {{ course.title }}</h1>
 
-  <ul>
-    {% for m in materials %}
-      <li style="margin-bottom:0.5em;">
-        <a href="/courses/{{ course.id }}/materials/{{ m.id }}">
-          {{ m.title }}
-        </a>
-      </li>
-    {% else %}
-      <li>Nenhum material disponível.</li>
-    {% endfor %}
-  </ul>
+    <ul class="materials-list">
+      {% for m in materials %}
+        <li class="material-item">
+          <a href="/courses/{{ course.id }}/materials/{{ m.id }}" class="material-link">
+            {{ m.title }}
+          </a>
+        </li>
+      {% else %}
+        <li class="material-empty">Nenhum material disponível.</li>
+      {% endfor %}
+    </ul>
 
-  <p><a href="/courses/{{ course.id }}">← Voltar ao curso</a></p>
+    <p><a href="/courses/{{ course.id }}" class="back-link">← Voltar ao curso</a></p>
+  </div>
 {% endblock %}

@@ -1,8 +1,18 @@
 {% extends 'layouts/base.twig' %}
-{% block title %}{{ event.title }}{% endblock %}
+{% block styles %}
+  <link rel="stylesheet" href="/assets/css/pages/events/show.css">
+{% endblock %}
+
 {% block content %}
-<h1>{{ event.title }}</h1>
-<p>{{ event.dateTime|date('d/m/Y H:i') }}</p>
-{% if event.image %}<img src="{{ event.image }}" />{% endif %}
-<div>{{ event.description }}</div>
+<div class="evento-detail-container">
+  <h1>{{ event.title }}</h1>
+  <p class="date">{{ event.dateTime|date('d/m/Y H:i') }}</p>
+  {% if event.image %}
+    <img class="evento-detail-image" src="{{ event.image }}" alt="{{ event.title }}">
+  {% endif %}
+  <div class="evento-description">
+    {{ event.description }}
+  </div>
+  <a href="/events" class="evento-back-link">&larr; Voltar para eventos</a>
+</div>
 {% endblock %}

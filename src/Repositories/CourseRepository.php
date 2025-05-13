@@ -66,6 +66,21 @@ class CourseRepository
             ]);
         }
     }
+    
+public function search(string $q): array
+{
+    $stmt = $this->pdo->prepare(
+        "SELECT * 
+           FROM courses 
+          WHERE title       LIKE :q 
+             OR description LIKE :q
+       ORDER BY created_at DESC"
+    );
+    $like = "%{$q}%";
+    $stmt->execute([':q' => $like]);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    return array_map(fn(array $r) => $this->hydrate($r), $rows);
+}
 
     public function delete(int $id): void
     {

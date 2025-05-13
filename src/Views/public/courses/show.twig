@@ -1,53 +1,54 @@
-{# templates/public/courses/show.twig #}
 {% extends 'layouts/base.twig' %}
 
-{% block title %}{{ course.title }}{% endblock %}
+{% block styles %}
+  <link rel="stylesheet" href="/assets/css/pages/curso/aluno/show.css">
+{% endblock %}
 
 {% block content %}
-  <h1>{{ course.title }}</h1>
-  <p>{{ course.description }}</p>
+  <div class="course-detail-container">
+    <h1>{{ course.title }}</h1>
+    <p class="course-description">{{ course.description }}</p>
 
-  {# Botão para página de materiais #}
-  <p>
-    <a href="/courses/{{ course.id }}/materials" class="button">
+    <a href="/courses/{{ course.id }}/materials" class="btn-materials">
       Ver Materiais
     </a>
-  </p>
 
-  <h2 id="comments">Comentários</h2>
-  <ul>
-    {% for c in comments %}
-      <li style="margin-bottom:1em;">
-        <strong>{{ c.userName }}</strong>
-        <span>({{ c.createdAt|date("d/m/Y H:i") }})</span><br>
-        <small>Avaliação: {{ c.rating }} / 5</small>
-        <p>{{ c.comment }}</p>
-      </li>
-    {% else %}
-      <li>Seja o primeiro a comentar!</li>
-    {% endfor %}
-  </ul>
+    <div class="comments-section">
+      <h2 id="comments">Comentários</h2>
+      <ul class="comments-list">
+        {% for c in comments %}
+          <li class="comment-item">
+            <div class="comment-header">
+              <strong>{{ c.userName }}</strong>
+              <span>{{ c.createdAt|date("d/m/Y H:i") }}</span>
+            </div>
+            <div class="comment-rating">Avaliação: {{ c.rating }} / 5</div>
+            <div class="comment-body">{{ c.comment }}</div>
+          </li>
+        {% else %}
+          <li class="material-empty">Seja o primeiro a comentar!</li>
+        {% endfor %}
+      </ul>
+    </div>
 
-  {% if session.user %}
-    <h3>Deixe seu comentário</h3>
-    <form action="/courses/{{ course.id }}/comment" method="post">
-      <div>
-        <label for="comment">Comentário:</label><br>
-        <textarea id="comment" name="comment" rows="4" style="width:100%"></textarea>
-      </div>
-      <div style="margin-top:0.5em;">
+    {% if session.user %}
+      <form action="/courses/{{ course.id }}/comment" method="post" class="comment-form">
+        <label for="comment">Comentário:</label>
+        <textarea id="comment" name="comment" rows="4"></textarea>
+
         <label for="rating">Avaliação:</label>
         <select id="rating" name="rating">
           {% for i in 1..5 %}
             <option value="{{ i }}">{{ i }} estrela{{ i > 1 ? 's' : '' }}</option>
           {% endfor %}
         </select>
-      </div>
-      <button type="submit" style="margin-top:0.5em;">Enviar comentário</button>
-    </form>
-  {% else %}
-    <p><a href="/login">Faça login</a> para deixar um comentário.</p>
-  {% endif %}
 
-  <p><a href="/courses">← Voltar a todos os cursos</a></p>
+        <button type="submit" class="btn-submit">Enviar comentário</button>
+      </form>
+    {% else %}
+      <p><a href="/login" class="back-link">Faça login para deixar um comentário.</a></p>
+    {% endif %}
+
+    <p><a href="/courses" class="back-link">← Voltar a todos os cursos</a></p>
+  </div>
 {% endblock %}

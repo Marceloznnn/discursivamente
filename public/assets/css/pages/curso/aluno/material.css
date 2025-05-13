@@ -1,0 +1,256 @@
+/* 
+ * Material de Curso - Estilo principal
+ * Este CSS define o layout e estilo para a página de visualização de materiais
+ */
+
+:root {
+  --primary-color: #3f51b5;
+  --primary-light: #e8eaf6;
+  --primary-dark: #303f9f;
+  --accent-color: #ff4081;
+  --text-color: #333;
+  --text-light: #757575;
+  --background-color: #f5f7fa;
+  --sidebar-width: 280px;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --border-radius: 8px;
+  --transition: all 0.3s ease;
+}
+
+/* Reset e base */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Roboto', 'Segoe UI', sans-serif;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  line-height: 1.6;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+a:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+/* Layout principal */
+.material-container {
+  display: flex;
+  max-width: 1440px;
+  margin: 0 auto;
+  min-height: calc(100vh - 80px); /* Ajuste conforme o seu header global */
+  background-color: #fff;
+  box-shadow: var(--shadow);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+/* Sidebar */
+.material-sidebar {
+  width: var(--sidebar-width);
+  background-color: #fff;
+  border-right: 1px solid #e0e0e0;
+  padding: 24px 0;
+}
+
+.material-sidebar h2 {
+  padding: 0 24px 16px;
+  font-size: 1.25rem;
+  color: var(--primary-dark);
+  border-bottom: 1px solid #eee;
+  margin-bottom: 16px;
+}
+
+.material-sidebar ul {
+  list-style: none;
+}
+
+.material-sidebar li {
+  padding: 0;
+  margin: 0;
+}
+
+.material-sidebar li a {
+  display: block;
+  padding: 12px 24px;
+  color: var(--text-color);
+  border-left: 4px solid transparent;
+  transition: var(--transition);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.material-sidebar li a:hover {
+  background-color: #f5f5f5;
+  text-decoration: none;
+}
+
+.material-sidebar li.active a {
+  background-color: var(--primary-light);
+  border-left-color: var(--primary-color);
+  font-weight: 500;
+}
+
+/* Conteúdo principal */
+.material-main {
+  flex: 1;
+  padding: 32px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cabeçalho do material */
+.material-header {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.material-header h1 {
+  font-size: 2rem;
+  color: var(--text-color);
+  margin-bottom: 8px;
+}
+
+.material-header p {
+  color: var(--text-light);
+  font-size: 1rem;
+}
+
+/* Conteúdo do material */
+.material-content {
+  flex: 1;
+  background-color: #fff;
+  border-radius: var(--border-radius);
+  margin-bottom: 24px;
+}
+
+.media-wrapper {
+  width: 100%;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+}
+
+/* Estilos específicos para tipos de mídia */
+.media-wrapper.video,
+.media-wrapper.audio {
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+}
+
+.media-wrapper.video video,
+.media-wrapper.audio audio {
+  width: 100%;
+  max-height: 80vh;
+}
+
+.media-wrapper.pdf embed {
+  width: 100%;
+  height: 80vh;
+  border: none;
+}
+
+.media-wrapper.image {
+  text-align: center;
+  background-color: #f9f9f9;
+  padding: 16px;
+}
+
+.media-wrapper.image img {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+}
+
+.media-wrapper.iframe iframe {
+  width: 100%;
+  height: 80vh;
+  border: none;
+}
+
+.no-content {
+  padding: 48px;
+  text-align: center;
+  color: var(--text-light);
+  font-style: italic;
+  background-color: #f9f9f9;
+  border-radius: var(--border-radius);
+}
+
+/* Rodapé do material */
+.material-footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 500;
+}
+
+.back-link:hover {
+  color: var(--accent-color);
+}
+
+/* Responsividade */
+@media screen and (max-width: 992px) {
+  .material-container {
+    flex-direction: column;
+  }
+
+  .material-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 16px;
+  }
+
+  .material-sidebar h2 {
+    padding: 0 0 12px;
+  }
+
+  .material-sidebar li a {
+    padding: 10px 16px;
+  }
+
+  .material-main {
+    padding: 24px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .material-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .media-wrapper.pdf embed,
+  .media-wrapper.iframe iframe {
+    height: 60vh;
+  }
+}
+
+/* Animações e efeitos */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.material-content {
+  animation: fadeIn 0.3s ease-in-out;
+}

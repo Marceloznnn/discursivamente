@@ -12,7 +12,7 @@
                      <h1>Bem-vindo à Discursivamente</h1>
                      <p>Seu portal para o aprendizado e desenvolvimento intelectual</p>
                      <div class="slider-cta">
-                         <a href="/curso" class="btn btn-primary">Explorar Cursos</a>
+                         <a href="/courses" class="btn btn-primary">Explorar Cursos</a>
                          <a href="/about" class="btn btn-outline">Conheça-nos</a>
                      </div>
                  </div>
@@ -228,45 +228,46 @@
          </div>
      </section>
 
+  <div class="eventos-container">
+    <h2 class="eventos-header">Eventos em Destaque</h2>
+    <p class="eventos-subheader">Não perca as oportunidades de aprendizado ao vivo</p>
 
-     <div class="eventos-container">
-       <h2 class="eventos-header">Próximos Eventos e Atividades</h2>
-       <p class="eventos-subheader">Não perca as oportunidades de aprendizado ao vivo</p>
+    {% if featuredEvents is empty %}
+      <div class="eventos-empty">
+        Não há eventos em destaque no momento. Fique ligado!
+      </div>
+    {% else %}
+      <div class="eventos-slider">
+        <button class="slider-btn prev-btn">&larr;</button>
+        <div class="slider-wrapper">
+          {% for event in featuredEvents %}
+            <div class="evento-item">
+              <div class="evento-image">
+                {% if event.image %}
+                  <img src="{{ event.image }}" alt="{{ event.title }}">
+                {% endif %}
+              </div>
+              <div class="evento-content">
+                <h3 class="evento-title">{{ event.title }}</h3>
+                <div class="evento-date">{{ event.dateTime|date('d/m/Y H:i') }}</div>
+                <p class="evento-description">
+                  {{ event.description|length > 120 
+                     ? event.description|slice(0, 120) ~ '...' 
+                     : event.description }}
+                </p>
+                <a href="/events/{{ event.id }}" class="evento-link">Saiba mais</a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+        <button class="slider-btn next-btn">&rarr;</button>
+      </div>
+    {% endif %}
 
-       {% if recentEvents is empty %}
-         <div class="eventos-empty">
-           Não há eventos programados no momento. Fique ligado!
-         </div>
-       {% else %}
-         <div class="eventos-slider">
-           <button class="slider-btn prev-btn">&larr;</button>
-           <div class="slider-wrapper">
-             {% for event in recentEvents %}
-             <div class="evento-item">
-               <div class="evento-image">
-                 {% if event.image %}
-                   <img src="{{ event.image }}" alt="{{ event.title }}">
-                 {% endif %}
-               </div>
-               <div class="evento-content">
-                 <h3 class="evento-title">{{ event.title }}</h3>
-                 <div class="evento-date">{{ event.dateTime|date('d/m/Y H:i') }}</div>
-                 <p class="evento-description">
-                   {{ event.description|length > 120 ? event.description|slice(0, 120) ~ '...' : event.description }}
-                 </p>
-                 <a href="{{ event.url|default('#') }}" class="evento-link">Saiba mais</a>
-               </div>
-             </div>
-             {% endfor %}
-           </div>
-           <button class="slider-btn next-btn">&rarr;</button>
-         </div>
-       {% endif %}
-
-       <div class="eventos-ver-todos">
-         <a href="/events" class="btn-ver-todos">Ver todos os eventos</a>
-       </div>
-     </div>
+    <div class="eventos-ver-todos">
+      <a href="/events" class="btn-ver-todos">Ver todos os eventos</a>
+    </div>
+  </div>
 
      <div class="chatbot-container" role="dialog" aria-labelledby="chatbot-heading">
          <button class="chatbot-toggle" aria-expanded="false" aria-controls="chatbot-window">

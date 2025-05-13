@@ -1,50 +1,79 @@
-{# templates/public/courses/material.twig #}
 {% extends 'layouts/base.twig' %}
 
 {% block title %}{{ material.title }} - {{ course.title }}{% endblock %}
 
+{% block styles %}
+  <link rel="stylesheet" href="/assets/css/pages/curso/aluno/material.css">
+{% endblock %}
+
 {% block content %}
-  <h1>{{ material.title }}</h1>
-  <p><strong>Curso:</strong> <a href="/courses/{{ course.id }}">{{ course.title }}</a></p>
+  <div class="material-container">
+    <aside class="material-sidebar">
+      <h2>Materiais do Curso</h2>
+      <ul>
+        {% for m in course.materials %}
+          <li class="{{ m.id == material.id ? 'active' }}">
+            <a href="/courses/{{ course.id }}/materials/{{ m.id }}">{{ m.title }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    </aside>
 
-  {% if material.content %}
-    {% set url  = material.content starts with 'http' ? material.content : '/' ~ material.content %}
-    {% set type = material.contentType %}
+    <main class="material-main">
+      <header class="material-header">
+        <h1>{{ material.title }}</h1>
+        <p><strong>Curso:</strong> <a href="/courses/{{ course.id }}">{{ course.title }}</a></p>
+      </header>
 
-    {# Vídeo #}
-    {% if type starts with 'video/' %}
-      <video controls width="100%" style="max-height: 80vh;">
-        <source src="{{ url }}" type="{{ type }}">
-        Seu navegador não suporta vídeo.
-      </video>
+      <section class="material-content">
+        {% if material.content %}
+          {% set url  = material.content starts with 'http' ? material.content : '/' ~ material.content %}
+          {% set type = material.contentType %}
 
-    {# Áudio #}
-    {% elseif type starts with 'audio/' %}
-      <audio controls style="width:100%;">
-        <source src="{{ url }}" type="{{ type }}">
-        Seu navegador não suporta áudio.
-      </audio>
+          {# Vídeo #}
+          {% if type starts with 'video/' %}
+            <div class="media-wrapper video">
+              <video controls>
+                <source src="{{ url }}" type="{{ type }}">
+                Seu navegador não suporta vídeo.
+              </video>
+            </div>
 
-    {# PDF #}
-    {% elseif type == 'application/pdf' %}
-      <embed src="{{ url }}" type="application/pdf" width="100%" height="80vh" />
+          {# Áudio #}
+          {% elseif type starts with 'audio/' %}
+            <div class="media-wrapper audio">
+              <audio controls>
+                <source src="{{ url }}" type="{{ type }}">
+                Seu navegador não suporta áudio.
+              </audio>
+            </div>
 
-    {# Imagem #}
-    {% elseif type starts with 'image/' %}
-      <img src="{{ url }}" alt="{{ material.title }}" style="max-width:100%; height:auto;" />
+          {# PDF #}
+          {% elseif type == 'application/pdf' %}
+            <div class="media-wrapper pdf">
+              <embed src="{{ url }}" type="application/pdf">
+            </div>
 
-    {# Link genérico (embeda em iframe) #}
-    {% else %}
-      <iframe src="{{ url }}" width="100%" height="80vh" frameborder="0">
-        Seu navegador não consegue exibir este conteúdo.
-      </iframe>
-    {% endif %}
+          {# Imagem #}
+          {% elseif type starts with 'image/' %}
+            <div class="media-wrapper image">
+              <img src="{{ url }}" alt="{{ material.title }}">
+            </div>
 
-  {% else %}
-    <p>Nenhum conteúdo disponível para este material.</p>
-  {% endif %}
+          {# Link genérico #}
+          {% else %}
+            <div class="media-wrapper iframe">
+              <iframe src="{{ url }}"></iframe>
+            </div>
+          {% endif %}
+        {% else %}
+          <p class="no-content">Nenhum conteúdo disponível para este material.</p>
+        {% endif %}
+      </section>
 
-  <p class="mt-4">
-    <a href="/courses/{{ course.id }}/materials">← Voltar à lista de materiais</a>
-  </p>
+      <footer class="material-footer">
+        <a href="/courses/{{ course.id }}/materials" class="back-link">← Voltar à lista de materiais</a>
+      </footer>
+    </main>
+  </div>
 {% endblock %}
