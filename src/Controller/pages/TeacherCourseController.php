@@ -6,6 +6,7 @@ namespace Controller\pages;
 use Middleware\TeacherMiddleware;
 use Repositories\CourseRepository;
 use Repositories\CourseCommentRepository;
+use Repositories\CourseParticipationRepository;
 use Services\CloudinaryService;
 use PDO;
 use Twig\Environment;
@@ -13,22 +14,24 @@ use Twig\Environment;
 class TeacherCourseController
 {
     private Environment $twig;
+    private PDO $pdo;
     private CourseRepository $courseRepo;
     private CourseCommentRepository $commentRepo;
+    private CourseParticipationRepository $participationRepo;
     private CloudinaryService $cloudService;
-    private PDO $pdo;
 
     public function __construct(Environment $twig, PDO $pdo, CloudinaryService $cloudService)
     {
-        // Garante que só teacher acesse
         TeacherMiddleware::handle();
 
-        $this->twig         = $twig;
-        $this->pdo          = $pdo;
-        $this->courseRepo   = new CourseRepository($pdo);
-        $this->commentRepo  = new CourseCommentRepository($pdo);
-        $this->cloudService = $cloudService;
+        $this->twig              = $twig;
+        $this->pdo               = $pdo;
+        $this->courseRepo        = new CourseRepository($pdo);
+        $this->commentRepo       = new CourseCommentRepository($pdo);
+        $this->participationRepo = new CourseParticipationRepository($pdo);
+        $this->cloudService      = $cloudService;
     }
+
 
     // 1) Lista todos os cursos do professor
     public function index(): void
@@ -103,11 +106,16 @@ class TeacherCourseController
         $course = $this->courseRepo->findById($id);
         $this->authorize($course);
 
+        // comentários
         $commentCount = count($this->commentRepo->findByCourseId($id));
 
+        // participantes ativos
+        $participantCount = $this->participationRepo->countActiveByCourse($id);
+
         echo $this->twig->render('teacher/courses/show.twig', [
-            'course'       => $course,
-            'commentCount' => $commentCount
+            'course'           => $course,
+            'commentCount'     => $commentCount,
+            'participantCount' => $participantCount,
         ]);
     }
 

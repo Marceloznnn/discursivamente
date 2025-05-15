@@ -11,7 +11,8 @@
     "symfony/security-csrf": "^7.2",
     "symfony/messenger": "^7.2",
     "intervention/image": "^3.11",
-    "cloudinary/cloudinary_php": "^3.1"
+    "cloudinary/cloudinary_php": "^3.1",
+    "google/apiclient": "*"
   },
   "autoload": {
     "psr-4": {

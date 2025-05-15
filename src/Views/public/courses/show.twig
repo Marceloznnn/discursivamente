@@ -9,9 +9,34 @@
     <h1>{{ course.title }}</h1>
     <p class="course-description">{{ course.description }}</p>
 
-    <a href="/courses/{{ course.id }}/materials" class="btn-materials">
-      Ver Materiais
-    </a>
+    {# Número de participantes ativos #}
+    <p class="participant-count">
+      👥 {{ participantCount }}
+      {{ participantCount == 1
+         ? 'participante ativo'
+         : 'participantes ativos' }}
+    </p>
+
+    {% if session.user %}
+      {% if isParticipating %}
+        <form action="/courses/{{ course.id }}/leave" method="post" class="action-form">
+          <button type="submit" class="btn-quit">Sair do curso</button>
+        </form>
+        <a href="/courses/{{ course.id }}/materials" class="btn-materials">
+          Ver Materiais ({{ materials|length }})
+        </a>
+      {% else %}
+        <form action="/courses/{{ course.id }}/join" method="post" class="action-form">
+          <button type="submit" class="btn-join">Participar do curso</button>
+        </form>
+      {% endif %}
+    {% else %}
+      <p>
+        <a href="/login" class="btn-login">
+          Faça login para participar
+        </a>
+      </p>
+    {% endif %}
 
     <div class="comments-section">
       <h2 id="comments">Comentários</h2>
@@ -29,26 +54,32 @@
           <li class="material-empty">Seja o primeiro a comentar!</li>
         {% endfor %}
       </ul>
+
+      {% if session.user %}
+        <form action="/courses/{{ course.id }}/comment" method="post" class="comment-form">
+          <label for="comment">Comentário:</label>
+          <textarea id="comment" name="comment" rows="4"></textarea>
+
+          <label for="rating">Avaliação:</label>
+          <select id="rating" name="rating">
+            {% for i in 1..5 %}
+              <option value="{{ i }}">{{ i }} estrela{{ i > 1 ? 's' : '' }}</option>
+            {% endfor %}
+          </select>
+
+          <button type="submit" class="btn-submit">Enviar comentário</button>
+        </form>
+      {% else %}
+        <p>
+          <a href="/login" class="back-link">
+            Faça login para deixar um comentário.
+          </a>
+        </p>
+      {% endif %}
     </div>
 
-    {% if session.user %}
-      <form action="/courses/{{ course.id }}/comment" method="post" class="comment-form">
-        <label for="comment">Comentário:</label>
-        <textarea id="comment" name="comment" rows="4"></textarea>
-
-        <label for="rating">Avaliação:</label>
-        <select id="rating" name="rating">
-          {% for i in 1..5 %}
-            <option value="{{ i }}">{{ i }} estrela{{ i > 1 ? 's' : '' }}</option>
-          {% endfor %}
-        </select>
-
-        <button type="submit" class="btn-submit">Enviar comentário</button>
-      </form>
-    {% else %}
-      <p><a href="/login" class="back-link">Faça login para deixar um comentário.</a></p>
-    {% endif %}
-
-    <p><a href="/courses" class="back-link">← Voltar a todos os cursos</a></p>
+    <p>
+      <a href="/courses" class="back-link">← Voltar a todos os cursos</a>
+    </p>
   </div>
 {% endblock %}

@@ -1,3 +1,4 @@
+{# templates/teacher/courses/show.twig #}
 {% extends 'layouts/base.twig' %}
 
 {% block content %}
@@ -8,12 +9,21 @@
     <ul class="course-actions">
       <li><a href="/teacher/courses/{{ course.getId() }}/edit">Editar Curso</a></li>
       <li>
-        <form method="POST" action="/teacher/courses/{{ course.getId() }}/delete" onsubmit="return confirm('Tem certeza que deseja excluir este curso?');">
+        <form method="POST"
+              action="/teacher/courses/{{ course.getId() }}/delete"
+              onsubmit="return confirm('Tem certeza que deseja excluir este curso?');">
           <button type="submit">Excluir Curso</button>
         </form>
       </li>
       <li><a href="/teacher/courses/{{ course.getId() }}/materials">Materiais</a></li>
-      <li><a href="/teacher/courses/{{ course.getId() }}/comments">Comentários ({{ commentCount }})</a></li>
+      <li>
+        <a href="/teacher/courses/{{ course.getId() }}/comments">
+          Comentários ({{ commentCount }})
+        </a>
+      </li>
+      <li>
+        📊 Participantes ativos: {{ participantCount }}
+      </li>
     </ul>
   </div>
 {% endblock %}

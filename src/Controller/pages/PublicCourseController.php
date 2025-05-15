@@ -3,11 +3,13 @@
 
 namespace Controller\pages;
 
+use Middleware\AuthMiddleware;
 use Repositories\CourseRepository;
 use Repositories\MaterialRepository;
 use Repositories\UserProgressRepository;
 use Repositories\CourseCommentRepository;
 use Repositories\UserRepository;
+use Repositories\CourseParticipationRepository;
 use App\Models\CourseComment;
 use PDO;
 use Twig\Environment;
@@ -21,75 +23,74 @@ class PublicCourseController
     private UserProgressRepository $progressRepo;
     private CourseCommentRepository $commentRepo;
     private UserRepository $userRepo;
+    private CourseParticipationRepository $participationRepo;
 
     public function __construct(Environment $twig, PDO $pdo)
     {
-        $this->twig         = $twig;
-        $this->pdo          = $pdo;
-        $this->courseRepo   = new CourseRepository($pdo);
-        $this->materialRepo = new MaterialRepository($pdo);
-        $this->progressRepo = new UserProgressRepository($pdo);
-        $this->commentRepo  = new CourseCommentRepository($pdo);
-        $this->userRepo     = new UserRepository($pdo);
+        $this->twig              = $twig;
+        $this->pdo               = $pdo;
+        $this->courseRepo        = new CourseRepository($pdo);
+        $this->materialRepo      = new MaterialRepository($pdo);
+        $this->progressRepo      = new UserProgressRepository($pdo);
+        $this->commentRepo       = new CourseCommentRepository($pdo);
+        $this->userRepo          = new UserRepository($pdo);
+        $this->participationRepo = new CourseParticipationRepository($pdo);
     }
 
     /**
-     * Lista todos os cursos públicos
+     * 1) Lista todos os cursos públicos e a contagem de participantes.
      */
     public function index(): void
-{
-    $q = trim($_GET['q'] ?? '');
+    {
+        $q = trim($_GET['q'] ?? '');
+        if ($q !== '') {
+            $courses = $this->courseRepo->search($q);
+        } else {
+            $courses = $this->courseRepo->findAll();
+        }
 
-    if ($q !== '') {
-        error_log(__METHOD__ . " - Searching courses for '{$q}'");
-        $courses = $this->courseRepo->search($q);
-    } else {
-        error_log(__METHOD__ . " - Fetching all courses");
-        $courses = $this->courseRepo->findAll();
+        // contagem de participantes ativos por curso
+        $participantCounts = [];
+        foreach ($courses as $c) {
+            $participantCounts[$c->getId()] = $this->participationRepo
+                ->countActiveByCourse($c->getId());
+        }
+
+        echo $this->twig->render('public/courses/index.twig', [
+            'courses'           => $courses,
+            'q'                 => $q,
+            'participantCounts' => $participantCounts,
+        ]);
     }
 
-    echo $this->twig->render('public/courses/index.twig', [
-        'courses' => $courses,
-        'q'       => $q,
-    ]);
-}
-
-
     /**
-     * Mostra detalhes do curso e comentários
+     * 2) Mostra detalhes do curso, materiais (se participante), comentários e botões de join/leave.
      */
     public function show($id): void
     {
         $courseId = (int) $id;
-        error_log(__METHOD__ . " - Show courseID={$courseId}");
+        $course   = $this->courseRepo->findById($courseId);
 
-        $course = $this->courseRepo->findById($courseId);
-        if (!$course) {
-            error_log(__METHOD__ . " - Course not found");
+        if (! $course) {
             http_response_code(404);
             echo $this->twig->render('errors/404.twig');
             return;
         }
 
-        // Busca materiais e progresso
+        // Materiais e progresso
         $materials = $this->materialRepo->findByCourseId($courseId);
-        error_log(__METHOD__ . " - Found " . count($materials) . " materials for courseID={$courseId}");
-
-        $completed = [];
-        if (!empty($_SESSION['user']['id'])) {
-            $uid = (int) $_SESSION['user']['id'];
-            $prs = $this->progressRepo->findByUserId($uid);
+        $completed  = [];
+        $userId     = $_SESSION['user']['id'] ?? null;
+        if ($userId) {
+            $prs = $this->progressRepo->findByUserId((int)$userId);
             $completed = array_map(fn($p) => $p->getMaterialId(), $prs);
-            error_log(__METHOD__ . " - User {$uid} completed " . count($completed) . " materials");
         }
 
         $total    = count($materials);
         $progress = $total ? (int) round(count($completed) / $total * 100) : 0;
-        error_log(__METHOD__ . " - Progress={$progress}%");
 
-        // Busca comentários já com nome de usuário
+        // Comentários
         $rawComments = $this->commentRepo->findByCourseId($courseId);
-        error_log(__METHOD__ . " - Found " . count($rawComments) . " comments");
         $comments = array_map(function(CourseComment $c) {
             $user = $this->userRepo->findById($c->getUserId());
             return [
@@ -100,34 +101,74 @@ class PublicCourseController
             ];
         }, $rawComments);
 
+        // Participação
+        $isParticipating  = $userId
+            ? $this->participationRepo->isParticipating((int)$userId, $courseId)
+            : false;
+        $participantCount = $this->participationRepo->countActiveByCourse($courseId);
+
         echo $this->twig->render('public/courses/show.twig', [
             'course'             => $course,
             'materials'          => $materials,
             'completedMaterials' => $completed,
             'progress'           => $progress,
             'comments'           => $comments,
+            'isParticipating'    => $isParticipating,
+            'participantCount'   => $participantCount,
         ]);
     }
 
     /**
-     * Lista todos os materiais de um curso (materials.twig)
+     * 3) Ação para entrar no curso (join).
+     */
+    public function join($id): void
+    {
+        AuthMiddleware::handle(); // garante login
+        $courseId = (int) $id;
+        $userId   = (int) $_SESSION['user']['id'];
+
+        if (! $this->courseRepo->findById($courseId)) {
+            http_response_code(404);
+            echo "Curso não encontrado.";
+            exit;
+        }
+
+        $this->participationRepo->joinCourse($userId, $courseId);
+        header("Location: /courses/{$courseId}/materials");
+        exit;
+    }
+
+    /**
+     * 4) Ação para sair do curso (leave).
+     */
+    public function leave($id): void
+    {
+        AuthMiddleware::handle();
+        $courseId = (int) $id;
+        $userId   = (int) $_SESSION['user']['id'];
+
+        $this->participationRepo->leaveCourse($userId, $courseId);
+        header("Location: /courses/{$courseId}");
+        exit;
+    }
+
+    /**
+     * 5) Lista de materiais (acessível apenas após participação).
      */
     public function listMaterials($id): void
     {
         $courseId = (int) $id;
-        error_log(__METHOD__ . " - List materials for courseID={$courseId}");
-
-        $course = $this->courseRepo->findById($courseId);
-        if (!$course) {
-            error_log(__METHOD__ . " - Course not found");
+        $course   = $this->courseRepo->findById($courseId);
+        if (! $course) {
             http_response_code(404);
             echo $this->twig->render('errors/404.twig');
             return;
         }
 
-        $materials = $this->materialRepo->findByCourseId($courseId);
-        error_log(__METHOD__ . " - Found " . count($materials) . " materials");
+        // Opcional: bloquear se não for participante
+        // if (! $this->participationRepo->isParticipating(...)) { ... }
 
+        $materials = $this->materialRepo->findByCourseId($courseId);
         echo $this->twig->render('public/courses/materials.twig', [
             'course'    => $course,
             'materials' => $materials,
@@ -135,43 +176,35 @@ class PublicCourseController
     }
 
     /**
-     * Exibe o conteúdo de um material específico (material.twig)
+     * 6) Exibe conteúdo de um material específico.
      */
     public function showMaterial($courseId, $materialId): void
     {
         $courseId   = (int) $courseId;
         $materialId = (int) $materialId;
-        error_log(__METHOD__ . " - Show materialID={$materialId} for courseID={$courseId}");
 
         $course   = $this->courseRepo->findById($courseId);
         $material = $this->materialRepo->findById($materialId);
 
-        if (!$course || !$material || $material->getCourseId() !== $courseId) {
-            error_log(__METHOD__ . " - Course or Material not valid");
+        if (! $course || ! $material || $material->getCourseId() !== $courseId) {
             http_response_code(404);
             echo $this->twig->render('errors/404.twig');
             return;
         }
 
-        error_log(__METHOD__ . " - Material content=" . $material->getContent() . ", type=" . $material->getContentType());
         echo $this->twig->render('public/courses/material.twig', [
             'course'   => $course,
             'material' => $material,
         ]);
     }
 
-    
-
     /**
-     * Salva comentário enviado via POST
+     * 7) Salva comentário enviado via POST.
      */
     public function storeComment($id): void
     {
         $courseId = (int) $id;
-        error_log(__METHOD__ . " - Store comment for courseID={$courseId}");
-
         if (empty($_SESSION['user']['id'])) {
-            error_log(__METHOD__ . " - Unauthorized comment attempt");
             http_response_code(403);
             echo "Você precisa estar logado para comentar.";
             exit;
@@ -180,7 +213,6 @@ class PublicCourseController
         $userId = (int) $_SESSION['user']['id'];
         $text   = trim($_POST['comment'] ?? '');
         $rating = (int) ($_POST['rating'] ?? 0);
-        error_log(__METHOD__ . " - Comment text length=" . strlen($text) . ", rating={$rating}");
 
         if ($text === '' || $rating < 1 || $rating > 5) {
             $_SESSION['flash']['error'][] = "Comentário e avaliação (1–5) são obrigatórios.";
@@ -188,16 +220,9 @@ class PublicCourseController
             exit;
         }
 
-        $comment = new CourseComment(
-            $courseId,
-            $userId,
-            $text,
-            $rating
-        );
+        $comment = new CourseComment($courseId, $userId, $text, $rating);
         $this->commentRepo->save($comment);
         $_SESSION['flash']['success'][] = "Comentário adicionado!";
-        error_log(__METHOD__ . " - Comment saved");
-
         header("Location: /courses/{$courseId}#comments");
         exit;
     }

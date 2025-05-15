@@ -1,69 +1,85 @@
+{# 
+  Template: Material do Curso
+  Propósito: Exibir o conteúdo do material selecionado e lista de materiais do curso.
+  Variáveis esperadas:
+    - course: objeto do curso com propriedades id, title e lista de materials
+    - material: objeto do material atual com propriedades id, title, content, contentType, hasQuiz, moduleId, quizId
+#}
+
 {% extends 'layouts/base.twig' %}
 
+{# Título da página dinâmico baseado no material e curso #}
 {% block title %}{{ material.title }} - {{ course.title }}{% endblock %}
 
+{# Inclusão de CSS específico para esta página #}
 {% block styles %}
   <link rel="stylesheet" href="/assets/css/pages/curso/aluno/material.css">
 {% endblock %}
 
+{# Conteúdo principal da página #}
 {% block content %}
   <div class="material-container">
-    <aside class="material-sidebar">
+    
+    {# Sidebar com lista de materiais do curso #}
+    <aside class="material-sidebar" role="navigation" aria-label="Lista de materiais do curso">
       <h2>Materiais do Curso</h2>
-      <ul>
+      <ul class="material-list">
         {% for m in course.materials %}
-          <li class="{{ m.id == material.id ? 'active' }}">
-            <a href="/courses/{{ course.id }}/materials/{{ m.id }}">{{ m.title }}</a>
+          <li class="material-item {{ m.id == material.id ? 'active' }}" >
+            <a href="/courses/{{ course.id }}/materials/{{ m.id }}" 
+               aria-current="{{ m.id == material.id ? 'page' }}">
+              {{ m.title }}
+            </a>
           </li>
         {% endfor %}
       </ul>
     </aside>
 
-    <main class="material-main">
+    {# Área principal com detalhes e conteúdo do material selecionado #}
+    <main class="material-main" role="main">
       <header class="material-header">
         <h1>{{ material.title }}</h1>
-        <p><strong>Curso:</strong> <a href="/courses/{{ course.id }}">{{ course.title }}</a></p>
+        <p>
+          <strong>Curso:</strong> 
+          <a href="/courses/{{ course.id }}">{{ course.title }}</a>
+        </p>
       </header>
 
-      <section class="material-content">
+      <section class="material-content" aria-live="polite">
         {% if material.content %}
-          {% set url  = material.content starts with 'http' ? material.content : '/' ~ material.content %}
+          {% set url = material.content starts with 'http' ? material.content : '/' ~ material.content %}
           {% set type = material.contentType %}
 
-          {# Vídeo #}
+          {# Renderização condicional do conteúdo conforme tipo MIME #}
           {% if type starts with 'video/' %}
             <div class="media-wrapper video">
-              <video controls>
+              <video controls preload="metadata" tabindex="0">
                 <source src="{{ url }}" type="{{ type }}">
                 Seu navegador não suporta vídeo.
               </video>
             </div>
 
-          {# Áudio #}
           {% elseif type starts with 'audio/' %}
             <div class="media-wrapper audio">
-              <audio controls>
+              <audio controls preload="metadata" tabindex="0">
                 <source src="{{ url }}" type="{{ type }}">
                 Seu navegador não suporta áudio.
               </audio>
             </div>
 
-          {# PDF #}
           {% elseif type == 'application/pdf' %}
             <div class="media-wrapper pdf">
-              <embed src="{{ url }}" type="application/pdf">
+              <embed src="{{ url }}" type="application/pdf" aria-label="Visualizador de PDF do material">
             </div>
 
-          {# Imagem #}
           {% elseif type starts with 'image/' %}
             <div class="media-wrapper image">
-              <img src="{{ url }}" alt="{{ material.title }}">
+              <img src="{{ url }}" alt="{{ material.title }}" loading="lazy" />
             </div>
 
-          {# Link genérico #}
           {% else %}
             <div class="media-wrapper iframe">
-              <iframe src="{{ url }}"></iframe>
+              <iframe src="{{ url }}" title="Conteúdo do material {{ material.title }}" frameborder="0" allowfullscreen></iframe>
             </div>
           {% endif %}
         {% else %}
@@ -71,9 +87,26 @@
         {% endif %}
       </section>
 
+      {# Botão para acessar quiz do módulo, se houver #}
+      {% if material.hasQuiz %}
+        <div class="quiz-access">
+          <a href="/courses/module/{{ material.moduleId }}/quizzes/{{ material.quizId }}" class="btn btn-secondary" role="button">
+            Acessar Quiz deste Módulo →
+          </a>
+        </div>
+      {% endif %}
+
+      {# Link para voltar à lista de materiais #}
       <footer class="material-footer">
-        <a href="/courses/{{ course.id }}/materials" class="back-link">← Voltar à lista de materiais</a>
+        <a href="/courses/{{ course.id }}/materials" class="back-link" role="link">
+          ← Voltar à lista de materiais
+        </a>
       </footer>
     </main>
   </div>
+{% endblock %}
+
+{# Inclusão do script JavaScript específico para esta página #}
+{% block scripts %}
+  <script src="/assets/js/pages/curso/material.js" defer></script>
 {% endblock %}

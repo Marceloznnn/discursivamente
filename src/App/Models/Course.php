@@ -11,11 +11,14 @@ class Course
     private float $price;
     private ?string $createdAt;
     private ?string $updatedAt;
+    // 1) Declaração da nova propriedade
+    private ?int $categoryId;
 
     public function __construct(
         string $title,
         string $description,
         int $creatorId,
+        ?int $categoryId = null,   // 2) Parâmetro opcional
         ?int $id = null,
         float $price = 0.00,
         ?string $createdAt = null,
@@ -28,23 +31,27 @@ class Course
         $this->price = $price;
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
+        $this->categoryId = $categoryId; // inicializa a categoria
     }
 
     // Getters
-    public function getId(): ?int { return $this->id; }
-    public function getTitle(): string { return $this->title; }
+    public function getId(): ?int       { return $this->id; }
+    public function getTitle(): string  { return $this->title; }
     public function getDescription(): string { return $this->description; }
     public function getCreatorId(): int { return $this->creatorId; }
-    public function getPrice(): float { return $this->price; }
+    public function getPrice(): float   { return $this->price; }
     public function getCreatedAt(): ?string { return $this->createdAt; }
     public function getUpdatedAt(): ?string { return $this->updatedAt; }
+    // 3) Ajuste do tipo de retorno para nullable
+    public function getCategoryId(): ?int { return $this->categoryId; }
 
     // Setters
-    public function setTitle(string $title): void { $this->title = $title; }
+    public function setTitle(string $title): void         { $this->title = $title; }
     public function setDescription(string $description): void { $this->description = $description; }
-    public function setCreatorId(int $creatorId): void { $this->creatorId = $creatorId; }
-    public function setPrice(float $price): void { $this->price = $price; }
+    public function setCreatorId(int $creatorId): void    { $this->creatorId = $creatorId; }
+    public function setPrice(float $price): void          { $this->price = $price; }
     public function setUpdatedAt(string $updatedAt): void { $this->updatedAt = $updatedAt; }
+    public function setCategoryId(?int $categoryId): void { $this->categoryId = $categoryId; }
 
     public function toArray(): array
     {
@@ -56,6 +63,7 @@ class Course
             'price'       => $this->price,
             'created_at'  => $this->createdAt,
             'updated_at'  => $this->updatedAt,
+            'category_id' => $this->categoryId,
         ];
     }
 }

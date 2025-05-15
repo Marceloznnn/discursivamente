@@ -8,7 +8,8 @@
   {# Seção “Cursos Gratuitos” #}
   <section class="free-courses-section">
     <div class="free-image">
-      <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGVkdWNhJUMzJUE3JUMzJUEzb3xlbnwwfHwwfHx8MA%3D%3D" alt="Cursos gratuitos">
+      <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=500&auto=format&fit=crop&q=60"
+           alt="Cursos gratuitos">
     </div>
     <div class="free-content">
       <h2>Todos os nossos cursos são 100% gratuitos</h2>
@@ -20,7 +21,7 @@
   </section>
 
   {# Formulário de busca #}
-  <form method="get" action="" class="search-form">
+  <form method="get" action="/courses" class="search-form">
     <input
       type="text"
       name="q"
@@ -38,18 +39,34 @@
   <ul class="course-list">
     {% for course in courses %}
       <li class="course-item">
-        <img src="{{ course.getImage()|default('/assets/images/default-course.jpg') }}" alt="{{ course.getTitle() }}" class="course-img">
+        <img
+          src="{{ course.getImage()|default('/assets/images/default-course.jpg') }}"
+          alt="{{ course.getTitle() }}"
+          class="course-img"
+        >
         <div class="content">
           <a href="/courses/{{ course.getId() }}">
             <strong>{{ course.getTitle() }}</strong>
           </a>
           <p>{{ course.getDescription()|slice(0, 100) ~ '...' }}</p>
-          <a href="/courses/{{ course.getId() }}" class="course-cta">Saiba mais</a>
+
+          <div class="participants">
+            👥 {{ participantCounts[course.getId()] }}
+            {{ participantCounts[course.getId()] == 1
+               ? 'participante'
+               : 'participantes' }}
+          </div>
+
+          <a href="/courses/{{ course.getId() }}" class="course-cta">
+            Saiba mais
+          </a>
         </div>
       </li>
     {% else %}
       <li class="empty-state">
-        Nenhum curso {{ q ? 'encontrado para "' ~ q ~ '"' : 'disponível' }}.
+        Nenhum curso {{ q
+          ? 'encontrado para "' ~ q ~ '"'
+          : 'disponível' }}.
       </li>
     {% endfor %}
   </ul>
