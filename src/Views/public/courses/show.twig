@@ -5,81 +5,158 @@
 {% endblock %}
 
 {% block content %}
-  <div class="course-detail-container">
-    <h1>{{ course.title }}</h1>
-    <p class="course-description">{{ course.description }}</p>
+  <div class="course-page">
 
-    {# Número de participantes ativos #}
-    <p class="participant-count">
-      👥 {{ participantCount }}
-      {{ participantCount == 1
-         ? 'participante ativo'
-         : 'participantes ativos' }}
-    </p>
+    <!-- Cabeçalho do Curso -->
+    <section class="course-header">
+      <h1 class="course-title">{{ course.title }}</h1>
+      <p class="course-description">{{ course.description }}</p>
+    </section>
 
-    {% if session.user %}
+    <!-- Ações de Participação e Progresso -->
+    <section class="course-actions">
+      <div class="action-buttons">
+        {% if session.user %}
+          {% if isParticipating %}
+            <form action="/courses/{{ course.id }}/leave" method="post" class="action-form">
+              <button type="submit" class="button-exit">
+                Sair do curso
+              </button>
+            </form>
+            <a href="/courses/{{ course.id }}/materials" class="button-materials">
+              Ver Materiais ({{ materials|length }})
+            </a>
+          {% else %}
+            <form action="/courses/{{ course.id }}/join" method="post" class="action-form">
+              <button type="submit" class="button-join">
+                Participar do curso
+              </button>
+            </form>
+          {% endif %}
+        {% else %}
+          <button class="button-disabled" disabled>
+            Faça login para participar
+          </button>
+        {% endif %}
+      </div>
+
       {% if isParticipating %}
-        <form action="/courses/{{ course.id }}/leave" method="post" class="action-form">
-          <button type="submit" class="btn-quit">Sair do curso</button>
-        </form>
-        <a href="/courses/{{ course.id }}/materials" class="btn-materials">
-          Ver Materiais ({{ materials|length }})
-        </a>
-      {% else %}
-        <form action="/courses/{{ course.id }}/join" method="post" class="action-form">
-          <button type="submit" class="btn-join">Participar do curso</button>
-        </form>
+        <div class="progress-section">
+          <label for="progress-bar">Progresso</label>
+          <progress id="progress-bar" class="progress-bar" value="{{ progress }}" max="100">
+            {{ progress }}%
+          </progress>
+        </div>
       {% endif %}
-    {% else %}
-      <p>
-        <a href="/login" class="btn-login">
-          Faça login para participar
-        </a>
-      </p>
+    </section>
+
+    <!-- Materiais do Curso -->
+    {% if isParticipating %}
+      <section class="materials-section">
+        <h2>Materiais do Curso</h2>
+        <div class="materials-list">
+          {% for m in materials %}
+            <div class="material-item">
+              <span class="material-icon">📄</span>
+              <div class="material-info">
+                <h3>{{ m.title }}</h3>
+                <p class="material-type">{{ m.type|default('Documento') }}</p>
+              </div>
+              {% if m.id in completedMaterials %}
+                <span class="material-status">Concluído</span>
+              {% endif %}
+            </div>
+          {% else %}
+            <p class="no-materials">Nenhum material disponível.</p>
+          {% endfor %}
+        </div>
+      </section>
     {% endif %}
 
-    <div class="comments-section">
+    <!-- Comentários -->
+    <section class="comments-section">
       <h2 id="comments">Comentários</h2>
-      <ul class="comments-list">
+
+      <div class="comments-list">
         {% for c in comments %}
-          <li class="comment-item">
+          <div class="comment-item">
             <div class="comment-header">
-              <strong>{{ c.userName }}</strong>
-              <span>{{ c.createdAt|date("d/m/Y H:i") }}</span>
+              <div class="comment-author-info">
+                <strong>{{ c.userName }}</strong>
+                <time>{{ c.createdAt|date("d/m/Y H:i") }}</time>
+              </div>
+              {% if session.user and session.user.id == c.userId %}
+                <form action="/courses/{{ course.id }}/comments/{{ c.id }}/delete" method="post" class="delete-form">
+                  <button type="submit" class="delete-button" title="Excluir comentário">
+                    🗑️
+                  </button>
+                </form>
+              {% endif %}
             </div>
-            <div class="comment-rating">Avaliação: {{ c.rating }} / 5</div>
-            <div class="comment-body">{{ c.comment }}</div>
-          </li>
+            <div class="comment-rating">
+              {% for i in 1..5 %}
+                {% if i <= c.rating %}
+                  <span class="star filled">★</span>
+                {% else %}
+                  <span class="star">☆</span>
+                {% endif %}
+              {% endfor %}
+            </div>
+            <p class="comment-text">{{ c.comment }}</p>
+          </div>
         {% else %}
-          <li class="material-empty">Seja o primeiro a comentar!</li>
+          <p class="no-comments">Seja o primeiro a comentar!</p>
         {% endfor %}
-      </ul>
+      </div>
 
-      {% if session.user %}
-        <form action="/courses/{{ course.id }}/comment" method="post" class="comment-form">
-          <label for="comment">Comentário:</label>
-          <textarea id="comment" name="comment" rows="4"></textarea>
+      <div class="comment-form-section">
+        {% if session.user %}
+          <form action="/courses/{{ course.id }}/comment" method="post" class="comment-form">
+            {% if session.flash.error %}
+              <div class="form-errors">
+                {% for msg in session.flash.error %}
+                  <p>{{ msg }}</p>
+                {% endfor %}
+              </div>
+            {% endif %}
 
-          <label for="rating">Avaliação:</label>
-          <select id="rating" name="rating">
-            {% for i in 1..5 %}
-              <option value="{{ i }}">{{ i }} estrela{{ i > 1 ? 's' : '' }}</option>
-            {% endfor %}
-          </select>
+            <div class="form-group">
+              <label for="comment">Comentário:</label>
+              <textarea id="comment" name="comment" rows="4">{{ app.request.get('comment') }}</textarea>
+            </div>
 
-          <button type="submit" class="btn-submit">Enviar comentário</button>
-        </form>
-      {% else %}
-        <p>
-          <a href="/login" class="back-link">
-            Faça login para deixar um comentário.
-          </a>
-        </p>
-      {% endif %}
+            <fieldset class="rating-input">
+              <legend>Avaliação:</legend>
+              <div class="stars">
+                {% for i in 5..1 %}
+                  <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}" />
+                  <label for="star{{ i }}" class="star">★</label>
+                {% endfor %}
+              </div>
+            </fieldset>
+
+            <button type="submit" class="submit-button">Enviar comentário</button>
+
+            {% if session.flash.success %}
+              <div class="form-success">
+                {% for msg in session.flash.success %}
+                  <p>{{ msg }}</p>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </form>
+        {% else %}
+          <p class="login-prompt">
+            <a href="/login">Faça login para deixar um comentário.</a>
+          </p>
+        {% endif %}
+      </div>
+    </section>
+
+    <!-- Voltar -->
+    <div class="back-link">
+      <a href="/courses">← Voltar a todos os cursos</a>
     </div>
 
-    <p>
-      <a href="/courses" class="back-link">← Voltar a todos os cursos</a>
-    </p>
   </div>
 {% endblock %}

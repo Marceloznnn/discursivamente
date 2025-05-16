@@ -12,6 +12,18 @@
     <label for="description">Descrição:</label><br>
     <textarea name="description" id="description" rows="4">{{ course.description }}</textarea><br><br>
 
+    <label for="category_id">Categoria:</label><br>
+    <select name="category_id" id="category_id">
+        <option value="">-- Selecione uma categoria --</option>
+        {% for category in categories %}
+            <option value="{{ category.id }}"
+                {% if course.categoryId == category.id %}selected{% endif %}>
+                {{ category.name }}
+            </option>
+        {% endfor %}
+    </select>
+    <br><br>
+
     <button type="submit">Atualizar</button>
     <a href="/teacher/courses">Cancelar</a>
 </form>

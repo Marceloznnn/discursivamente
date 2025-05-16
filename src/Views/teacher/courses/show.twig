@@ -4,6 +4,14 @@
 {% block content %}
   <div class="course-detail">
     <h1>{{ course.getTitle() }}</h1>
+
+    {# Exibe a categoria, se existir #}
+    {% if category %}
+      <p><strong>Categoria:</strong> {{ category.getName() }}</p>
+    {% else %}
+      <p><strong>Categoria:</strong> <em>Sem categoria</em></p>
+    {% endif %}
+
     <p>{{ course.getDescription() }}</p>
 
     <ul class="course-actions">

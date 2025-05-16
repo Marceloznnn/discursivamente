@@ -346,13 +346,13 @@ $r->addRoute('GET', '/admin', function($twig) {
 
 // Gerenciamento de usuários
 // — primeiro rotas de criação
-$r->addRoute('GET','/admin/users/create', function($twig, $_, $args = []) {
+$r->addRoute('GET','/admin/users/create', function($twig) {
     AuthMiddleware::handle();
     AdminMiddleware::handle();
     (new AdminController($twig))->userCreate();
 });
 
-$r->addRoute('POST', '/admin/users/store', function($twig, $_, $args) {
+$r->addRoute('POST', '/admin/users/store', function($twig) {
     AuthMiddleware::handle();
     AdminMiddleware::handle();
     (new AdminController($twig))->userStore();
@@ -467,32 +467,32 @@ $r->addRoute('GET', '/cookies', [PagesController::class, 'cookies']);
 $r->addRoute('GET', '/privacy', [PagesController::class, 'privacy']);
 
 // Cursos do professor
-$r->addRoute('GET', '/teacher/courses', function($twig, $pdo, $_) {
+$r->addRoute('GET', '/teacher/courses', function($twig, $pdo) {
     $cloud = new CloudinaryService();
     (new \Controller\pages\TeacherCourseController($twig, $pdo, $cloud))->index();
 });
-$r->addRoute('GET', '/teacher/courses/create', function($twig, $pdo, $_) {
+$r->addRoute('GET', '/teacher/courses/create', function($twig, $pdo) {
     $cloud = new CloudinaryService();
     (new \Controller\pages\TeacherCourseController($twig, $pdo, $cloud))->create();
 });
-$r->addRoute('POST','/teacher/courses', function($twig, $pdo, $_) {
+$r->addRoute('POST','/teacher/courses', function($twig, $pdo) {
     $cloud = new CloudinaryService();
     (new \Controller\pages\TeacherCourseController($twig, $pdo, $cloud))->store();
 });
-$r->addRoute('GET', '/teacher/courses/{id}/edit', function($twig, $pdo, $id, $_) {
+$r->addRoute('GET', '/teacher/courses/{id}/edit', function($twig, $pdo, $id) {
     $cloud = new CloudinaryService();
     (new \Controller\pages\TeacherCourseController($twig, $pdo, $cloud))->edit((int)$id);
 });
-$r->addRoute('POST','/teacher/courses/{id}/update', function($twig, $pdo, $id, $_) {
+$r->addRoute('POST','/teacher/courses/{id}/update', function($twig, $pdo, $id) {
     $cloud = new CloudinaryService();
     (new \Controller\pages\TeacherCourseController($twig, $pdo, $cloud))->update((int)$id);
 });
-$r->addRoute('POST','/teacher/courses/{id}/delete', function($twig, $pdo, $id, $_) {
+$r->addRoute('POST','/teacher/courses/{id}/delete', function($twig, $pdo, $id) {
     $cloud = new CloudinaryService();
     (new \Controller\pages\TeacherCourseController($twig, $pdo, $cloud))->destroy((int)$id);
 });
 // Materiais de um curso
-$r->addRoute('GET', '/teacher/courses/{courseId}/materials', function($twig, $pdo, $courseId, $_) {
+$r->addRoute('GET', '/teacher/courses/{courseId}/materials', function($twig, $pdo, $courseId) {
     $cloud = new CloudinaryService();
     $materialRepo = new \Repositories\MaterialRepository($pdo);
     $courseRepo = new \Repositories\CourseRepository($pdo);
@@ -500,7 +500,7 @@ $r->addRoute('GET', '/teacher/courses/{courseId}/materials', function($twig, $pd
         ->index((int)$courseId);
 });
 
-$r->addRoute('GET', '/teacher/courses/{courseId}/materials/create', function($twig, $pdo, $courseId, $_) {
+$r->addRoute('GET', '/teacher/courses/{courseId}/materials/create', function($twig, $pdo, $courseId) {
     $cloud = new CloudinaryService();
     $materialRepo = new \Repositories\MaterialRepository($pdo);
     $courseRepo = new \Repositories\CourseRepository($pdo);
@@ -508,7 +508,7 @@ $r->addRoute('GET', '/teacher/courses/{courseId}/materials/create', function($tw
         ->create((int)$courseId);
 });
 
-$r->addRoute('POST', '/teacher/courses/{courseId}/materials', function($twig, $pdo, $courseId, $_) {
+$r->addRoute('POST', '/teacher/courses/{courseId}/materials', function($twig, $pdo, $courseId) {
     $cloud = new CloudinaryService();
     $materialRepo = new \Repositories\MaterialRepository($pdo);
     $courseRepo = new \Repositories\CourseRepository($pdo);
@@ -527,7 +527,7 @@ $r->addRoute('POST', '/teacher/courses/{courseId}/materials/{id}/delete', functi
 // ... rotas index, create, store, edit, update já definidas
 
 // Detalhes do curso
-$r->addRoute('GET', '/teacher/courses/{id}', function($twig, $pdo, $id, $_) {
+$r->addRoute('GET', '/teacher/courses/{id}', function($twig, $pdo, $id) {
     $cloud = new CloudinaryService();
     (new \Controller\pages\TeacherCourseController($twig, $pdo, $cloud))
         ->show((int)$id);
@@ -537,18 +537,25 @@ $r->addRoute('GET', '/teacher/courses/{id}', function($twig, $pdo, $id, $_) {
 // $r->addRoute('POST','/teacher/courses/{id}/delete', ... );
 
 // (Opcional) Confirmação de exclusão via GET
-$r->addRoute('GET', '/teacher/courses/{id}/delete', function($twig, $pdo, $id, $_) {
+$r->addRoute('GET', '/teacher/courses/{id}/delete', function($twig, $pdo, $id) {
     $cloud = new CloudinaryService();
     (new \Controller\pages\TeacherCourseController($twig, $pdo, $cloud))
         ->destroy((int)$id);
 });
 
 // Comentários de um curso
-$r->addRoute('GET',    '/teacher/courses/{id}/comments', function($twig, $pdo, $id, $_){
+$r->addRoute('GET', '/teacher/courses/{id}/comments', function($twig, $pdo, $id) {
     $cloud = new CloudinaryService();
     (new \Controller\pages\TeacherCourseController($twig, $pdo, $cloud))
         ->comments((int)$id);
 });
+
+$r->addRoute(
+    'POST',
+    '/courses/{courseId}/comments/{commentId}/delete',
+    [\Controller\pages\PublicCourseController::class, 'deleteComment']
+);
+
 
 // Materiais de um curso continuam após...
 

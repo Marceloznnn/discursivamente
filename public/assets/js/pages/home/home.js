@@ -39,6 +39,75 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+  const items = document.querySelectorAll('.course-item');
+  const prevBtn = document.querySelector('.nav-btn.prev');
+  const nextBtn = document.querySelector('.nav-btn.next');
+  const dots    = document.querySelectorAll('.slider-dots .dot');
+  let index = 0;
+  let timer;
+
+  function showSlide(i) {
+    items.forEach((el, idx) => {
+      el.style.display = (idx === i ? 'block' : 'none');
+    });
+    dots.forEach((dot, idx) => {
+      dot.classList.toggle('active', idx === i);
+    });
+  }
+
+  function nextSlide() {
+    index = (index + 1) % items.length;
+    showSlide(index);
+  }
+
+  function prevSlide() {
+    index = (index - 1 + items.length) % items.length;
+    showSlide(index);
+  }
+
+  function startAutoplay() {
+    timer = setInterval(nextSlide, 6000);
+  }
+
+  function stopAutoplay() {
+    clearInterval(timer);
+  }
+
+  // eventos
+  nextBtn.addEventListener('click', () => { stopAutoplay(); nextSlide(); startAutoplay(); });
+  prevBtn.addEventListener('click', () => { stopAutoplay(); prevSlide(); startAutoplay(); });
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      stopAutoplay();
+      index = parseInt(dot.dataset.index);
+      showSlide(index);
+      startAutoplay();
+    });
+  });
+
+  // inicialização
+  if (window.innerWidth < 768) {
+    showSlide(index);
+    startAutoplay();
+  }
+
+  // adapt on resize
+  window.addEventListener('resize', () => {
+    if (window.innerWidth < 768) {
+      showSlide(index);
+      startAutoplay();
+    } else {
+      stopAutoplay();
+      items.forEach(el => el.style.display = '');
+      dots.forEach(dot => dot.classList.remove('active'));
+    }
+  });
+});
+</script>
+
+
   // —— Slider de Depoimentos ——
   const testimonials = Array.from(document.querySelectorAll('.testimonial-item'));
   const prevTest = document.getElementById('test-prev');

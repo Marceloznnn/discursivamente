@@ -74,61 +74,58 @@
          </div>
      </section>
 
-     <section class="popular-courses-section" aria-labelledby="popular-courses-heading">
-         <div class="container">
-             <h2 id="popular-courses-heading">Cursos Populares</h2>
-             <p>Descubra os cursos mais procurados por nossa comunidade.</p>
-             <div class="course-list">
-                 {# Loop through popular courses if available #}
-                 {% if popularCourses is defined and popularCourses is not empty %}
-                     {% for course in popularCourses %}
-                         <div class="course-item">
-                             <div class="course-image">
-                                 {% if course.image %}
-                                     <img src="{{ course.image }}" alt="{{ course.title }}">
-                                 {% endif %}
-                             </div>
-                             <div class="course-content">
-                                 <h3 class="course-title">{{ course.title }}</h3>
-                                 <p class="course-description">
-                                     {{ course.description|length > 100 ? course.description|slice(0, 100) ~ '...' : course.description }}
-                                 </p>
-                                 <a href="{{ course.url|default('#') }}" class="course-link">Saiba mais</a>
-                             </div>
-                         </div>
-                     {% endfor %}
-                 {% else %}
-                     <div class="course-empty">
-                         Nenhum curso popular disponível no momento.
-                     </div>
-                 {% endif %}
-             </div>
-             <div class="courses-ver-todos">
-                 <a href="/curso" class="btn-ver-todos">Ver todos os cursos</a>
-             </div>
-         </div>
-     </section>
+<section class="popular-courses-section" aria-labelledby="popular-courses-heading">
+  <div class="container">
+    <h2 id="popular-courses-heading">Cursos Populares</h2>
+    <p class="intro">Descubra os cursos mais procurados por nossa comunidade.</p>
 
-{% for course in popularCourses %}
-  <div class="course-item">
-    <div class="course-image">
-      {% if course.image %}
-        <img src="{{ course.image }}" alt="{{ course.title }}">
+    <div class="course-list">
+      {% if popularCourses is defined and popularCourses|length > 0 %}
+        {% for course in popularCourses %}
+          <div class="course-item" data-index="{{ loop.index0 }}">
+            <div class="rank">
+              <svg class="crown-icon" viewBox="0 0 24 24"><!-- seu SVG de coroa aqui --><path d="M5 16l-3-8 6 4 4-6 4 6 6-4-3 8H5z"/></svg>
+              <span class="rank-number">{{ loop.index }}</span>
+            </div>
+            <div class="imagem-do-curso">
+              {% if course.image %}
+                <img src="{{ course.image }}" alt="{{ course.title }}">
+              {% endif %}
+            </div>
+            <div class="course-content">
+              <h3 class="course-title">{{ course.title }}</h3>
+              <p class="course-description">
+                {{ course.description|length > 100
+                    ? course.description|slice(0, 100) ~ '…'
+                    : course.description }}
+              </p>
+              <a href="{{ course.url|default('#') }}" class="course-link">Saiba mais</a>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="course-empty">
+          Nenhum curso popular disponível no momento.
+        </div>
       {% endif %}
     </div>
-    <div class="course-content">
-      <h3 class="course-title">{{ course.title }}</h3>
-      <p class="course-description">
-        {% if course.description|length > 100 %}
-          {{ course.description|slice(0, 100) ~ '...' }}
-        {% else %}
-          {{ course.description }}
-        {% endif %}
-      </p>
-      <a href="{{ course.url|default('#') }}" class="course-link">Saiba mais</a>
+
+    <div class="slider-nav">
+      <button class="nav-btn prev" aria-label="Anterior">←</button>
+      <button class="nav-btn next" aria-label="Próximo">→</button>
+    </div>
+
+    <div class="slider-dots">
+      {% for course in popularCourses %}
+        <button class="dot{% if loop.first %} active{% endif %}" data-index="{{ loop.index0 }}"></button>
+      {% endfor %}
+    </div>
+
+    <div class="courses-ver-todos">
+      <a href="/curso" class="btn-ver-todos">Ver todos os cursos</a>
     </div>
   </div>
-{% endfor %}
+</section>
 
 <section class="testimonials-section" aria-labelledby="testimonials-heading">
   <div class="container">

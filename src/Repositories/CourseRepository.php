@@ -37,17 +37,51 @@ class CourseRepository
         return array_map(fn(array $row) => $this->hydrate($row), $rows);
     }
 
+    /**
+     * Retorna todos os cursos de uma determinada categoria
+     *
+     * @param int $categoryId
+     * @return Course[]
+     */
+    public function findByCategoryId(int $categoryId): array
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT *
+               FROM courses
+              WHERE category_id = :category_id
+           ORDER BY created_at DESC'
+        );
+        $stmt->execute([':category_id' => $categoryId]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return array_map(fn(array $r) => $this->hydrate($r), $rows);
+    }
+
+    public function search(string $q): array
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT *  
+               FROM courses  
+              WHERE title       LIKE :q  
+                 OR description LIKE :q
+           ORDER BY created_at DESC"
+        );
+        $like = "%{$q}%";
+        $stmt->execute([':q' => $like]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return array_map(fn(array $r) => $this->hydrate($r), $rows);
+    }
+
     public function save(Course $course): void
     {
         if ($course->getId()) {
             $stmt = $this->pdo->prepare(
                 'UPDATE courses
-                 SET title = :title,
-                     description = :description,
-                     creator_id = :creator_id,
-                     price = :price,
-                     category_id = :category_id,
-                     updated_at = NOW()
+                   SET title       = :title,
+                       description = :description,
+                       creator_id  = :creator_id,
+                       price       = :price,
+                       category_id = :category_id,
+                       updated_at  = NOW()
                  WHERE id = :id'
             );
             $stmt->execute([
@@ -72,21 +106,6 @@ class CourseRepository
             ]);
         }
     }
-    
-    public function search(string $q): array
-    {
-        $stmt = $this->pdo->prepare(
-            "SELECT * 
-               FROM courses 
-              WHERE title       LIKE :q 
-                 OR description LIKE :q
-           ORDER BY created_at DESC"
-        );
-        $like = "%{$q}%";
-        $stmt->execute([':q' => $like]);
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return array_map(fn(array $r) => $this->hydrate($r), $rows);
-    }
 
     public function delete(int $id): void
     {
@@ -95,26 +114,22 @@ class CourseRepository
     }
 
     /**
-     * Hydrate um array de dados em uma instância de Course
+     * Mapeia array de dados para instância de Course
      *
-     * @param array $row Dados da tabela courses
+     * @param array $row
      * @return Course
      */
     private function hydrate(array $row): Course
     {
         return new Course(
-            $row['title'],                     // string  $title
-            $row['description'],               // string  $description
-            (int) $row['creator_id'],          // int     $creatorId
-            isset($row['category_id'])
-                ? (int) $row['category_id']
-                : null,                       // ?int    $categoryId
-            isset($row['id'])
-                ? (int) $row['id']
-                : null,                       // ?int    $id
-            (float) $row['price'],             // float   $price
-            $row['created_at'],                // ?string $createdAt
-            $row['updated_at']                 // ?string $updatedAt
+            $row['title'],
+            $row['description'],
+            (int) $row['creator_id'],             
+            isset($row['category_id']) ? (int) $row['category_id'] : null,
+            isset($row['id']) ? (int) $row['id'] : null,
+            (float) $row['price'],
+            $row['created_at'],
+            $row['updated_at']
         );
     }
 }

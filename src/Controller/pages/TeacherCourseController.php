@@ -1,13 +1,14 @@
 <?php
-// src/Controller/pages/TeacherCourseController.php
 
 namespace Controller\pages;
 
 use Middleware\TeacherMiddleware;
 use Repositories\CourseRepository;
+use Repositories\CategoryRepository;
 use Repositories\CourseCommentRepository;
 use Repositories\CourseParticipationRepository;
 use Services\CloudinaryService;
+use App\Models\Course;
 use PDO;
 use Twig\Environment;
 
@@ -16,6 +17,7 @@ class TeacherCourseController
     private Environment $twig;
     private PDO $pdo;
     private CourseRepository $courseRepo;
+    private CategoryRepository $categoryRepo;
     private CourseCommentRepository $commentRepo;
     private CourseParticipationRepository $participationRepo;
     private CloudinaryService $cloudService;
@@ -27,11 +29,11 @@ class TeacherCourseController
         $this->twig              = $twig;
         $this->pdo               = $pdo;
         $this->courseRepo        = new CourseRepository($pdo);
+        $this->categoryRepo      = new CategoryRepository($pdo);
         $this->commentRepo       = new CourseCommentRepository($pdo);
         $this->participationRepo = new CourseParticipationRepository($pdo);
         $this->cloudService      = $cloudService;
     }
-
 
     // 1) Lista todos os cursos do professor
     public function index(): void
@@ -47,7 +49,10 @@ class TeacherCourseController
     // 2) Exibe o formulário de criação
     public function create(): void
     {
-        echo $this->twig->render('teacher/courses/create.twig');
+        $categories = $this->categoryRepo->findAll();
+        echo $this->twig->render('teacher/courses/create.twig', [
+            'categories' => $categories
+        ]);
     }
 
     // 3) Persiste o novo curso
@@ -56,8 +61,11 @@ class TeacherCourseController
         $title       = $_POST['title'] ?? '';
         $description = $_POST['description'] ?? '';
         $creatorId   = $_SESSION['user']['id'];
+        $categoryId  = isset($_POST['category_id']) && $_POST['category_id'] !== ''
+                         ? (int) $_POST['category_id']
+                         : null;
 
-        $course = new \App\Models\Course($title, $description, $creatorId);
+        $course = new Course($title, $description, $creatorId, $categoryId);
         $this->courseRepo->save($course);
 
         header('Location: /teacher/courses');
@@ -69,9 +77,11 @@ class TeacherCourseController
     {
         $course = $this->courseRepo->findById($id);
         $this->authorize($course);
+        $categories = $this->categoryRepo->findAll();
 
         echo $this->twig->render('teacher/courses/edit.twig', [
-            'course' => $course
+            'course'     => $course,
+            'categories' => $categories
         ]);
     }
 
@@ -83,6 +93,11 @@ class TeacherCourseController
 
         $course->setTitle($_POST['title'] ?? $course->getTitle());
         $course->setDescription($_POST['description'] ?? $course->getDescription());
+        $categoryId = isset($_POST['category_id']) && $_POST['category_id'] !== ''
+                       ? (int) $_POST['category_id']
+                       : null;
+        $course->setCategoryId($categoryId);
+
         $this->courseRepo->save($course);
 
         header('Location: /teacher/courses');
@@ -101,23 +116,26 @@ class TeacherCourseController
     }
 
     // 7) Exibe detalhes de um curso
-    public function show(int $id): void
-    {
-        $course = $this->courseRepo->findById($id);
-        $this->authorize($course);
+public function show(int $id): void
+{
+    $course = $this->courseRepo->findById($id);
+    $this->authorize($course);
 
-        // comentários
-        $commentCount = count($this->commentRepo->findByCourseId($id));
+    $commentCount     = count($this->commentRepo->findByCourseId($id));
+    $participantCount = $this->participationRepo->countActiveByCourse($id);
 
-        // participantes ativos
-        $participantCount = $this->participationRepo->countActiveByCourse($id);
+    // nova linha: busca a categoria pelo ID (pode ser null)
+    $category = $course->getCategoryId()
+        ? $this->categoryRepo->findById($course->getCategoryId())
+        : null;
 
-        echo $this->twig->render('teacher/courses/show.twig', [
-            'course'           => $course,
-            'commentCount'     => $commentCount,
-            'participantCount' => $participantCount,
-        ]);
-    }
+    echo $this->twig->render('teacher/courses/show.twig', [
+        'course'           => $course,
+        'commentCount'     => $commentCount,
+        'participantCount' => $participantCount,
+        'category'         => $category,      // <– passamos aqui
+    ]);
+}
 
     // 8) Exibe a lista de comentários de um curso
     public function comments(int $id): void

@@ -1,10 +1,12 @@
 <?php
-// filepath: c:\xampp\htdocs\Discursivamente2.1\src\Controller\pages\HomeController.php
+// filepath: src/Controller/pages/HomeController.php
 
 namespace Controller\pages;
 
 use Services\CloudinaryService;
 use Repositories\EventRepository;
+use Repositories\CourseRepository;
+use Repositories\CourseParticipationRepository;
 use Infrastructure\Database\Connection;
 
 class HomeController {
@@ -18,38 +20,42 @@ class HomeController {
     }
 
     public function index()
-{
-    // a) Conexão e repositório de eventos
-    $connection      = Connection::getInstance();
-    $eventRepository = new EventRepository($connection);
+    {
+        $connection = Connection::getInstance();
 
-    // b) Busca todos os eventos
-    $allEvents = $eventRepository->findAll();
+        // Eventos em destaque
+        $eventRepository = new EventRepository($connection);
+        $allEvents       = $eventRepository->findAll();
+        $featured        = array_filter($allEvents, fn($e) => $e->getIsFeatured());
+        usort($featured, fn($a, $b) => $b->getFeaturePriority() <=> $a->getFeaturePriority());
+        $topFeatured     = array_slice($featured, 0, 4);
 
-    // c) Filtra apenas os eventos marcados como 'featured'
-    $featured = array_filter($allEvents, function($e) {
-        return $e->getIsFeatured();
-    });
+        // Cursos mais populares
+        $courseRepo        = new CourseRepository($connection);
+        $participationRepo = new CourseParticipationRepository($connection);
 
-    // d) Ordena por featurePriority descendente (maior destaque primeiro)
-    usort($featured, function($a, $b) {
-        return $b->getFeaturePriority() <=> $a->getFeaturePriority();
-    });
+        $allCourses = $courseRepo->findAll();
 
-    // e) Limita ao top N eventos (aqui, 4)
-    $topFeatured = array_slice($featured, 0, 4);
+        $coursesWithCount = array_map(function($course) use ($participationRepo) {
+            $count = $participationRepo->countActiveByCourse($course->getId());
+            $course->activeCount = $count;
+            return $course;
+        }, $allCourses);
 
-    // f) Renderiza a view passando só os eventos em destaque
-    echo $this->twig->render('home/index.twig', [
-        'featuredEvents' => $topFeatured,
-        'recentUploads'  => $this->getRecentUploads(),
-    ]);
-}
+        usort($coursesWithCount, fn($a, $b) => $b->activeCount <=> $a->activeCount);
+        $popularCourses = array_slice($coursesWithCount, 0, 3);
 
+        // Renderiza a view
+        echo $this->twig->render('home/index.twig', [
+            'featuredEvents' => $topFeatured,
+            'recentUploads'  => $this->getRecentUploads(),
+            'popularCourses' => $popularCourses
+        ]);
+    }
 
     /**
      * Faz upload de imagem ou vídeo para o Cloudinary
-     * 
+     *
      * @param array $file Arquivo enviado via $_FILES
      * @param string $folder Pasta onde será armazenado (opcional)
      * @return array|false Dados do upload ou false em caso de erro
@@ -61,18 +67,11 @@ class HomeController {
         }
 
         try {
-            // Pasta temporária para armazenar o arquivo
             $tmpPath = $file['tmp_name'];
-
-            // Realiza o upload para o Cloudinary
-            $result = $this->cloudinaryService->upload($tmpPath, $folder);
-
-            // Registra o upload em banco de dados se necessário
+            $result  = $this->cloudinaryService->upload($tmpPath, $folder);
             $this->logUpload($result, $file['name']);
-
             return $result;
         } catch (\Exception $e) {
-            // Log do erro
             error_log('Erro ao fazer upload para o Cloudinary: ' . $e->getMessage());
             return false;
         }
@@ -89,22 +88,19 @@ class HomeController {
         }
 
         $result = false;
-
         if (isset($_FILES['media'])) {
             $result = $this->uploadMedia($_FILES['media']);
         }
 
         if ($result) {
             $_SESSION['flash_message'] = [
-                'type' => 'success',
+                'type'    => 'success',
                 'message' => 'Arquivo enviado com sucesso!'
             ];
-
-            // Adiciona a URL do arquivo na sessão para ser exibida na view
             $_SESSION['uploaded_file'] = $result['url'];
         } else {
             $_SESSION['flash_message'] = [
-                'type' => 'error',
+                'type'    => 'error',
                 'message' => 'Falha ao enviar o arquivo. Tente novamente.'
             ];
         }
@@ -115,10 +111,10 @@ class HomeController {
 
     /**
      * Exclui um arquivo do Cloudinary
-     * 
+     *
      * @param string $publicId ID público do arquivo
-     * @param string $fileType Tipo do arquivo ('image' ou 'video')
-     * @return bool Sucesso da operação
+     * @param string|null $fileType Tipo do arquivo ('image' ou 'video')
+     * @return bool
      */
     public function deleteMedia($publicId, $fileType = null)
     {
@@ -126,22 +122,17 @@ class HomeController {
             return false;
         }
 
-        // Se o tipo de arquivo não foi especificado, tenta determinar
         if (!$fileType) {
-            // Verifica a extensão do ID público para inferir o tipo
             $extension = pathinfo($publicId, PATHINFO_EXTENSION);
-            $fileType = $this->cloudinaryService->determineFileType("dummy.$extension");
+            $fileType  = $this->cloudinaryService->determineFileType("dummy.$extension");
         }
 
         try {
             $result = $this->cloudinaryService->deleteFile($publicId, $fileType);
-
-            // Remove o registro do upload do banco de dados se necessário
-            if ($result['result'] === 'ok') {
+            if (isset($result['result']) && $result['result'] === 'ok') {
                 $this->removeUploadLog($publicId);
                 return true;
             }
-
             return false;
         } catch (\Exception $e) {
             error_log('Erro ao excluir arquivo do Cloudinary: ' . $e->getMessage());
@@ -151,65 +142,36 @@ class HomeController {
 
     /**
      * Registra o upload em um banco de dados
-     * 
-     * @param array $uploadData Dados retornados pelo Cloudinary
-     * @param string $originalFilename Nome original do arquivo
      */
-    private function logUpload($uploadData, $originalFilename)
+    private function logUpload(array $uploadData, string $originalFilename)
     {
-        // Implementação para salvar o registro em banco de dados
-        // Exemplo:
-        /*
-        $connection = Connection::getInstance();
-        $stmt = $connection->prepare(
-            "INSERT INTO media_uploads (public_id, url, resource_type, original_filename, created_at) 
-             VALUES (?, ?, ?, ?, NOW())"
-        );
-        $stmt->execute([
-            $uploadData['public_id'],
-            $uploadData['url'],
-            $uploadData['resource_type'],
-            $originalFilename
-        ]);
-        */
+        // implementação para salvar em banco, se desejar
     }
 
     /**
      * Remove o registro de upload do banco de dados
-     * 
-     * @param string $publicId ID público do arquivo
      */
-    private function removeUploadLog($publicId)
+    private function removeUploadLog(string $publicId)
     {
-        // Implementação para remover o registro do banco de dados
-        // Exemplo:
-        /*
-        $connection = Connection::getInstance();
-        $stmt = $connection->prepare("DELETE FROM media_uploads WHERE public_id = ?");
-        $stmt->execute([$publicId]);
-        */
+        // implementação para remover em banco, se desejar
     }
 
     /**
      * Recupera uploads recentes do banco de dados
-     * 
-     * @param int $limit Quantidade de itens a retornar
-     * @return array Lista de uploads recentes
+     *
+     * @param int $limit
+     * @return array
      */
-    private function getRecentUploads($limit = 6)
+    private function getRecentUploads(int $limit = 6): array
     {
-        // Implementação para buscar uploads recentes
-        // Exemplo:
-        /*
-        $connection = Connection::getInstance();
-        $stmt = $connection->prepare(
-            "SELECT * FROM media_uploads ORDER BY created_at DESC LIMIT ?"
-        );
-        $stmt->execute([$limit]);
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        */
-        
-        // Retorna um array vazio como padrão
+        // exemplo de implementação:
+        // $connection = Connection::getInstance();
+        // $stmt = $connection->prepare(
+        //     "SELECT * FROM media_uploads ORDER BY created_at DESC LIMIT ?"
+        // );
+        // $stmt->execute([$limit]);
+        // return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
         return [];
     }
 }
