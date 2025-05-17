@@ -14,6 +14,9 @@ use Middleware\AuthMiddleware;
 use Middleware\GuestMiddleware;
 use Controller\PagesController;
 use Controller\pages\PublicCourseController;
+use Repositories\CourseRepository;
+use Repositories\MaterialRepository;
+use Controller\pages\TeacherMaterialController;
 
 // ==========================================
 // Rotas públicas (sem autenticação)
@@ -524,7 +527,14 @@ $r->addRoute('POST', '/teacher/courses/{courseId}/materials/{id}/delete', functi
         ->destroy((int)$courseId, (int)$id);
 });
 
-// ... rotas index, create, store, edit, update já definidas
+// Exibe detalhe de um material específico (professor)
+$r->addRoute('GET', '/teacher/courses/{courseId}/materials/{id}', function($twig, $pdo, $courseId, $id) {
+    $cloud = new CloudinaryService();
+    $materialRepo = new \Repositories\MaterialRepository($pdo);
+    $courseRepo = new \Repositories\CourseRepository($pdo);
+    (new \Controller\pages\TeacherMaterialController($twig, $materialRepo, $courseRepo, $cloud))
+        ->show((int)$courseId, (int)$id);
+});
 
 // Detalhes do curso
 $r->addRoute('GET', '/teacher/courses/{id}', function($twig, $pdo, $id) {
@@ -542,6 +552,31 @@ $r->addRoute('GET', '/teacher/courses/{id}/delete', function($twig, $pdo, $id) {
     (new \Controller\pages\TeacherCourseController($twig, $pdo, $cloud))
         ->destroy((int)$id);
 });
+
+
+$r->addRoute(
+    'GET',
+    '/teacher/courses/{courseId}/modules/{moduleId}/materials/add',
+    function($twig, $pdo, $courseId, $moduleId) {
+        $cloud        = new CloudinaryService();
+        $materialRepo = new MaterialRepository($pdo);
+        $courseRepo   = new CourseRepository($pdo);
+        (new TeacherMaterialController($twig, $materialRepo, $courseRepo, $cloud))
+            ->addToModule((int)$courseId, (int)$moduleId);
+    }
+);
+
+$r->addRoute(
+    'POST',
+    '/teacher/courses/{courseId}/modules/{moduleId}/materials/add',
+    function($twig, $pdo, $courseId, $moduleId) {
+        $cloud        = new CloudinaryService();
+        $materialRepo = new MaterialRepository($pdo);
+        $courseRepo   = new CourseRepository($pdo);
+        (new TeacherMaterialController($twig, $materialRepo, $courseRepo, $cloud))
+            ->storeToModule((int)$courseId, (int)$moduleId);
+    }
+);
 
 // Comentários de um curso
 $r->addRoute('GET', '/teacher/courses/{id}/comments', function($twig, $pdo, $id) {
@@ -579,3 +614,11 @@ $r->addRoute('POST', '/courses/{id:\d+}/join',  [PublicCourseController::class, 
 
 // Sair do curso (marca left_at e esconde materiais)
 $r->addRoute('POST', '/courses/{id:\d+}/leave', [PublicCourseController::class, 'leave']);
+
+// Marcar curso como concluído
+$r->addRoute('POST', '/courses/{id:\d+}/complete', [PublicCourseController::class, 'complete']);
+// Desmarcar curso como concluído
+$r->addRoute('POST', '/courses/{id:\d+}/uncomplete', [PublicCourseController::class, 'uncomplete']);
+
+// Progresso de material (AJAX)
+$r->addRoute('POST', '/user/progress/toggle/{materialId:\d+}', [\Controller\pages\UserProgressController::class, 'toggle']);

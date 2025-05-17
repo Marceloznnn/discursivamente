@@ -1,27 +1,49 @@
+{# templates/teacher/courses/create.twig #}
 {% extends 'layouts/base.twig' %}
 
 {% block title %}Criar Curso{% endblock %}
 
+{% block styles %}
+  <link rel="stylesheet" href="/assets/css/pages/curso/teacher/create.css">
+{% endblock %}
+
 {% block content %}
-<h1>Criar Curso</h1>
+  <section class="create-course">
+    <div class="form-container">
+      <header class="form-header">
+        <h1><i class="fas fa-plus-circle"></i> Criar Novo Curso</h1>
+      </header>
 
-<form action="/teacher/courses" method="post">
-    <label for="title">Título:</label><br>
-    <input type="text" name="title" id="title" required><br><br>
+      <form action="/teacher/courses" method="post" class="course-form">
+        <div class="form-group">
+          <label for="title">Título do Curso</label>
+          <input type="text" name="title" id="title" placeholder="Digite o título" required>
+        </div>
 
-    <label for="description">Descrição:</label><br>
-    <textarea name="description" id="description" rows="4"></textarea><br><br>
+        <div class="form-group">
+          <label for="description">Descrição</label>
+          <textarea name="description" id="description" rows="4" placeholder="Descreva o curso"></textarea>
+        </div>
 
-    <label for="category_id">Categoria:</label><br>
-    <select name="category_id" id="category_id">
-        <option value="">-- Selecione uma categoria --</option>
-        {% for category in categories %}
-            <option value="{{ category.id }}">{{ category.name }}</option>
-        {% endfor %}
-    </select>
-    <br><br>
+        <div class="form-group">
+          <label for="category_id">Categoria</label>
+          <select name="category_id" id="category_id">
+            <option value="">-- Selecione uma categoria --</option>
+            {% for category in categories %}
+              <option value="{{ category.id }}">{{ category.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
 
-    <button type="submit">Salvar</button>
-    <a href="/teacher/courses">Cancelar</a>
-</form>
+        <div class="form-footer">
+          <button type="submit" class="btn-save-course">
+            <i class="fas fa-save"></i> Confirmar Criação
+          </button>
+          <a href="/teacher/courses" class="btn-cancel-create">
+            <i class="fas fa-times"></i> Retornar
+          </a>
+        </div>
+      </form>
+    </div>
+  </section>
 {% endblock %}

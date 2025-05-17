@@ -1,37 +1,64 @@
 {# templates/teacher/courses/show.twig #}
 {% extends 'layouts/base.twig' %}
 
+{% block title %}{{ course.getTitle() }} – Detalhes do Curso{% endblock %}
+
+{% block styles %}
+  <link rel="stylesheet" href="/assets/css/pages/curso/teacher/show.css">
+{% endblock %}
+
 {% block content %}
-  <div class="course-detail">
-    <h1>{{ course.getTitle() }}</h1>
+  <section class="course-detail">
+    <header class="detail-header">
+      <div class="header-content">
+        <h1 class="detail-title">
+          <i class="fas fa-graduation-cap"></i>
+          {{ course.getTitle() }}
+        </h1>
+        <div class="detail-badges">
+          <span class="badge badge-category">
+            <i class="fas fa-tags"></i>
+            {{ category ? category.getName() : 'Sem categoria' }}
+          </span>
+          <span class="badge badge-participants">
+            <i class="fas fa-user-friends"></i>
+            {{ participantCount }} participantes
+          </span>
+          <span class="badge badge-comments">
+            <i class="fas fa-comments"></i>
+            {{ commentCount }} comentários
+          </span>
+        </div>
+      </div>
+    </header>
 
-    {# Exibe a categoria, se existir #}
-    {% if category %}
-      <p><strong>Categoria:</strong> {{ category.getName() }}</p>
-    {% else %}
-      <p><strong>Categoria:</strong> <em>Sem categoria</em></p>
-    {% endif %}
+    <article class="detail-body">
+      <h2 class="section-title">Visão Geral</h2>
+      <p class="course-description">{{ course.getDescription() }}</p>
+    </article>
 
-    <p>{{ course.getDescription() }}</p>
-
-    <ul class="course-actions">
-      <li><a href="/teacher/courses/{{ course.getId() }}/edit">Editar Curso</a></li>
-      <li>
+    <footer class="detail-actions">
+      <div class="action-group primary-actions">
+        <a href="/teacher/courses/{{ course.getId() }}/edit" class="btn btn-primary">
+          <i class="fas fa-edit"></i> Editar Curso
+        </a>
         <form method="POST"
               action="/teacher/courses/{{ course.getId() }}/delete"
-              onsubmit="return confirm('Tem certeza que deseja excluir este curso?');">
-          <button type="submit">Excluir Curso</button>
+              onsubmit="return confirm('Tem certeza que deseja remover este curso?');"
+              class="inline-form">
+          <button type="submit" class="btn btn-danger">
+            <i class="fas fa-trash-alt"></i> Remover Curso
+          </button>
         </form>
-      </li>
-      <li><a href="/teacher/courses/{{ course.getId() }}/materials">Materiais</a></li>
-      <li>
-        <a href="/teacher/courses/{{ course.getId() }}/comments">
-          Comentários ({{ commentCount }})
+      </div>
+      <div class="action-group secondary-actions">
+        <a href="/teacher/courses/{{ course.getId() }}/materials" class="btn btn-materials">
+          <i class="fas fa-book"></i> Gerenciar Materiais
         </a>
-      </li>
-      <li>
-        📊 Participantes ativos: {{ participantCount }}
-      </li>
-    </ul>
-  </div>
+        <a href="/teacher/courses/{{ course.getId() }}/comments" class="btn btn-comments">
+          <i class="fas fa-comment-dots"></i> Ver Comentários
+        </a>
+      </div>
+    </footer>
+  </section>
 {% endblock %}

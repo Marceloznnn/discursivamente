@@ -1,0 +1,174 @@
+/* assets/css/pages/curso/teacher/materials_index.css */
+:root {
+  --color-primary: #4F46E5;
+  --color-primary-dark: #4338CA;
+  --color-secondary: #6B7280;
+  --color-add: #10B981;
+  --color-add-dark: #059669;
+  --color-bg: #F9FAFB;
+  --color-white: #FFFFFF;
+  --color-gray-light: #E5E7EB;
+  --color-text: #111827;
+  --color-delete: #EF4444;
+  --color-delete-dark: #DC2626;
+  --border-radius: 12px;
+  --transition: 0.3s ease-in-out;
+  --font-family: 'Inter', sans-serif;
+}
+
+.materials-index {
+  max-width: 960px;
+  margin: 40px auto;
+  padding: 20px;
+  background: var(--color-white);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+  font-family: var(--font-family);
+}
+
+.materials-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.materials-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-text);
+}
+
+.header-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: var(--border-radius);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+  margin-left: 8px;
+}
+
+.btn-back {
+  background: var(--color-secondary);
+  color: var(--color-white);
+}
+.btn-back:hover {
+  background: var(--color-gray-light);
+  color: var(--color-text);
+}
+
+.btn-add {
+  background: var(--color-add);
+  color: var(--color-white);
+}
+.btn-add:hover {
+  background: var(--color-add-dark);
+}
+
+.materials-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.no-materials {
+  text-align: center;
+  color: var(--color-secondary);
+  padding: 40px 0;
+  font-size: 1.125rem;
+}
+
+.material-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--color-bg);
+  padding: 16px 24px;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--color-gray-light);
+  transition: var(--transition);
+}
+.material-card:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+}
+
+.card-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.material-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.material-type {
+  font-size: 0.875rem;
+  color: var(--color-secondary);
+  text-transform: capitalize;
+}
+
+.card-actions .btn, .card-actions .inline-form button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--border-radius);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+  margin-left: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-view-details {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+.btn-view-details:hover {
+  background: var(--color-primary-dark);
+}
+
+.btn-delete {
+  background: var(--color-delete);
+  color: var(--color-white);
+}
+.btn-delete:hover {
+  background: var(--color-delete-dark);
+}
+
+.inline-form {
+  display: inline;
+}
+
+@media (max-width: 768px) {
+  .materials-index {
+    margin: 20px;
+    padding: 16px;
+  }
+  .materials-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
+  }
+}

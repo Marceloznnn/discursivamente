@@ -160,3 +160,21 @@
 
   </div>
 {% endblock %}
+
+{% block scripts %}
+  <script>
+    // Atualiza barra de progresso na página do curso
+    window.updateCourseProgress = function() {
+      fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          const newProgress = doc.querySelector('#progress-bar');
+          if (newProgress) {
+            document.getElementById('progress-bar').value = newProgress.value;
+          }
+        });
+    };
+  </script>
+{% endblock %}

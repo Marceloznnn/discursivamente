@@ -1,29 +1,38 @@
+{# templates/teacher/courses/comments.twig #}
 {% extends 'layouts/base.twig' %}
 
-{% block title %}Comentários do Curso{% endblock %}
+{% block title %}Comentários do Curso – {{ course.getTitle() }}{% endblock %}
+
+{% block styles %}
+  <link rel="stylesheet" href="/assets/css/pages/curso/teacher/comments.css">
+{% endblock %}
 
 {% block content %}
-  <h1>Comentários: {{ course.getTitle() }}</h1>
-  <p>
-    <a href="/teacher/courses/{{ course.getId() }}" class="btn btn-secondary btn-sm">
-      ← Voltar aos detalhes
-    </a>
-  </p>
+  <section class="comments-page">
+    <header class="comments-header">
+      <h1><i class="fas fa-comment-alt"></i> Comentários: {{ course.getTitle() }}</h1>
+      <a href="/teacher/courses/{{ course.getId() }}" class="btn btn-back">
+        <i class="fas fa-arrow-left"></i> Voltar aos Detalhes
+      </a>
+    </header>
 
-  {% if comments is not empty %}
-    <ul class="comments-list">
-      {% for comment in comments %}
-        <li class="comment-item">
-          <div class="comment-meta">
-            Usuário: <strong>{{ comment.getUserId() }}</strong>
-            em {{ comment.getCreatedAt()|date('d/m/Y H:i') }}
-            • Nota: {{ comment.getRating() }}
+    <div class="comments-container">
+      {% if comments is not empty %}
+        {% for comment in comments %}
+          <div class="comment-card">
+            <div class="comment-meta">
+              <span class="meta-user"><i class="fas fa-user"></i> {{ comment.getUserId() }}</span>
+              <span class="meta-date"><i class="fas fa-clock"></i> {{ comment.getCreatedAt()|date('d/m/Y H:i') }}</span>
+              <span class="meta-rating"><i class="fas fa-star"></i> {{ comment.getRating() }}/5</span>
+            </div>
+            <p class="comment-text">{{ comment.getComment() }}</p>
           </div>
-          <p class="comment-text">{{ comment.getComment() }}</p>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>Não há comentários para este curso.</p>
-  {% endif %}
+        {% endfor %}
+      {% else %}
+        <div class="no-comments">
+          <p>Não há comentários para este curso.</p>
+        </div>
+      {% endif %}
+    </div>
+  </section>
 {% endblock %}

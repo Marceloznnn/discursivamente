@@ -85,6 +85,16 @@
         {% else %}
           <p class="no-content">Nenhum conteúdo disponível para este material.</p>
         {% endif %}
+        {% if session.user %}
+          <form id="progress-form" data-material-id="{{ material.id }}" style="margin-top:2rem;">
+            <label style="font-weight:600;">
+              <input type="checkbox" id="material-completed" {% if material.id in completedMaterials %}checked{% endif %}>
+              Marcar este material como concluído
+            </label>
+            <span id="progress-feedback" style="margin-left:1rem;color:var(--success-color);"></span>
+          </form>
+          <script src="/assets/js/pages/curso/progresso.js" defer></script>
+        {% endif %}
       </section>
 
       {# Botão para acessar quiz do módulo, se houver #}

@@ -104,7 +104,7 @@ class PublicCourseController
             $completed = array_map(fn($p) => $p->getMaterialId(), $prs);
         }
         $total    = count($materials);
-        $progress = $total ? (int) round(count($completed) / $total * 100) : 0;
+        $progress = $total ? (int) round(count(array_intersect(array_map(fn($m) => $m->getId(), $materials), $completed)) / $total * 100) : 0;
 
         // Comentários
         $rawComments = $this->commentRepo->findByCourseId($courseId);
@@ -116,7 +116,7 @@ class PublicCourseController
                 'userName'  => $user ? $user->getName() : "Usuário #{$c->getUserId()}",
                 'comment'   => $c->getComment(),
                 'rating'    => $c->getRating(),
-                'createdAt' => $c->getCreatedAt(),
+                'createdAt' => $c->getCreatedAt()
             ];
         }, $rawComments);
 

@@ -1,0 +1,121 @@
+/* assets/css/pages/curso/teacher/material_show.css */
+:root {
+  --color-primary: #4F46E5;
+  --color-primary-dark: #4338CA;
+  --color-secondary: #6B7280;
+  --color-bg: #F9FAFB;
+  --color-white: #FFFFFF;
+  --color-danger: #EF4444;
+  --color-danger-dark: #DC2626;
+  --color-text: #111827;
+  --border-radius: 12px;
+  --transition: 0.3s ease;
+  --font-family: 'Inter', sans-serif;
+}
+
+.material-show {
+  max-width: 900px;
+  margin: 40px auto;
+  background: var(--color-white);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+  padding: 32px;
+  font-family: var(--font-family);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.actions .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+  font-size: 0.95rem;
+  margin-left: 8px;
+}
+
+.btn-back {
+  background: var(--color-secondary);
+  color: var(--color-white);
+}
+.btn-back:hover {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.btn-download {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+.btn-download:hover {
+  background: var(--color-primary-dark);
+}
+
+.content-preview {
+  margin-bottom: 24px;
+}
+.media {
+  width: 100%;
+  height: auto;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.media-pdf {
+  width: 100%;
+  height: 600px;
+  border-radius: var(--border-radius);
+}
+
+.external-link a {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.footer-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-delete {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: var(--color-danger);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.btn-delete:hover {
+  background: var(--color-danger-dark);
+}
+
+@media (max-width: 768px) {
+  .material-show {
+    padding: 24px;
+    margin: 20px;
+  }
+  .media-pdf {
+    height: 400px;
+  }
+}

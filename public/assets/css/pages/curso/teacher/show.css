@@ -1,0 +1,158 @@
+:root {
+  --color-primary: #4F46E5;
+  --color-primary-light: #6366F1;
+  --color-primary-dark: #4338CA;
+  --color-danger: #EF4444;
+  --color-danger-dark: #DC2626;
+  --color-materials: #10B981;
+  --color-materials-dark: #059669;
+  --color-comments: #F59E0B;
+  --color-comments-dark: #D97706;
+  --color-bg: #F9FAFB;
+  --color-white: #FFFFFF;
+  --color-gray-light: #E5E7EB;
+  --color-text: #111827;
+  --border-radius: 16px;
+  --transition: 0.25s ease-in-out;
+  --font-family: 'Inter', sans-serif;
+}
+
+.course-detail {
+  max-width: 960px;
+  margin: 50px auto;
+  background: var(--color-white);
+  border-radius: var(--border-radius);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  overflow: hidden;
+  font-family: var(--font-family);
+}
+
+/* Header section with gradient background */
+.detail-header {
+  background: linear-gradient(120deg, var(--color-primary), var(--color-primary-light));
+  color: var(--color-white);
+  padding: 32px;
+}
+.header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.detail-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.detail-badges {
+  display: inline-flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--border-radius);
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: rgba(255,255,255,0.25);
+  transition: background var(--transition);
+}
+.badge:hover {
+  background: rgba(255,255,255,0.4);
+}
+
+/* Body */
+.detail-body {
+  padding: 40px 32px;
+  background: var(--color-bg);
+}
+.section-title {
+  font-size: 1.75rem;
+  margin-bottom: 20px;
+  color: var(--color-text);
+  border-bottom: 3px solid var(--color-primary);
+  padding-bottom: 10px;
+}
+.course-description {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--color-text);
+}
+
+/* Actions area */
+.detail-actions {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 32px;
+  background: var(--color-white);
+}
+.action-group {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Button base */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: var(--transition);
+  border: none;
+  font-size: 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.btn i {
+  font-size: 1.2rem;
+}
+
+/* Primary */
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+/* Danger */
+.btn-danger {
+  background: var(--color-danger);
+  color: var(--color-white);
+}
+.btn-danger:hover {
+  background: var(--color-danger-dark);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+/* Materials */
+.btn-materials {
+  background: var(--color-materials);
+  color: var(--color-white);
+}
+.btn-materials:hover {
+  background: var(--color-materials-dark);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+/* Comments */
+.btn-comments {
+  background: var(--color-comments);
+  color: var(--color-white);
+}
+.btn-comments:hover {
+  background: var(--color-c

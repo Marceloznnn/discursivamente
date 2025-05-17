@@ -1,0 +1,206 @@
+/* assets/css/pages/curso/teacher/index.css */
+
+/* ===============================
+   Reset e Configurações Globais
+   =============================== */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --color-primary: #4F46E5;
+  --color-primary-dark: #4338CA;
+  --color-secondary: #6B7280;
+  --color-bg: #F9FAFB;
+  --color-white: #FFFFFF;
+  --color-gray-light: #E5E7EB;
+  --color-gray: #9CA3AF;
+  --color-text: #111827;
+  --border-radius: 12px;
+  --transition: 0.3s ease-in-out;
+  --font-family: 'Inter', sans-serif;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  padding: 20px;
+}
+
+/* ==============
+   Botões Globais
+   ============== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: var(--transition);
+  border: none;
+}
+
+.btn i {
+  margin-right: 8px;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--color-primary-dark);
+}
+
+/* ===============================
+   Botão “Ver Detalhes” Personalizado
+   =============================== */
+.btn-view-details {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 18px;
+  background-color: #3B82F6;       /* exemplo: azul médio */
+  color: #FFFFFF;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--border-radius);
+  transition: background-color var(--transition);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn-view-details:hover,
+.btn-view-details:focus {
+  background-color: #2563EB;       /* azul um pouco mais escuro */
+  color: #FFFFFF;
+}
+
+.btn-secondary {
+  background-color: var(--color-gray-light);
+  color: var(--color-text);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus {
+  background-color: var(--color-gray);
+  color: var(--color-white);
+}
+
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 0.875rem;
+}
+
+/* ============================
+   Container Principal (Dashboard)
+   ============================ */
+.course-dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: var(--color-white);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  padding: 40px 30px;
+}
+
+/* =====================
+   Topbar do Dashboard
+   ===================== */
+.dashboard-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+/* ===================
+   Grid de Cursos
+   =================== */
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+/* ===================
+   Cartão de Curso
+   =================== */
+.course-card {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-gray-light);
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: var(--transition);
+  overflow: hidden;
+}
+
+.course-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Cabeçalho do cartão */
+.card-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--color-gray-light);
+}
+
+.course-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* Rodapé do cartão */
+.card-footer {
+  padding: 16px 20px;
+  display: flex;
+  justify-content: flex-end;
+  background-color: var(--color-white);
+}
+
+/* ================
+   Estado vazio (sem cursos)
+   ================ */
+.no-courses {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--color-secondary);
+  font-size: 1.125rem;
+}
+
+/* ======================
+   Responsividade Simples
+   ====================== */
+@media (max-width: 768px) {
+  .dashboard-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .course-dashboard {
+    padding: 30px 20px;
+  }
+}
