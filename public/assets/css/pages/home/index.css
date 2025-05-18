@@ -574,24 +574,333 @@ img {
 @media (max-width: 1023px) {
   .course-list {
     grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+  }
+  .features-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
   }
 }
-
 @media (max-width: 767px) {
-  /* slider: só um por vez */
+  .container {
+    padding: 0 0.5rem;
+  }
+  .popular-courses-section,
+  .features-section,
+  .testimonials-section,
+  .cta-section,
+  .newsletter-section {
+    padding: 2.5rem 0;
+  }
   .course-list {
-    display: block;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .features-list {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .feature-item {
+    padding: 1.2rem;
+  }
+  .slider-content {
+    width: 90%;
+    margin: 0 auto;
+    padding: 1.2rem;
+    font-size: 1rem;
+  }
+  .slider-content h1 {
+    font-size: 2rem;
+  }
+  .slider-content p {
+    font-size: 1rem;
+  }
+  .slider-controls {
+    bottom: 1rem;
+    gap: 1rem;
+  }
+  .slider-prev, .slider-next {
+    width: 38px;
+    height: 38px;
+    font-size: 1.1rem;
+  }
+  .slider-dot {
+    width: 10px;
+    height: 10px;
+  }
+  .split-section {
+    flex-direction: column;
+    height: auto;
+  }
+  .image-side, .text-side {
+    flex: unset;
+    width: 100%;
+    clip-path: none;
+    padding: 0;
+  }
+  .text-side {
+    padding: 1.2rem;
+  }
+}
+@media (max-width: 575px) {
+  h1 {
+    font-size: 2rem;
+  }
+  h2 {
+    font-size: 1.3rem;
+  }
+  .slider-content h1 {
+    font-size: 1.3rem;
+  }
+  .slider-content {
+    padding: 0.7rem;
+    font-size: 0.95rem;
+  }
+  .feature-item {
+    padding: 0.8rem;
   }
   .course-item {
-    display: none;
-    margin-bottom: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
   }
-  .slider-nav,
-  .slider-dots {
-    display: flex;
+  .imagem-do-curso {
+    height: 120px;
+  }
+  .course-content {
+    padding: 0.7rem;
+  }
+  .btn, .btn-primary, .btn-outline, .btn-ver-todos {
+    padding: 0.5rem 1rem;
+    font-size: 0.95rem;
+  }
+  .testimonials-section {
+    padding: 2rem 0;
+  }
+  .newsletter-section {
+    padding: 2rem 0;
+  }
+}
+@media (max-width: 400px) {
+  .slider-content h1 {
+    font-size: 1.1rem;
+  }
+  .slider-content p {
+    font-size: 0.9rem;
+  }
+  .feature-item h3 {
+    font-size: 1rem;
   }
 }
 
+/* Ajustes extras para slider e cards mobile */
+@media (max-width: 767px) {
+  .slider-item, .slider-content {
+    border-radius: 10px;
+  }
+  .slider-bg img {
+    border-radius: 10px;
+  }
+}
+
+/* Depoimentos: stack vertical no mobile */
+@media (max-width: 767px) {
+  .testimonials-wrapper {
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  .testimonial-item {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+}
+
+/* Newsletter: stack e inputs maiores no mobile */
+@media (max-width: 767px) {
+  .newsletter-wrapper {
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  .newsletter-form input[type="email"] {
+    width: 100%;
+    font-size: 1rem;
+    padding: 0.7rem;
+  }
+}
+
+/* CTA: centraliza tudo no mobile */
+@media (max-width: 767px) {
+  .cta-content {
+    text-align: center;
+    padding: 1.2rem 0.5rem;
+  }
+}
+
+/* ===================== RESPONSIVIDADE HOME ===================== */
+
+/* GRID de cursos: 3 colunas desktop, 2 tablet, 1 mobile */
+@media (max-width: 1023px) {
+  .course-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+  }
+  .features-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+@media (max-width: 767px) {
+  .container {
+    padding: 0 0.5rem;
+  }
+  .popular-courses-section,
+  .features-section,
+  .testimonials-section,
+  .cta-section,
+  .newsletter-section {
+    padding: 2.5rem 0;
+  }
+  .course-list {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .features-list {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .feature-item {
+    padding: 1.2rem;
+  }
+  .slider-content {
+    width: 90%;
+    margin: 0 auto;
+    padding: 1.2rem;
+    font-size: 1rem;
+  }
+  .slider-content h1 {
+    font-size: 2rem;
+  }
+  .slider-content p {
+    font-size: 1rem;
+  }
+  .slider-controls {
+    bottom: 1rem;
+    gap: 1rem;
+  }
+  .slider-prev, .slider-next {
+    width: 38px;
+    height: 38px;
+    font-size: 1.1rem;
+  }
+  .slider-dot {
+    width: 10px;
+    height: 10px;
+  }
+  .split-section {
+    flex-direction: column;
+    height: auto;
+  }
+  .image-side, .text-side {
+    flex: unset;
+    width: 100%;
+    clip-path: none;
+    padding: 0;
+  }
+  .text-side {
+    padding: 1.2rem;
+  }
+}
+@media (max-width: 575px) {
+  h1 {
+    font-size: 2rem;
+  }
+  h2 {
+    font-size: 1.3rem;
+  }
+  .slider-content h1 {
+    font-size: 1.3rem;
+  }
+  .slider-content {
+    padding: 0.7rem;
+    font-size: 0.95rem;
+  }
+  .feature-item {
+    padding: 0.8rem;
+  }
+  .course-item {
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  }
+  .imagem-do-curso {
+    height: 120px;
+  }
+  .course-content {
+    padding: 0.7rem;
+  }
+  .btn, .btn-primary, .btn-outline, .btn-ver-todos {
+    padding: 0.5rem 1rem;
+    font-size: 0.95rem;
+  }
+  .testimonials-section {
+    padding: 2rem 0;
+  }
+  .newsletter-section {
+    padding: 2rem 0;
+  }
+}
+@media (max-width: 400px) {
+  .slider-content h1 {
+    font-size: 1.1rem;
+  }
+  .slider-content p {
+    font-size: 0.9rem;
+  }
+  .feature-item h3 {
+    font-size: 1rem;
+  }
+}
+
+/* Ajustes extras para slider e cards mobile */
+@media (max-width: 767px) {
+  .slider-item, .slider-content {
+    border-radius: 10px;
+  }
+  .slider-bg img {
+    border-radius: 10px;
+  }
+}
+
+/* Depoimentos: stack vertical no mobile */
+@media (max-width: 767px) {
+  .testimonials-wrapper {
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  .testimonial-item {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+}
+
+/* Newsletter: stack e inputs maiores no mobile */
+@media (max-width: 767px) {
+  .newsletter-wrapper {
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  .newsletter-form input[type="email"] {
+    width: 100%;
+    font-size: 1rem;
+    padding: 0.7rem;
+  }
+}
+
+/* CTA: centraliza tudo no mobile */
+@media (max-width: 767px) {
+  .cta-content {
+    text-align: center;
+    padding: 1.2rem 0.5rem;
+  }
+}
 
 /* Container e Cabeçalhos (caso queira ajustar especificamente) */
 .eventos-container {
@@ -1492,49 +1801,36 @@ input[type="email"]:focus {
     margin-bottom: 1.5rem;
   }
   
-  /* Newsletter */
-  .social-links a {
+  /* Eventos slider */
+  .evento-item {
+    min-width: 100%;
+  }
+  
+  .slider-btn {
     width: 36px;
     height: 36px;
+    font-size: 1rem;
   }
   
-  /* Eventos */
-  .eventos-slider {
-    padding: 0 0.5rem;
+  /* Newsletter */
+  .newsletter-benefits {
+    margin-bottom: 1.5rem;
   }
   
-  .prev-btn {
-    left: -0.25rem;
+  .newsletter-form {
+    padding: 1.5rem;
   }
   
-  .next-btn {
-    right: -0.25rem;
+  .preference-checkboxes {
+    flex-direction: column;
+    gap: 0.5rem;
   }
   
   /* Chatbot */
-  .chatbot-container {
-    right: 1rem;
-    bottom: 1rem;
-  }
-  
-  .chatbot-toggle {
-    width: 50px;
-    height: 50px;
-    font-size: 1.25rem;
-  }
-  
   .chatbot-window {
-    width: calc(100vw - 2rem);
-    right: -1rem;
-  }
-  
-  /* Form elements */
-  input[type="email"] {
-    padding: 0.75rem;
-  }
-  
-  .btn-ver-todos {
-    padding: 0.6rem 1.5rem;
+    width: 300px;
+    height: 400px;
+    right: -10px;
   }
 }
 

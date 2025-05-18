@@ -1,59 +1,6 @@
-{# templates/teacher/materials/show.twig #}
-{% extends 'layouts/base.twig' %}
+{# filepath: c:\xampp\htdocs\Discursivamente2.1\src\Views\teacher\materials\show.twig #}
+{# ...existing code... #}
 
-{% block title %}Material: {{ material.title }}{% endblock %}
-
-{% block styles %}
-  <link rel="stylesheet" href="/assets/css/pages/curso/teacher/material_show.css">
-{% endblock %}
-
-{% block content %}
-  <section class="material-show">
-    <div class="header">
-      <h1 class="title"><i class="fas fa-file-alt"></i> {{ material.title }}</h1>
-      <div class="actions">
-        <a href="/teacher/courses/{{ course.id }}/materials" class="btn btn-back">
-          <i class="fas fa-arrow-left"></i> Voltar aos Materiais
-        </a>
-        <a href="{{ material.content }}" target="_blank" class="btn btn-download">
-          <i class="fas fa-download"></i> Baixar/Ver Original
-        </a>
-
-        {# Botão para adicionar novo material ao módulo #}
-        {% if moduleId %}
-          <a href="/teacher/courses/{{ course.id }}/modules/{{ moduleId }}/materials/add"
-             class="btn btn-primary">
-            <i class="fas fa-plus"></i> Adicionar ao Módulo
-          </a>
-          {# Botão para ver a página do módulo #}
-          <a href="/teacher/courses/{{ course.id }}/modules/{{ moduleId }}"
-             class="btn btn-secondary">
-            <i class="fas fa-th-large"></i> Ver Módulo
-          </a>
-        {% endif %}
-      </div>
-    </div>
-
-    <div class="content-preview">
-      {% if material.contentType starts with 'video/' %}
-        <video src="{{ material.content }}" controls class="media"></video>
-      {% elseif material.contentType starts with 'image/' %}
-        <img src="{{ material.content }}" alt="{{ material.title }}" class="media" />
-      {% elseif material.contentType starts with 'audio/' %}
-        <audio controls class="media">
-          <source src="{{ material.content }}" type="{{ material.contentType }}">
-          Seu navegador não suporta áudio.
-        </audio>
-      {% elseif material.contentType == 'application/pdf' %}
-        <embed src="{{ material.content }}" type="application/pdf" class="media-pdf" />
-      {% else %}
-        <p class="external-link">
-          <a href="{{ material.content }}" target="_blank">Acessar o material</a>
-        </p>
-      {% endif %}
-    </div>
-
-    {# Lista de todos os materiais do módulo #}
     {% if moduleMaterials is not empty %}
       <div class="module-materials">
         <h2>Materiais deste Módulo</h2>
@@ -62,6 +9,31 @@
             <li class="{% if m.id == material.id %}current{% endif %}">
               <a href="/teacher/courses/{{ course.id }}/materials/{{ m.id }}">
                 {{ m.title }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    {# NOVO: Botão para adicionar entrada ao material #}
+    <div class="add-entry-actions" style="margin: 2em 0;">
+      <a href="/teacher/materials/{{ material.id }}/entries/add" class="btn btn-secondary">
+        <i class="fas fa-plus"></i> Adicionar Entrada ao Material
+      </a>
+    </div>
+
+    {# NOVO: Lista de entradas do material, se existirem #}
+    {% if materialEntries is defined and materialEntries|length > 0 %}
+      <div class="material-entries">
+        <h2>Entradas deste Material</h2>
+        <ul>
+          {% for entry in materialEntries %}
+            <li>
+              <strong>{{ entry.title }}</strong>
+              <span class="badge bg-info">{{ entry.contentType }}</span>
+              <a href="{{ entry.contentUrl }}" target="_blank" class="btn btn-sm btn-outline-primary ms-2">
+                Acessar Conteúdo
               </a>
             </li>
           {% endfor %}

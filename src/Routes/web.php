@@ -16,6 +16,7 @@ use Controller\PagesController;
 use Controller\pages\PublicCourseController;
 use Repositories\CourseRepository;
 use Repositories\MaterialRepository;
+use Repositories\MaterialEntryRepository;
 use Controller\pages\TeacherMaterialController;
 
 // ==========================================
@@ -499,7 +500,8 @@ $r->addRoute('GET', '/teacher/courses/{courseId}/materials', function($twig, $pd
     $cloud = new CloudinaryService();
     $materialRepo = new \Repositories\MaterialRepository($pdo);
     $courseRepo = new \Repositories\CourseRepository($pdo);
-    (new \Controller\pages\TeacherMaterialController($twig, $materialRepo, $courseRepo, $cloud))
+    $materialEntryRepo = new \Repositories\MaterialEntryRepository($pdo);
+    (new \Controller\pages\TeacherMaterialController($twig, $materialRepo, $courseRepo, $cloud, $materialEntryRepo))
         ->index((int)$courseId);
 });
 
@@ -507,7 +509,8 @@ $r->addRoute('GET', '/teacher/courses/{courseId}/materials/create', function($tw
     $cloud = new CloudinaryService();
     $materialRepo = new \Repositories\MaterialRepository($pdo);
     $courseRepo = new \Repositories\CourseRepository($pdo);
-    (new \Controller\pages\TeacherMaterialController($twig, $materialRepo, $courseRepo, $cloud))
+    $materialEntryRepo = new \Repositories\MaterialEntryRepository($pdo);
+    (new \Controller\pages\TeacherMaterialController($twig, $materialRepo, $courseRepo, $cloud, $materialEntryRepo))
         ->create((int)$courseId);
 });
 
@@ -515,7 +518,8 @@ $r->addRoute('POST', '/teacher/courses/{courseId}/materials', function($twig, $p
     $cloud = new CloudinaryService();
     $materialRepo = new \Repositories\MaterialRepository($pdo);
     $courseRepo = new \Repositories\CourseRepository($pdo);
-    (new \Controller\pages\TeacherMaterialController($twig, $materialRepo, $courseRepo, $cloud))
+    $materialEntryRepo = new \Repositories\MaterialEntryRepository($pdo);
+    (new \Controller\pages\TeacherMaterialController($twig, $materialRepo, $courseRepo, $cloud, $materialEntryRepo))
         ->store((int)$courseId);
 });
 
@@ -523,7 +527,8 @@ $r->addRoute('POST', '/teacher/courses/{courseId}/materials/{id}/delete', functi
     $cloud = new CloudinaryService();
     $materialRepo = new \Repositories\MaterialRepository($pdo);
     $courseRepo = new \Repositories\CourseRepository($pdo);
-    (new \Controller\pages\TeacherMaterialController($twig, $materialRepo, $courseRepo, $cloud))
+    $materialEntryRepo = new \Repositories\MaterialEntryRepository($pdo);
+    (new \Controller\pages\TeacherMaterialController($twig, $materialRepo, $courseRepo, $cloud, $materialEntryRepo))
         ->destroy((int)$courseId, (int)$id);
 });
 
@@ -532,27 +537,20 @@ $r->addRoute('GET', '/teacher/courses/{courseId}/materials/{id}', function($twig
     $cloud = new CloudinaryService();
     $materialRepo = new \Repositories\MaterialRepository($pdo);
     $courseRepo = new \Repositories\CourseRepository($pdo);
-    (new \Controller\pages\TeacherMaterialController($twig, $materialRepo, $courseRepo, $cloud))
+    $materialEntryRepo = new \Repositories\MaterialEntryRepository($pdo);
+    (new \Controller\pages\TeacherMaterialController($twig, $materialRepo, $courseRepo, $cloud, $materialEntryRepo))
         ->show((int)$courseId, (int)$id);
 });
 
-// Detalhes do curso
-$r->addRoute('GET', '/teacher/courses/{id}', function($twig, $pdo, $id) {
+// --- NOVAS ROTAS PARA ENTRADAS DE MATERIAL ---
+$r->addRoute('POST', '/teacher/materials/{materialId}/entries/add', function($twig, $pdo, $materialId) {
     $cloud = new CloudinaryService();
-    (new \Controller\pages\TeacherCourseController($twig, $pdo, $cloud))
-        ->show((int)$id);
+    $materialRepo = new \Repositories\MaterialRepository($pdo);
+    $courseRepo = new \Repositories\CourseRepository($pdo);
+    $materialEntryRepo = new \Repositories\MaterialEntryRepository($pdo);
+    (new \Controller\pages\TeacherMaterialController($twig, $materialRepo, $courseRepo, $cloud, $materialEntryRepo))
+        ->addEntry((int)$materialId);
 });
-
-// Exclusão (via POST já existente)
-// $r->addRoute('POST','/teacher/courses/{id}/delete', ... );
-
-// (Opcional) Confirmação de exclusão via GET
-$r->addRoute('GET', '/teacher/courses/{id}/delete', function($twig, $pdo, $id) {
-    $cloud = new CloudinaryService();
-    (new \Controller\pages\TeacherCourseController($twig, $pdo, $cloud))
-        ->destroy((int)$id);
-});
-
 
 $r->addRoute(
     'GET',
@@ -561,7 +559,8 @@ $r->addRoute(
         $cloud        = new CloudinaryService();
         $materialRepo = new MaterialRepository($pdo);
         $courseRepo   = new CourseRepository($pdo);
-        (new TeacherMaterialController($twig, $materialRepo, $courseRepo, $cloud))
+        $materialEntryRepo = new MaterialEntryRepository($pdo);
+        (new TeacherMaterialController($twig, $materialRepo, $courseRepo, $cloud, $materialEntryRepo))
             ->addToModule((int)$courseId, (int)$moduleId);
     }
 );
@@ -573,7 +572,8 @@ $r->addRoute(
         $cloud        = new CloudinaryService();
         $materialRepo = new MaterialRepository($pdo);
         $courseRepo   = new CourseRepository($pdo);
-        (new TeacherMaterialController($twig, $materialRepo, $courseRepo, $cloud))
+        $materialEntryRepo = new MaterialEntryRepository($pdo);
+        (new TeacherMaterialController($twig, $materialRepo, $courseRepo, $cloud, $materialEntryRepo))
             ->storeToModule((int)$courseId, (int)$moduleId);
     }
 );
@@ -622,3 +622,9 @@ $r->addRoute('POST', '/courses/{id:\d+}/uncomplete', [PublicCourseController::cl
 
 // Progresso de material (AJAX)
 $r->addRoute('POST', '/user/progress/toggle/{materialId:\d+}', [\Controller\pages\UserProgressController::class, 'toggle']);
+
+// Detalhes do curso do professor
+$r->addRoute('GET', '/teacher/courses/{id}', function($twig, $pdo, $id) {
+    $cloud = new \Services\CloudinaryService();
+    (new \Controller\pages\TeacherCourseController($twig, $pdo, $cloud))->show((int)$id);
+});

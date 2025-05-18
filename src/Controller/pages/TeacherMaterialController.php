@@ -8,6 +8,9 @@ use Repositories\CourseRepository;
 use Services\CloudinaryService;
 use PDO;
 use Twig\Environment;
+use Repositories\MaterialEntryRepository;
+use App\Models\MaterialEntry;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class TeacherMaterialController
 {
@@ -15,6 +18,7 @@ class TeacherMaterialController
     private MaterialRepository $materialRepo;
     private CourseRepository $courseRepo;
     private CloudinaryService $cloudService;
+    private MaterialEntryRepository $materialEntryRepo;
 
     /**
      * Construtor com injeção de dependências.
@@ -24,7 +28,8 @@ class TeacherMaterialController
         Environment $twig,
         MaterialRepository $materialRepo,
         CourseRepository $courseRepo,
-        CloudinaryService $cloudService
+        CloudinaryService $cloudService,
+        MaterialEntryRepository $materialEntryRepo
     ) {
         TeacherMiddleware::handle();
 
@@ -32,6 +37,7 @@ class TeacherMaterialController
         $this->materialRepo = $materialRepo;
         $this->courseRepo   = $courseRepo;
         $this->cloudService = $cloudService;
+        $this->materialEntryRepo = $materialEntryRepo;
     }
 
     /**
@@ -253,6 +259,41 @@ public function storeToModule(int $courseId, int $moduleId): void
     }
 
     header("Location: /teacher/courses/{$courseId}/materials");
+    exit;
+}
+
+/**
+ * Trata o POST de adição de entry ao material.
+ */
+public function addEntry(int $materialId): void
+{
+    $material = $this->materialRepo->findById($materialId);
+    if (!$material || $material->getCourseId() !== ($_SESSION['user']['id'] ?? null)) {
+        header("Location: /unauthorized");
+        exit;
+    }
+
+    $title        = trim($_POST['title'] ?? '');
+    $contentUrl   = trim($_POST['content_url'] ?? '');
+    $contentType  = trim($_POST['content_type'] ?? '');
+
+    $_SESSION['flash'] = $_SESSION['flash'] ?? [];
+
+    if (empty($title) || empty($contentUrl) || empty($contentType)) {
+        $_SESSION['flash']['error'][] = "Todos os campos são obrigatórios.";
+        header("Location: /material/{$materialId}");
+        exit;
+    }
+
+    try {
+        $entry = new MaterialEntry($materialId, $title, $contentUrl, $contentType);
+        $this->materialEntryRepo->save($entry);
+        $_SESSION['flash']['success'][] = "Entrada adicionada com sucesso!";
+    } catch (\Exception $e) {
+        $_SESSION['flash']['error'][] = "Erro ao salvar entrada: " . $e->getMessage();
+    }
+
+    header("Location: /material/{$materialId}");
     exit;
 }
 
