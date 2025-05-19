@@ -5,57 +5,87 @@
 
 {% block styles %}
     <link rel="stylesheet" href="/assets/css/pages/profile/edit.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 {% endblock %}
 
 {% block content %}
-<main id="profile-edit-page">
-  <div id="profile-edit-card">
-    <div id="profile-edit-header">
-      <h2>Editar Perfil</h2>
+<main id="profile-edit-page" class="profile-edit-pro">
+  <div id="profile-edit-card" class="profile-edit-card-pro">
+    <div id="profile-edit-header" class="profile-edit-header-pro">
+      <h2><i class="fas fa-user-edit"></i> Editar Perfil</h2>
     </div>
 
     {% if error %}
-      <div id="error-message">{{ error }}</div>
+      <div id="error-message" class="error-message-pro">{{ error }}</div>
+    {% endif %}
+    {% if success %}
+      <div id="success-message" class="success-message-pro">{{ success }}</div>
     {% endif %}
 
     <form id="profile-edit-form" action="/profile/update" method="post" enctype="multipart/form-data">
       <!-- Campo: Nome -->
       <div class="form-group">
-        <label for="name">Nome</label>
-        <input type="text" id="name" name="name" value="{{ user.name }}">
+        <label for="name"><i class="fas fa-user"></i> Nome</label>
+        <input type="text" id="name" name="name" value="{{ user.name }}" required>
+      </div>
+
+      <!-- Campo: E-mail (apenas leitura) -->
+      <div class="form-group">
+        <label for="email"><i class="fas fa-envelope"></i> E-mail</label>
+        <input type="email" id="email" name="email" value="{{ user.email }}" readonly>
+      </div>
+
+      <!-- Campo: Telefone -->
+      <div class="form-group">
+        <label for="phone"><i class="fas fa-phone"></i> Telefone</label>
+        <input type="text" id="phone" name="phone" value="{{ user.phone }}" placeholder="(99) 99999-9999">
       </div>
 
       <!-- Campo: Biografia -->
       <div class="form-group">
-        <label for="bio">Biografia</label>
-        <textarea id="bio" name="bio" rows="4">{{ user.bio }}</textarea>
+        <label for="bio"><i class="fas fa-info-circle"></i> Biografia</label>
+        <textarea id="bio" name="bio" rows="4" placeholder="Conte um pouco sobre você...">{{ user.bio }}</textarea>
+      </div>
+
+      <!-- Redes Sociais -->
+      <div class="form-group social-group">
+        <label><i class="fas fa-share-alt"></i> Redes Sociais</label>
+        <input type="url" name="linkedin" placeholder="LinkedIn" value="{{ user.linkedin }}">
+        <input type="url" name="instagram" placeholder="Instagram" value="{{ user.instagram }}">
+        <input type="url" name="facebook" placeholder="Facebook" value="{{ user.facebook }}">
       </div>
 
       <!-- Avatar atual -->
       <div class="form-group">
         <label>Avatar Atual</label>
-        <img
-          id="current-avatar"
-          src="{{ user.avatar ?: '/assets/default-avatar.png' }}"
-          alt="Avatar Atual"
-        >
+        <img id="current-avatar" src="{{ user.avatar ?: '/assets/default-avatar.png' }}" alt="Avatar Atual">
       </div>
 
       <!-- Upload / Remover Avatar -->
       <div class="form-group" id="avatar-actions">
         <div class="upload-avatar">
-          <label for="avatar">Alterar Avatar</label>
+          <label for="avatar"><i class="fas fa-upload"></i> Alterar Avatar</label>
           <input type="file" id="avatar" name="avatar" accept="image/*">
         </div>
         <div class="remove-avatar">
-          <button type="submit" name="remove_avatar" value="1">Remover Foto</button>
+          <button type="submit" name="remove_avatar" value="1" class="btn-remove-avatar-pro"><i class="fas fa-trash"></i> Remover Foto</button>
         </div>
       </div>
 
+      <!-- Alterar senha -->
+      <div class="form-group">
+        <label for="password"><i class="fas fa-key"></i> Nova Senha</label>
+        <input type="password" id="password" name="password" placeholder="Deixe em branco para não alterar">
+      </div>
+      <div class="form-group">
+        <label for="password_confirm"><i class="fas fa-key"></i> Confirmar Nova Senha</label>
+        <input type="password" id="password_confirm" name="password_confirm" placeholder="Repita a nova senha">
+      </div>
+
       <!-- Ações -->
-      <div id="form-actions">
-        <a href="/profile" class="btn-cancel">Cancelar</a>
-        <button type="submit" class="btn-save">Salvar Alterações</button>
+      <div id="form-actions" class="form-actions-pro">
+        <a href="/profile" class="btn-cancel-pro"><i class="fas fa-times"></i> Cancelar</a>
+        <button type="submit" class="btn-save-pro"><i class="fas fa-save"></i> Salvar Alterações</button>
       </div>
     </form>
   </div>

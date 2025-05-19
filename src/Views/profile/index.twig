@@ -5,55 +5,97 @@
 
 {% block styles %}
     <link rel="stylesheet" href="/assets/css/pages/profile/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 {% endblock %}
 
 {% block content %}
-<div id="profile-page">
-  <div id="profile-card">
+<div id="profile-page" class="profile-pro">
+  <div id="profile-card" class="profile-card-pro">
     <!-- Header com avatar e info -->
-    <div id="profile-header">
-      <div id="avatar-wrapper">
+    <div id="profile-header" class="profile-header-pro">
+      <div id="avatar-wrapper" class="avatar-wrapper-pro">
         <img
           id="profile-avatar"
           src="{{ user.avatar ?: '/assets/default-avatar.png' }}"
           alt="Avatar de {{ user.name }}"
         >
-        <!-- Botão para trocar foto -->
-        <form
-          id="avatar-form"
-          action="/profile/avatar"
-          method="post"
-          enctype="multipart/form-data"
-        >
-          <label for="avatar-upload" id="avatar-label">
+        <form id="avatar-form" action="/profile/avatar" method="post" enctype="multipart/form-data">
+          <label for="avatar-upload" id="avatar-label" class="avatar-label-pro" title="Alterar foto">
             <i class="fas fa-camera"></i>
-            <input
-              type="file"
-              id="avatar-upload"
-              name="avatar"
-              accept="image/*"
-              onchange="this.form.submit()"
-            >
+            <input type="file" id="avatar-upload" name="avatar" accept="image/*" onchange="this.form.submit()">
           </label>
         </form>
       </div>
-      <div id="user-info">
+      <div id="user-info" class="user-info-pro">
         <h2 id="user-name">{{ user.name }}</h2>
-        <p id="user-email">{{ user.email }}</p>
+        <p id="user-email"><i class="fas fa-envelope"></i> {{ user.email }}
+          {% if user.email_verified %}
+            <span class="verified" title="E-mail verificado"><i class="fas fa-check-circle"></i></span>
+          {% else %}
+            <span class="not-verified" title="E-mail não verificado"><i class="fas fa-exclamation-circle"></i></span>
+          {% endif %}
+        </p>
+        <p id="user-type"><i class="fas fa-user-tag"></i> {{ user.type|capitalize }}</p>
+        <p id="user-joined"><i class="fas fa-calendar-alt"></i> Membro desde {{ user.created_at|date('d/m/Y') }}</p>
+        <p id="user-updated"><i class="fas fa-clock"></i> Última atualização: {{ user.updated_at|date('d/m/Y H:i') }}</p>
+        {% if user.phone %}
+          <p id="user-phone"><i class="fas fa-phone"></i> {{ user.phone }}</p>
+        {% endif %}
+        <div class="profile-socials">
+          {% if user.linkedin %}<a href="{{ user.linkedin }}" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>{% endif %}
+          {% if user.instagram %}<a href="{{ user.instagram }}" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>{% endif %}
+          {% if user.facebook %}<a href="{{ user.facebook }}" target="_blank" title="Facebook"><i class="fab fa-facebook"></i></a>{% endif %}
+        </div>
       </div>
     </div>
 
+    <!-- Estatísticas -->
+    <section id="profile-stats" class="profile-stats-pro">
+      <h3>Estatísticas</h3>
+      <ul>
+        {% if user.type == 'professor' %}
+          <li><i class="fas fa-chalkboard-teacher"></i> Cursos criados: <strong>{{ user.courses_created|default(0) }}</strong></li>
+        {% elseif user.type == 'aluno' %}
+          <li><i class="fas fa-graduation-cap"></i> Cursos participando: <strong>{{ user.courses_participating|default(0) }}</strong></li>
+        {% endif %}
+      </ul>
+    </section>
+
     <!-- Biografia -->
-    <section id="profile-bio">
-      <h3>Biografia</h3>
+    <section id="profile-bio" class="profile-bio-pro">
+      <h3><i class="fas fa-info-circle"></i> Biografia</h3>
       <p>{{ user.bio ?: 'Ainda não adicionou uma biografia.' }}</p>
     </section>
 
     <!-- Ações -->
-    <div id="profile-actions">
-      <a href="/logout" id="btn-logout">Sair</a>
-      <a href="/profile/edit" id="btn-edit">Editar Perfil</a>
+    <div id="profile-actions" class="profile-actions-pro">
+      <a href="/profile/edit" id="btn-edit" class="btn-pro"><i class="fas fa-edit"></i> Editar Perfil</a>
+      <a href="/profile/change-password" id="btn-password" class="btn-pro"><i class="fas fa-key"></i> Alterar Senha</a>
+      <a href="/logout" id="btn-logout" class="btn-pro btn-logout-pro"><i class="fas fa-sign-out-alt"></i> Sair</a>
+      <button id="btn-deactivate" class="btn-pro btn-danger-pro" onclick="confirmDeactivate()"><i class="fas fa-user-slash"></i> Desativar Conta</button>
     </div>
   </div>
 </div>
+
+<!-- Modal de confirmação para desativar conta -->
+<div id="deactivate-modal" class="modal-pro" style="display:none;">
+  <div class="modal-content-pro">
+    <h3>Desativar Conta</h3>
+    <p>Tem certeza que deseja desativar sua conta? Esta ação é irreversível.</p>
+    <form action="/profile/deactivate" method="post">
+      <button type="submit" class="btn-pro btn-danger-pro">Confirmar Desativação</button>
+      <button type="button" class="btn-pro" onclick="closeModal()">Cancelar</button>
+    </form>
+  </div>
+</div>
+
+{% block scripts %}
+<script>
+function confirmDeactivate() {
+  document.getElementById('deactivate-modal').style.display = 'block';
+}
+function closeModal() {
+  document.getElementById('deactivate-modal').style.display = 'none';
+}
+</script>
 {% endblock %}

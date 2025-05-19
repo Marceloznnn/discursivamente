@@ -25,7 +25,6 @@
             </a>
 
             {% if session.user %}
-                {# Pega o tipo de usuário (default '' se não existir), e normaliza para lowercase #}
                 {% set userType = session.user.type|default('')|lower %}
                 {% set isTeacher = userType == 'teacher' %}
 
@@ -45,7 +44,6 @@
                     </div>
                 {% endmacro %}
 
-                {# Turmas #}
                 {{ _self.dropdown(
                     'Acervo',
                     'chalkboard-teacher',
@@ -61,16 +59,8 @@
                           ]
                 ) }}
 
-                {# Compromissos #}
                 {{ _self.dropdown('Compromissos', 'tasks', 'commitments', [
                     { href: '/commitments/goals', text: 'Metas' }
-                ]) }}
-
-                {# Comunidades #}
-                {{ _self.dropdown('Comunidades', 'users', 'community', [
-                    { href: '/community/forums', text: 'Fóruns' },
-                    { href: '/community/clubs', text: 'Clubes' },
-                    { href: '/community/feed', text: 'Feed' }
                 ]) }}
 
                 <a href="/profile"
@@ -144,18 +134,6 @@
                      </div>
                 </div>
 
-                <div class="mobile-menu-section">
-                    <button class="mobile-menu-section-toggle" aria-expanded="false"
-                            aria-controls="mobile-section-comunidades">
-                        <i class="fas fa-users"></i> Comunidades
-                        <i class="fas fa-chevron-down arrow"></i>
-                    </button>
-                    <div id="mobile-section-comunidades" class="mobile-menu-subsection">
-                        <a href="/community/forums" class="mobile-link">Fóruns</a>
-                        <a href="/community/clubs" class="mobile-link">Clubes</a>
-                        <a href="/community/feed" class="mobile-link">Feed</a>
-                    </div>
-                </div>
                 <hr class="mobile-menu-divider">
                 <a href="/profile" class="mobile-link">
                     {% if session.user.avatar %}

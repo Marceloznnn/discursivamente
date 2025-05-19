@@ -111,6 +111,16 @@ function setupTooltips() {
       tooltip.style.opacity = '0';
     });
   }
+  
+  // Exemplo: tooltip para status de e-mail
+  const verified = document.querySelector('.verified');
+  if (verified) {
+    verified.title = 'E-mail verificado';
+  }
+  const notVerified = document.querySelector('.not-verified');
+  if (notVerified) {
+    notVerified.title = 'E-mail não verificado';
+  }
 }
 
 /**
@@ -132,6 +142,29 @@ function setupAnimations() {
         window.location.href = editUrl;
       }
     });
+  }
+  
+  // Modal de desativação com animação
+  const modal = document.getElementById('deactivate-modal');
+  if (modal) {
+    window.confirmDeactivate = function() {
+      modal.style.display = 'flex';
+      setTimeout(() => modal.classList.add('show'), 10);
+    };
+    window.closeModal = function() {
+      modal.classList.remove('show');
+      setTimeout(() => { modal.style.display = 'none'; }, 300);
+    };
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) closeModal();
+    });
+  }
+  
+  // Feedback visual ao salvar perfil
+  const successMsg = document.getElementById('success-message');
+  if (successMsg) {
+    successMsg.classList.add('show');
+    setTimeout(() => successMsg.classList.remove('show'), 3500);
   }
 }
 
