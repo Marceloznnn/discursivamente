@@ -138,48 +138,69 @@ h1 {
   flex-direction: column;
   overflow: hidden;
   transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+  max-width: 370px;
+  margin: 0 auto;
+  border: 1.5px solid var(--gray-light);
 }
 .course-item:hover {
-  transform: translateY(-4px);
+  transform: translateY(-4px) scale(1.03);
   box-shadow: var(--shadow-md);
+  border-color: var(--primary-color);
 }
 .course-img {
   width: 100%;
-  height: 160px;
+  height: 170px;
   object-fit: cover;
   flex-shrink: 0;
+  border-top-left-radius: var(--rounded-md);
+  border-top-right-radius: var(--rounded-md);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
 }
 .content {
-  padding: 1.25rem;
+  padding: 1.25rem 1.1rem 1.1rem 1.1rem;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  background: #fff;
 }
 .content strong {
-  font-size: 1.125rem;
-  color: var(--primary-color);
-  margin-bottom: 0.5rem;
+  font-size: 1.18rem;
+  color: var(--primary-dark);
+  margin-bottom: 0.45rem;
   display: block;
+  font-family: var(--font-heading);
 }
 .content p {
   color: var(--gray-dark);
-  font-size: 0.95rem;
-  line-height: 1.4;
+  font-size: 1.01rem;
+  line-height: 1.5;
   flex-grow: 1;
-  margin-bottom: 1rem;
+  margin-bottom: 0.7rem;
+}
+.participants {
+  font-size: 0.97rem;
+  color: var(--primary-color);
+  margin-bottom: 0.7rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
 }
 .course-cta {
-  align-self: flex-start;
+  align-self: flex-end;
   text-decoration: none;
-  padding: 0.5rem 1rem;
+  padding: 0.45rem 1.1rem;
   background: var(--primary-color);
   color: #fff;
   border-radius: var(--rounded-sm);
+  font-weight: 600;
+  font-size: 0.98rem;
   transition: background var(--transition-speed), transform var(--transition-speed);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
 }
 .course-cta:hover {
-  background: var(--primary-light);
-  transform: translateY(-2px);
+  background: var(--primary-dark);
+  transform: translateY(-2px) scale(1.04);
 }
 
 /* Empty State */
@@ -205,5 +226,11 @@ h1 {
   }
   .course-list {
     grid-template-columns: 1fr;
+  }
+  .course-item {
+    max-width: 100%;
+  }
+  .course-img {
+    height: 130px;
   }
 }

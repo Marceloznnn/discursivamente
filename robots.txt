@@ -1,6 +1,12 @@
 User-agent: *
-Disallow: /admin/
-Disallow: /config/
-Disallow: /includes/
-
-Sitemap: https://www.seusite.com/sitemap.xml
+Disallow: /src/
+Disallow: /vendor/
+Disallow: /app/
+Disallow: /logs/
+Disallow: /.env
+Disallow: /*.json$
+Disallow: /*.php$
+Allow: /public/assets/
+Allow: /public/css/
+Allow: /public/js/
+Sitemap: https://seudominio.com/sitemap.xml

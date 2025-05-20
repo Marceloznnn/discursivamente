@@ -97,49 +97,46 @@ document.addEventListener('DOMContentLoaded', function() {
     // Manipula o envio do formulário
     newsletterForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        
+
         const email = emailInput.value.trim();
-        
+
         // Verifica se o email é válido
         if (!isValidEmail(email)) {
             showError('Por favor, insira um endereço de email válido.');
             return;
         }
-        
+
         // Coleta dados de preferências
         const prefCursos = newsletterForm.querySelector('input[name="pref_cursos"]').checked;
         const prefEventos = newsletterForm.querySelector('input[name="pref_eventos"]').checked;
         const prefConteudos = newsletterForm.querySelector('input[name="pref_conteudos"]').checked;
-        
+
         // Dados para enviar ao servidor
-        const formData = {
-            email: email,
-            preferences: {
-                cursos: prefCursos,
-                eventos: prefEventos,
-                conteudos: prefConteudos
-            }
-        };
-        
-        // Simulação de envio de dados para o servidor
+        const formData = new FormData();
+        formData.append('email', email);
+        if (prefCursos) formData.append('pref_cursos', '1');
+        if (prefEventos) formData.append('pref_eventos', '1');
+        if (prefConteudos) formData.append('pref_conteudos', '1');
+
         animateSubmitButton(true);
-        
-        // Simula uma requisição AJAX (substitua por uma requisição real)
-        setTimeout(() => {
-            console.log('Dados enviados:', formData);
-            
-            // Simula resposta do servidor
+
+        fetch('/newsletter/subscribe', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
             animateSubmitButton(false);
-            showSuccess('Inscrição realizada com sucesso! Verifique seu email para confirmar.');
-            
-            // Evento de analytics (substitua pelo seu código de analytics)
-            if (typeof gtag === 'function') {
-                gtag('event', 'newsletter_signup', {
-                    'event_category': 'engagement',
-                    'event_label': 'homepage_newsletter'
-                });
+            if (data.success) {
+                showSuccess(data.message || 'Inscrição realizada com sucesso!');
+            } else {
+                showError(data.message || 'Erro ao realizar inscrição.');
             }
-        }, 1500);
+        })
+        .catch(() => {
+            animateSubmitButton(false);
+            showError('Erro de conexão. Tente novamente.');
+        });
     });
     
     // Adiciona interatividade aos checkboxes

@@ -40,7 +40,7 @@
     {% for course in courses %}
       <li class="course-item">
         <img
-          src="{{ course.getImage()|default('/assets/images/default-course.jpg') }}"
+          src="{{ course.getImage()|default('https://images.pexels.com/photos/355952/pexels-photo-355952.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1') }}"
           alt="{{ course.getTitle() }}"
           class="course-img"
         >

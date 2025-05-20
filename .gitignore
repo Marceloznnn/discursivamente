@@ -26,3 +26,36 @@ dist/
 
 # PHPUnit
 phpunit.result.cache
+
+# Adições automáticas
+.env.*
+!.env.example
+/tmp/*
+!/tmp/.gitkeep
+/var/cache/*
+!/var/cache/.gitkeep
+/var/log/*
+!/var/log/.gitkeep
+/logs/*
+!/logs/.gitkeep
+/public/assets/build/*
+!/public/assets/build/.gitkeep
+/public/uploads/*
+!/public/uploads/.gitkeep
+/.idea/
+/.vscode/
+*.code-workspace
+/nbproject/
+.phpunit.result.cache
+*.sql
+*.sqlite
+composer.phar
+/.phpunit.cache/
+/node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+Thumbs.db
+
+*.lock

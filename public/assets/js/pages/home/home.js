@@ -6,37 +6,36 @@ document.addEventListener('DOMContentLoaded', () => {
   const nextBtn = document.querySelector('.next-btn');
 
   if (wrapper && slides.length && prevBtn && nextBtn) {
-    const gap = parseFloat(getComputedStyle(wrapper).gap) || 0;
-    const slideWidth = slides[0].getBoundingClientRect().width + gap;
     let index = 0;
-    const maxIndex = Math.max(0, slides.length - Math.floor(wrapper.parentElement.clientWidth / slideWidth));
-
     function update() {
-      wrapper.style.transform = `translateX(-${index * slideWidth}px)`;
+      slides.forEach((slide, i) => {
+        slide.style.display = (i === index) ? 'flex' : 'none';
+      });
     }
-
-    prevBtn.addEventListener('click', () => {
-      index = Math.max(index - 1, 0);
+    function showNext() {
+      index = (index + 1) % slides.length;
       update();
-    });
-
-    nextBtn.addEventListener('click', () => {
-      index = Math.min(index + 1, maxIndex);
+    }
+    function showPrev() {
+      index = (index - 1 + slides.length) % slides.length;
       update();
-    });
-    
-    // Inicialização para garantir estado correto
+    }
+    prevBtn.addEventListener('click', showPrev);
+    nextBtn.addEventListener('click', showNext);
+    // Inicialização
     update();
-    
-    // Recalcular em caso de redimensionamento
-    window.addEventListener('resize', () => {
-      const newSlideWidth = slides[0].getBoundingClientRect().width + gap;
-      const newMaxIndex = Math.max(0, slides.length - Math.floor(wrapper.parentElement.clientWidth / newSlideWidth));
-      
-      // Atualizar valores
-      index = Math.min(index, newMaxIndex);
-      update();
-    });
+    // Responsivo: mostra todos no desktop, slider no mobile
+    function adapt() {
+      if (window.innerWidth < 1024) {
+        update();
+        prevBtn.style.display = nextBtn.style.display = 'flex';
+      } else {
+        slides.forEach(slide => slide.style.display = 'flex');
+        prevBtn.style.display = nextBtn.style.display = 'none';
+      }
+    }
+    adapt();
+    window.addEventListener('resize', adapt);
   }
 
   <script>
@@ -103,10 +102,10 @@ document.addEventListener('DOMContentLoaded', () => {
       items.forEach(el => el.style.display = '');
       dots.forEach(dot => dot.classList.remove('active'));
     }
-  });
+  }); 
 });
 </script>
-
+ 
 
   // —— Slider de Depoimentos ——
   const testimonials = Array.from(document.querySelectorAll('.testimonial-item'));

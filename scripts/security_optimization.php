@@ -1,72 +1,61 @@
 <?php
 /**
- * Script de Segurança e Otimização para o Discursivamente 2.1
+ * Script de Segurança e Otimização para o Discursivamente 2.1 (Aprimorado)
  * 
- * Este script implementa várias melhorias de segurança e otimização:
- * - Adição de cabeçalhos de segurança no .htaccess
- * - Criação de arquivo robots.txt aprimorado
- * - Configuração de CSP (Content Security Policy)
- * - Verificação de permissões de arquivos e diretórios
- * - Otimização e minificação de CSS/JS
+ * Funcionalidades:
+ * - Cabeçalhos de segurança em .htaccess
+ * - Criação do robots.txt
+ * - Verificação e correção de permissões
+ * - Minificação de CSS/JS (real)
+ * - Atualização do .gitignore
+ * - Criação do .env.example com dados genéricos
  */
 
-// Define a raiz do projeto
+require_once __DIR__ . '/../vendor/autoload.php';
+
 $projectRoot = realpath(__DIR__ . '/..');
 
-// ====================================
-// Cabeçalhos de segurança no .htaccess
-// ====================================
+// ===================================================
+// Utilitários
+// ===================================================
 
-$htaccessPath = $projectRoot . '/public/.htaccess';
-$htaccessContent = '';
-
-if (file_exists($htaccessPath)) {
-    $htaccessContent = file_get_contents($htaccessPath);
-} else {
-    // Conteúdo básico para reescrita de URL se não existir
-    $htaccessContent = "
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteBase /
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^ index.php [QSA,L]
-</IfModule>
-";
+function escrever($msg) {
+    echo "✅ {$msg}\n";
 }
 
-// Adiciona cabeçalhos de segurança se ainda não existirem
-if (strpos($htaccessContent, '<IfModule mod_headers.c>') === false) {
-    $securityHeaders = "
-# Cabeçalhos de segurança
-<IfModule mod_headers.c>
-    # Proteção contra clickjacking
-    Header always set X-Frame-Options \"SAMEORIGIN\"
-    
-    # Proteção XSS
-    Header always set X-XSS-Protection \"1; mode=block\"
-    
-    # Evitar MIME-type sniffing
-    Header always set X-Content-Type-Options \"nosniff\"
-    
-    # Referrer Policy
-    Header always set Referrer-Policy \"strict-origin-when-cross-origin\"
-    
-    # Permissões de origem
-    Header always set Access-Control-Allow-Origin \"*\"
-    
-    # Habilitar HSTS (forçar HTTPS) - só descomente quando tiver SSL configurado
-    # Header always set Strict-Transport-Security \"max-age=31536000; includeSubDomains; preload\"
+function avisar($msg) {
+    echo "ℹ️ {$msg}\n";
+}
 
-    # Content Security Policy (CSP)
-    # Header always set Content-Security-Policy \"default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://ajax.googleapis.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://res.cloudinary.com; connect-src 'self' https://api.cloudinary.com;\"
+function alerta($msg) {
+    echo "⚠️ {$msg}\n";
+}
+
+// ===================================================
+// .htaccess com segurança
+// ===================================================
+
+$htaccessPath = $projectRoot . '/public/.htaccess';
+$htaccessContent = file_exists($htaccessPath) ? file_get_contents($htaccessPath) : '';
+
+if (strpos($htaccessContent, 'Header always set X-Frame-Options') === false) {
+    $seguranca = <<<HTACCESS
+
+# Segurança
+<IfModule mod_headers.c>
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Access-Control-Allow-Origin "*"
+
+    # CSP básica - ajuste conforme necessidade
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self';"
 </IfModule>
 
-# Desabilitar listagem de diretórios
 Options -Indexes
 
-# Proteger arquivos sensíveis
-<FilesMatch \"(^\.|\.env|composer\.(json|lock)|package(-lock)?\.json|\.gitignore|phpunit\.xml)\">
+<FilesMatch "^(\.|\.env|composer\.(json|lock)|package(-lock)?\.json|\.gitignore|phpunit\.xml)$">
     <IfModule mod_authz_core.c>
         Require all denied
     </IfModule>
@@ -76,268 +65,168 @@ Options -Indexes
     </IfModule>
 </FilesMatch>
 
-# Compressão de conteúdo
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
 </IfModule>
 
-# Cache de navegador
 <IfModule mod_expires.c>
     ExpiresActive On
-    ExpiresByType image/jpg \"access plus 1 year\"
-    ExpiresByType image/jpeg \"access plus 1 year\"
-    ExpiresByType image/gif \"access plus 1 year\"
-    ExpiresByType image/png \"access plus 1 year\"
-    ExpiresByType image/webp \"access plus 1 year\"
-    ExpiresByType image/svg+xml \"access plus 1 month\"
-    ExpiresByType image/x-icon \"access plus 1 year\"
-    ExpiresByType video/mp4 \"access plus 1 month\"
-    ExpiresByType application/pdf \"access plus 1 month\"
-    ExpiresByType text/css \"access plus 1 month\"
-    ExpiresByType text/javascript \"access plus 1 month\"
-    ExpiresByType application/javascript \"access plus 1 month\"
-    ExpiresByType application/x-javascript \"access plus 1 month\"
-    ExpiresByType text/html \"access plus 0 seconds\"
-    ExpiresByType application/xhtml+xml \"access plus 0 seconds\"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
 </IfModule>
-";
 
-    // Adiciona os cabeçalhos de segurança ao .htaccess
-    $htaccessContent .= $securityHeaders;
-    file_put_contents($htaccessPath, $htaccessContent);
-    echo "✅ Cabeçalhos de segurança adicionados ao .htaccess\n";
+HTACCESS;
+
+    file_put_contents($htaccessPath, $htaccessContent . "\n" . $seguranca);
+    escrever(".htaccess atualizado com cabeçalhos de segurança");
 } else {
-    echo "ℹ️ Cabeçalhos de segurança já existem no .htaccess\n";
+    avisar("Cabeçalhos de segurança já presentes em .htaccess");
 }
 
-// ====================================
-// Arquivo robots.txt aprimorado
-// ====================================
+// ===================================================
+// robots.txt
+// ===================================================
 
 $robotsPath = $projectRoot . '/robots.txt';
-$robotsContent = "
+$robotsContent = <<<ROBOTS
 User-agent: *
 Disallow: /src/
 Disallow: /vendor/
-Disallow: /scripts/
 Disallow: /app/
-Disallow: /admin/
-Disallow: /config/
 Disallow: /logs/
-Disallow: /tmp/
-Disallow: /.git/
 Disallow: /.env
 Disallow: /*.json$
-Disallow: /*.lock$
 Disallow: /*.php$
-Allow: /public/*.php$
-Allow: /index.php
 Allow: /public/assets/
-Allow: /public/images/
 Allow: /public/css/
 Allow: /public/js/
-
-# Sitemaps
-Sitemap: https://seusite.com/sitemap.xml
-";
+Sitemap: https://seudominio.com/sitemap.xml
+ROBOTS;
 
 file_put_contents($robotsPath, $robotsContent);
-echo "✅ Arquivo robots.txt criado/atualizado\n";
+escrever("robots.txt criado/atualizado");
 
-// ====================================
+// ===================================================
 // Verificação de permissões
-// ====================================
+// ===================================================
 
-function checkAndFixPermissions($dir, $fileMode = 0644, $dirMode = 0755) {
+function ajustarPermissoes($dir, $fileMode = 0644, $dirMode = 0755) {
     $iterator = new RecursiveIteratorIterator(
         new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS),
         RecursiveIteratorIterator::SELF_FIRST
     );
 
-    foreach ($iterator as $path => $fileInfo) {
-        if ($fileInfo->isDir()) {
-            if (substr($fileInfo->getFilename(), 0, 1) !== '.') { // Ignora diretórios ocultos
-                chmod($path, $dirMode);
-            }
-        } else {
-            chmod($path, $fileMode);
-        }
+    foreach ($iterator as $item) {
+        chmod($item, $item->isDir() ? $dirMode : $fileMode);
     }
 }
 
-// Diretórios que precisam de permissões específicas
-$diretoriosEscrita = [
+$pastas = [
     $projectRoot . '/tmp',
     $projectRoot . '/logs',
     $projectRoot . '/public/uploads',
 ];
 
-// Garante que diretórios de escrita existam
-foreach ($diretoriosEscrita as $dir) {
-    if (!file_exists($dir)) {
-        mkdir($dir, 0755, true);
-        echo "✅ Diretório criado: $dir\n";
+foreach ($pastas as $pasta) {
+    if (!file_exists($pasta)) {
+        mkdir($pasta, 0755, true);
+        escrever("Diretório criado: $pasta");
     }
+    ajustarPermissoes($pasta);
 }
+escrever("Permissões ajustadas");
 
-// Aplicar permissões
-foreach ($diretoriosEscrita as $dir) {
-    checkAndFixPermissions($dir, 0644, 0755);
-}
-echo "✅ Permissões de diretórios verificadas e corrigidas\n";
+// ===================================================
+// Minificação real (CSS/JS)
+// ===================================================
 
-// ====================================
-// Minificação de CSS e JS (se necessário)
-// ====================================
-
-// Verifica se o pacote matthiasmullie/minify está instalado
 if (class_exists('\\MatthiasMullie\\Minify\\Minify')) {
-    echo "ℹ️ Pacote de minificação encontrado. Pode usar os comandos npm para minificação.\n";
-
-    // Cria diretório para arquivos minificados se não existir
-    if (!file_exists($projectRoot . '/public/assets/build')) {
-        mkdir($projectRoot . '/public/assets/build', 0755, true);
-        echo "✅ Diretório para arquivos minificados criado\n";
+    $buildDir = $projectRoot . '/public/assets/build';
+    if (!file_exists($buildDir)) {
+        mkdir($buildDir, 0755, true);
+        escrever("Diretório para minificados criado");
     }
-    
+
+    $cssSource = $projectRoot . '/public/assets/css/main.css';
+    $jsSource  = $projectRoot . '/public/assets/js/main.js';
+
+    if (file_exists($cssSource)) {
+        $minifier = new \MatthiasMullie\Minify\CSS($cssSource);
+        $minifier->minify($buildDir . '/main.min.css');
+        escrever("CSS minificado com sucesso");
+    } else {
+        alerta("Arquivo CSS não encontrado: $cssSource");
+    }
+
+    if (file_exists($jsSource)) {
+        $minifier = new \MatthiasMullie\Minify\JS($jsSource);
+        $minifier->minify($buildDir . '/main.min.js');
+        escrever("JS minificado com sucesso");
+    } else {
+        alerta("Arquivo JS não encontrado: $jsSource");
+    }
 } else {
-    echo "⚠️ Recomendado instalar matthiasmullie/minify para otimização de CSS/JS\n";
+    alerta("Instale matthiasmullie/minify via Composer para minificação real de CSS/JS");
 }
 
-// ====================================
-// Verifica e aplica .gitignore
-// ====================================
+// ===================================================
+// .gitignore
+// ===================================================
 
 $gitignorePath = $projectRoot . '/.gitignore';
-$gitignoreContent = '';
+$linhasNecessarias = [
+    '.env', '/vendor/', '/tmp/', '/logs/', '/public/assets/build/', '/public/uploads/', '/.idea/', '/.vscode/', '*.sql', '/node_modules/', '*.lock', '.DS_Store'
+];
 
-if (file_exists($gitignorePath)) {
-    $gitignoreContent = file_get_contents($gitignorePath);
-} else {
-    $gitignoreContent = '';
-}
-
-$gitignoreRecommended = "
-# Arquivos de ambiente
-.env
-.env.*
-!.env.example
-
-# Diretório vendor
-/vendor/
-
-# Arquivos de cache e temporários
-/tmp/*
-!/tmp/.gitkeep
-/var/cache/*
-!/var/cache/.gitkeep
-/var/log/*
-!/var/log/.gitkeep
-/logs/*
-!/logs/.gitkeep
-
-# Arquivos minificados gerados
-/public/assets/build/*
-!/public/assets/build/.gitkeep
-
-# Uploads de usuários
-/public/uploads/*
-!/public/uploads/.gitkeep
-
-# Arquivos do PhpStorm
-/.idea/
-
-# Arquivos do VSCode
-/.vscode/
-*.code-workspace
-
-# Arquivos do NetBeans
-/nbproject/
-
-# Arquivos do PHPUnit
-.phpunit.result.cache
-
-# Arquivo de backup do banco de dados
-*.sql
-*.sqlite
-
-# Cache do composer
-composer.phar
-/.phpunit.cache/
-/node_modules/
-npm-debug.log
-yarn-error.log
-package-lock.json
-yarn.lock
-
-# Arquivos do sistema
-.DS_Store
-Thumbs.db
-";
-
-// Adiciona apenas seções faltantes no gitignore
-$linesToAdd = [];
-$gitignoreLines = explode("\n", $gitignoreContent);
-$recommendedLines = explode("\n", $gitignoreRecommended);
-
-foreach ($recommendedLines as $line) {
-    $line = trim($line);
-    if ($line && !in_array($line, $gitignoreLines) && $line[0] != '#') {
-        $linesToAdd[] = $line;
+$gitignoreAtual = file_exists($gitignorePath) ? file_get_contents($gitignorePath) : '';
+foreach ($linhasNecessarias as $linha) {
+    if (strpos($gitignoreAtual, $linha) === false) {
+        $gitignoreAtual .= "\n$linha";
     }
 }
+file_put_contents($gitignorePath, $gitignoreAtual);
+escrever(".gitignore atualizado");
 
-if (count($linesToAdd) > 0) {
-    file_put_contents($gitignorePath, $gitignoreContent . "\n# Adições automáticas\n" . implode("\n", $linesToAdd) . "\n");
-    echo "✅ Arquivo .gitignore atualizado\n";
-} else {
-    echo "ℹ️ Arquivo .gitignore já contém todas as recomendações\n";
-}
-
-// ====================================
-// Criar arquivo .env.example se não existir
-// ====================================
+// ===================================================
+// .env.example
+// ===================================================
 
 $envExamplePath = $projectRoot . '/.env.example';
 if (!file_exists($envExamplePath)) {
-    $envExampleContent = "# Configurações do Banco de Dados
+    $envExample = <<<ENV
 DB_HOST=localhost
 DB_PORT=3306
-DB_DATABASE=discursivamente_db
+DB_DATABASE=seubanco
 DB_USERNAME=root
-DB_PASSWORD=
+DB_PASSWORD=senha
 
-# Configurações do Ambiente
 APP_NAME=Discursivamente
 APP_ENV=development
 APP_DEBUG=true
 APP_URL=http://localhost
 
-# Configurações de E-mail
-MAIL_HOST=smtp.example.com
+MAIL_HOST=smtp.mail.com
 MAIL_PORT=587
-MAIL_USERNAME=projeto.discursivamente@gmail.com
-MAIL_PASSWORD=frue xhal ioqg oqvq
+MAIL_USERNAME=email@mail.com
+MAIL_PASSWORD=sua_senha
 MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS=no-reply@example.com
+MAIL_FROM_ADDRESS=no-reply@mail.com
 MAIL_FROM_NAME=Discursivamente
 
-# Cloudinary
-CLOUDINARY_CLOUD_NAME=seu_cloud_name
-CLOUDINARY_API_KEY=sua_api_key
-CLOUDINARY_API_SECRET=seu_api_secret
-CLOUDINARY_URL=cloudinary://sua_api_key:seu_api_secret@seu_cloud_name
+CLOUDINARY_CLOUD_NAME=sua_cloud
+CLOUDINARY_API_KEY=api_key
+CLOUDINARY_API_SECRET=api_secret
 
-# Google OAuth
-GOOGLE_CLIENT_ID=seu_client_id
-GOOGLE_CLIENT_SECRET=seu_client_secret
-GOOGLE_REDIRECT_URI=http://localhost:8000/auth/google/callback
-";
+GOOGLE_CLIENT_ID=client_id
+GOOGLE_CLIENT_SECRET=client_secret
+GOOGLE_REDIRECT_URI=http://localhost/auth/google/callback
+ENV;
 
-    file_put_contents($envExamplePath, $envExampleContent);
-    echo "✅ Arquivo .env.example criado\n";
+    file_put_contents($envExamplePath, $envExample);
+    escrever(".env.example criado");
 } else {
-    echo "ℹ️ Arquivo .env.example já existe\n";
+    avisar(".env.example já existe");
 }
 
-echo "\n✅ Script de segurança e otimização concluído!\n";
+echo "\n✅ Script concluído com sucesso!\n";

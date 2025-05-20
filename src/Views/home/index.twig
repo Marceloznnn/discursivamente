@@ -149,7 +149,7 @@
         <cite>- Ana Oliveira</cite>
       </div>
     </div>
-
+ 
     <div class="testimonials-controls">
       <button id="test-prev" aria-label="Depoimento anterior">&larr;</button>
       <button id="test-next" aria-label="Próximo depoimento">&rarr;</button>
@@ -178,7 +178,7 @@
              <div class="cta-content">
                  <h2 id="cta-heading">Pronto para começar sua jornada de aprendizado?</h2>
                  <p>Explore nosso catálogo completo de cursos e descubra novas possibilidades.</p>
-                 <a href="/curso" class="btn btn-primary btn-large">Comece Agora</a>
+                 <a href="/courses" class="btn btn-primary btn-large">Comece Agora</a>
              </div>
          </div>
      </section>
@@ -240,7 +240,7 @@
           {% for event in featuredEvents %}
             <div class="evento-item">
               <div class="evento-image">
-                {% if event.image %}
+                {% if event.image %} 
                   <img src="{{ event.image }}" alt="{{ event.title }}">
                 {% endif %}
               </div>
@@ -291,6 +291,7 @@
      <script src="/assets/js/pages/pages-scripts/newsletter.js" defer></script>
      <script src="/assets/js/pages/pages-scripts/faq.js" defer></script> {# Mantido caso o FAQ fosse adicionado #}
      <script src="/assets/js/pages/pages-scripts/chatbot.js" defer></script>
+     <script src="/assets/js/pages/home/index.js" defer></script>
 
      <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js" integrity="sha512-fzff82+8pzHnwA1mQ0dzz9/E0B+ZRizq08yZfya66INZBz86qKTCt9MLU0NCNIgaMJCgeyhujhasnFUsYMsi0Q==" crossorigin="anonymous" referrerpolicy="no-referrer" async></script>
  {% endblock %}

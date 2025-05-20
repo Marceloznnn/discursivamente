@@ -628,3 +628,6 @@ $r->addRoute('GET', '/teacher/courses/{id}', function($twig, $pdo, $id) {
     $cloud = new \Services\CloudinaryService();
     (new \Controller\pages\TeacherCourseController($twig, $pdo, $cloud))->show((int)$id);
 });
+
+// Rota para inscrição na newsletter
+$r->addRoute('POST', '/newsletter/subscribe', [\Controller\pages\NewsletterController::class, 'subscribe']);

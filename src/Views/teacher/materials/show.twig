@@ -1,55 +1,57 @@
-{# filepath: c:\xampp\htdocs\Discursivamente2.1\src\Views\teacher\materials\show.twig #}
-{# ...existing code... #}
+{% extends 'layouts/base.twig' %}
 
-    {% if moduleMaterials is not empty %}
-      <div class="module-materials">
-        <h2>Materiais deste Módulo</h2>
-        <ul>
-          {% for m in moduleMaterials %}
-            <li class="{% if m.id == material.id %}current{% endif %}">
-              <a href="/teacher/courses/{{ course.id }}/materials/{{ m.id }}">
-                {{ m.title }}
-              </a>
-            </li>
-          {% endfor %}
+{% block title %}Detalhes do Material{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="/assets/css/pages/teacher/materials/show.css">
+{% endblock %}
+
+{% block content %}
+<div class="material-details-container">
+    <nav class="breadcrumb">
+        <a href="/teacher/materials">Materiais</a> &raquo; <span>{{ material.title }}</span>
+    </nav>
+
+    <section class="material-header">
+        <h1 class="material-title">{{ material.title }}</h1>
+        <div class="material-actions">
+            <a href="/teacher/materials/{{ material.id }}/edit" class="btn btn-edit">Editar</a>
+            <form method="POST" action="/teacher/materials/{{ material.id }}/delete" class="inline-form" onsubmit="return confirm('Tem certeza que deseja excluir este material?');">
+                <button type="submit" class="btn btn-delete">Excluir</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="material-info">
+        <p class="material-description">{{ material.description|default('Sem descrição.') }}</p>
+        <ul class="material-meta">
+            <li><strong>Criado em:</strong> {{ material.created_at|date('d/m/Y H:i') }}</li>
+            <li><strong>Status:</strong> {{ material.status|capitalize }}</li>
+            {% if material.attachment %}
+                <li><strong>Anexo:</strong> <a href="{{ material.attachment.url }}" target="_blank">{{ material.attachment.name }}</a></li>
+            {% endif %}
         </ul>
-      </div>
-    {% endif %}
+    </section>
 
-    {# NOVO: Botão para adicionar entrada ao material #}
-    <div class="add-entry-actions" style="margin: 2em 0;">
-      <a href="/teacher/materials/{{ material.id }}/entries/add" class="btn btn-secondary">
-        <i class="fas fa-plus"></i> Adicionar Entrada ao Material
-      </a>
+    <section class="material-entries">
+        <h2>Entradas Relacionadas</h2>
+        {% if entries is not empty %}
+            <ul class="entries-list">
+                {% for entry in entries %}
+                    <li class="entry-item">
+                        <span class="entry-title">{{ entry.title }}</span>
+                        {% if entry.type %}<span class="entry-type">({{ entry.type }})</span>{% endif %}
+                        {% if entry.link %}<a href="{{ entry.link }}" class="entry-link">Ver</a>{% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="no-entries">Nenhuma entrada relacionada encontrada.</p>
+        {% endif %}
+    </section>
+
+    <div class="back-link">
+        <a href="/teacher/materials" class="btn btn-back">&larr; Voltar para lista de materiais</a>
     </div>
-
-    {# NOVO: Lista de entradas do material, se existirem #}
-    {% if materialEntries is defined and materialEntries|length > 0 %}
-      <div class="material-entries">
-        <h2>Entradas deste Material</h2>
-        <ul>
-          {% for entry in materialEntries %}
-            <li>
-              <strong>{{ entry.title }}</strong>
-              <span class="badge bg-info">{{ entry.contentType }}</span>
-              <a href="{{ entry.contentUrl }}" target="_blank" class="btn btn-sm btn-outline-primary ms-2">
-                Acessar Conteúdo
-              </a>
-            </li>
-          {% endfor %}
-        </ul>
-      </div>
-    {% endif %}
-
-    <div class="footer-actions">
-      <form action="/teacher/courses/{{ course.id }}/materials/{{ material.id }}/delete"
-            method="post"
-            onsubmit="return confirm('Confirmar exclusão deste material?');">
-        <input type="hidden" name="_csrf_token" value="{{ csrfToken }}">
-        <button type="submit" class="btn btn-delete">
-          <i class="fas fa-trash-alt"></i> Excluir Material
-        </button>
-      </form>
-    </div>
-  </section>
+</div>
 {% endblock %}

@@ -70,24 +70,12 @@
     <!-- Ações -->
     <div id="profile-actions" class="profile-actions-pro">
       <a href="/profile/edit" id="btn-edit" class="btn-pro"><i class="fas fa-edit"></i> Editar Perfil</a>
-      <a href="/profile/change-password" id="btn-password" class="btn-pro"><i class="fas fa-key"></i> Alterar Senha</a>
       <a href="/logout" id="btn-logout" class="btn-pro btn-logout-pro"><i class="fas fa-sign-out-alt"></i> Sair</a>
-      <button id="btn-deactivate" class="btn-pro btn-danger-pro" onclick="confirmDeactivate()"><i class="fas fa-user-slash"></i> Desativar Conta</button>
     </div>
   </div>
 </div>
 
-<!-- Modal de confirmação para desativar conta -->
-<div id="deactivate-modal" class="modal-pro" style="display:none;">
-  <div class="modal-content-pro">
-    <h3>Desativar Conta</h3>
-    <p>Tem certeza que deseja desativar sua conta? Esta ação é irreversível.</p>
-    <form action="/profile/deactivate" method="post">
-      <button type="submit" class="btn-pro btn-danger-pro">Confirmar Desativação</button>
-      <button type="button" class="btn-pro" onclick="closeModal()">Cancelar</button>
-    </form>
-  </div>
-</div>
+{% endblock %}
 
 {% block scripts %}
 <script>

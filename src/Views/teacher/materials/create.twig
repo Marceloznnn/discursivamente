@@ -3,44 +3,47 @@
 
 {% block title %}Adicionar Material{% endblock %}
 
+{% block styles %}
+  <link rel="stylesheet" href="/assets/css/pages/curso/teacher/create.css">
+{% endblock %}
+
 {% block content %}
-  <div class="container mx-auto p-6 bg-white rounded shadow">
-    <h1 class="text-2xl font-semibold mb-4">Adicionar Material ao Curso: {{ course.title }}</h1>
+  <div class="material-create-container">
+    <h1 class="material-create-title">Adicionar Material ao Curso: {{ course.title }}</h1>
 
     {# Feedback de sucesso/erro usando flash messages #}
     {% for type, messages in app.flashes %}
-      <div class="alert alert-{{ type }} mb-4">
+      <div class="material-alert material-alert-{{ type }}">
         {% for message in messages %}
           <p>{{ message }}</p>
         {% endfor %}
       </div>
     {% endfor %}
 
-    <form action="/teacher/courses/{{ course.id }}/materials" method="post" enctype="multipart/form-data" class="space-y-4">
-      {# CSRF Token passado pelo controlador como 'csrfToken' #}
+    <form action="/teacher/courses/{{ course.id }}/materials" method="post" enctype="multipart/form-data">
       <input type="hidden" name="_csrf_token" value="{{ csrfToken }}">
 
-      <div>
-        <label for="title" class="block font-medium">Título <span class="text-red-500">*</span></label>
-        <input type="text" name="title" id="title" required value="{{ old.title ?? '' }}" class="w-full border rounded p-2">
-        {% if errors.title %}<span class="text-red-600 text-sm">{{ errors.title }}</span>{% endif %}
+      <div class="material-form-group">
+        <label for="title" class="material-form-label">Título <span style="color:#e74c3c">*</span></label>
+        <input type="text" name="title" id="title" required value="{{ old.title ?? '' }}" class="material-form-input">
+        {% if errors.title %}<span class="material-form-error">{{ errors.title }}</span>{% endif %}
       </div>
 
-      <div>
-        <label for="file" class="block font-medium">Arquivo (imagem/video)</label>
-        <input type="file" name="file" id="file" accept="image/*,video/*" class="w-full">
-        {% if errors.file %}<span class="text-red-600 text-sm">{{ errors.file }}</span>{% endif %}
+      <div class="material-form-group">
+        <label for="file" class="material-form-label">Arquivo (imagem/vídeo)</label>
+        <input type="file" name="file" id="file" accept="image/*,video/*" class="material-form-file">
+        {% if errors.file %}<span class="material-form-error">{{ errors.file }}</span>{% endif %}
       </div>
 
-      <div>
-        <label for="content" class="block font-medium">Ou link externo</label>
-        <input type="url" name="content" id="content" placeholder="https://" value="{{ old.content ?? '' }}" class="w-full border rounded p-2">
-        {% if errors.content %}<span class="text-red-600 text-sm">{{ errors.content }}</span>{% endif %}
+      <div class="material-form-group">
+        <label for="content" class="material-form-label">Ou link externo</label>
+        <input type="url" name="content" id="content" placeholder="https://" value="{{ old.content ?? '' }}" class="material-form-input">
+        {% if errors.content %}<span class="material-form-error">{{ errors.content }}</span>{% endif %}
       </div>
 
-      <div class="flex items-center space-x-4">
-        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Salvar Material</button>
-        <a href="/teacher/courses/{{ course.id }}/materials" class="text-gray-600 hover:underline">Cancelar</a>
+      <div class="material-form-actions">
+        <button type="submit" class="material-btn">Salvar Material</button>
+        <a href="/teacher/courses/{{ course.id }}/materials" class="material-btn material-btn-cancel">Cancelar</a>
       </div>
     </form>
   </div>
