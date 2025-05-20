@@ -2,3 +2,48 @@ body, main {
   margin: 0;
   padding: 0;
 }
+
+/* Breadcrumb com tema vinho escuro */
+.breadcrumb {
+  font-size: 14px;
+  color: #6e1f2b; /* vinho escuro desaturado */
+  margin-bottom: 24px;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+.breadcrumb ol {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0;
+  margin: 0;
+}
+
+.breadcrumb li {
+  margin-right: 8px;
+  position: relative;
+}
+
+.breadcrumb li:not(:last-child)::after {
+  content: "/";
+  position: absolute;
+  right: -10px;
+  color: #a64255; /* vinho mais claro */
+}
+
+.breadcrumb a {
+  color: #8b2c3a; /* vinho principal */
+  text-decoration: none;
+  transition: color 0.2s;
+  font-weight: 500;
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+  color: #5e1c27; /* vinho mais escuro ao hover */
+}
+
+.breadcrumb .current {
+  font-weight: bold;
+  color: #4a161f; /* vinho profundo para destaque */
+}

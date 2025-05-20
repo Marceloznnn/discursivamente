@@ -2,65 +2,49 @@
 
 {% block title %}{{ entry.getTitle() ?: 'Material' }} – {{ module.getTitle() }}{% endblock %}
 
+{% block styles %}
+  <link rel="stylesheet" href="/assets/css/pages/curso/aluno/material.css">
+{% endblock %}
+
 {% block content %}
-  <div class="container">
+  <div id="material-container">
 
-    {# Breadcrumb #}
-    <nav class="breadcrumb" aria-label="Breadcrumb">
-      <ol>
-        <li><a href="/courses">Cursos</a></li>
-        <li><a href="/courses/{{ course.getId() }}">{{ course.getTitle() }}</a></li>
-        <li><a href="/courses/{{ course.getId() }}/modules">Módulos</a></li>
-        <li><a href="/courses/{{ course.getId() }}/modules/{{ module.getId() }}">{{ module.getTitle() }}</a></li>
-        <li class="current">{{ entry.getTitle() ?: 'Material' }}</li>
-      </ol>
-    </nav>
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/courses">Cursos</a></li>
+    <li><a href="/courses/{{ course.getId() }}">{{ course.getTitle() }}</a></li>
+    <li><a href="/courses/{{ course.getId() }}/modules">Módulos</a></li>
+    <li class="current">{{ entry.getTitle() ?: 'Material' }}</li>
+  </ol>
+</nav>
 
-    <h1 class="page-heading">{{ entry.getTitle() ?: 'Material #' ~ entry.getId() }}</h1>
-    <h2 class="subheading">Módulo: {{ module.getTitle() }}</h2>
+    <h1 id="material-title">{{ entry.getTitle() ?: 'Material #' ~ entry.getId() }}</h1>
+    <h2 id="material-subtitle">Módulo: {{ module.getTitle() }}</h2>
 
-    <div class="content-area">
+    <div id="material-content">
       {% set url = entry.getContentUrl() %}
 
       {% if entry.getContentType() == 'image' %}
-        <img src="{{ url }}" alt="{{ entry.getTitle() }}" class="media" />
+        <img src="{{ url }}" alt="{{ entry.getTitle() }}" id="material-image" />
 
       {% elseif entry.getContentType() == 'video' %}
-        <video controls src="{{ url }}" class="media"></video>
+        <video controls src="{{ url }}" id="material-video"></video>
 
       {% else %}
-        <a href="{{ url }}" download class="btn-secondary">
+        <a href="{{ url }}" download id="material-download">
           Baixar Arquivo
         </a>
       {% endif %}
     </div>
 
-    <a href="/courses/{{ course.getId() }}/modules/{{ module.getId() }}" class="back-link">&larr; Voltar para Módulos</a>
-  </div>
+    {% if nextEntry %}
+      <a href="/courses/{{ course.getId() }}/modules/{{ module.getId() }}/material/{{ nextEntry.getId() }}" id="material-next">Próximo &rarr;</a>
+    {% endif %}
 
-  <style>
-    .container { max-width:800px; margin:0 auto; padding:20px; font-family:Arial,sans-serif; }
-    .breadcrumb ol { list-style:none; padding:0; margin:0 0 20px; display:flex; flex-wrap:wrap; }
-    .breadcrumb li { margin-right:8px; }
-    .breadcrumb li::after { content:"/"; margin-left:8px; }
-    .breadcrumb li.current::after { content:""; }
-    .breadcrumb a { color:#0366d6; text-decoration:none; }
-    .breadcrumb a:hover { text-decoration:underline; }
-    .page-heading { font-size:28px; margin-bottom:8px; }
-    .subheading { font-size:18px; color:#555; margin-bottom:20px; }
-    .content-area { margin-bottom:24px; }
-    .media { display:block; max-width:100%; margin:0 auto 16px; border:1px solid #ccc; border-radius:4px; }
-    .pdf-frame { width:100%; height:600px; border:1px solid #ccc; border-radius:4px; }
-    .btn-primary,
-    .btn-secondary {
-      display:inline-block; padding:8px 12px; margin-right:8px;
-      font-size:14px; text-decoration:none; border:none; border-radius:4px; cursor:pointer;
-    }
-    .btn-primary { background:#007bff; color:#fff; }
-    .btn-secondary { background:#28a745; color:#fff; }
-    .btn-primary:hover { background:#0056b3; }
-    .btn-secondary:hover { background:#218838; }
-    .back-link { color:#0366d6; font-size:14px; text-decoration:none; }
-    .back-link:hover { text-decoration:underline; }
-  </style>
+    <a href="/courses/{{ course.getId() }}/modules/{{ module.getId() }}" id="material-back">&larr; Voltar para Módulos</a>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="/assets/js/pages/curso/aluno/material.js"></script>
 {% endblock %}

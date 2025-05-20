@@ -265,10 +265,21 @@ class PublicCourseController
             return;
         }
 
+        // Busca o próximo material do mesmo módulo (por ID maior)
+        $nextEntry = null;
+        $allEntries = $this->entryRepo->findByMaterialId($moduleId);
+        foreach ($allEntries as $e) {
+            if ($e->getId() > $entry->getId()) {
+                $nextEntry = $e;
+                break;
+            }
+        }
+
         echo $this->twig->render('public/courses/material.twig', [
-            'course'  => $course,
-            'module'  => $module,
-            'entry'   => $entry,
+            'course'    => $course,
+            'module'    => $module,
+            'entry'     => $entry,
+            'nextEntry' => $nextEntry,
         ]);
     }
 }
