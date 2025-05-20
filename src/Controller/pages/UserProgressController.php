@@ -4,21 +4,15 @@
 namespace Controller\pages;
 
 use Repositories\UserProgressRepository;
-use Repositories\MaterialRepository;
 use PDO;
 use Twig\Environment;
 
 class UserProgressController
-{
-    private Environment $twig;
-    private UserProgressRepository $progressRepo;
-    private MaterialRepository $materialRepo;
-
-    public function __construct(Environment $twig, PDO $pdo)
+{    private Environment $twig;
+    private UserProgressRepository $progressRepo;    public function __construct(Environment $twig, PDO $pdo)
     {
         $this->twig         = $twig;
         $this->progressRepo = new \Repositories\UserProgressRepository($pdo);
-        $this->materialRepo = new MaterialRepository($pdo);
     }
 
     /**
@@ -62,23 +56,13 @@ class UserProgressController
             ]);
             exit;
         }
-    }
-
-    /**
+    }    /**
      * Exibe o progresso do usuário num curso, se quiser ter uma página dedicada.
      */
     public function showCourseProgress(int $courseId): void
     {
-        $userId    = $_SESSION['user']['id'];
-        $materials = $this->materialRepo->findByCourseId($courseId);
-        $doneList  = array_map(
-            fn($p) => $p->getMaterialId(),
-            $this->progressRepo->findByUserId($userId)
-        );
-
+        // TODO: Implementar nova lógica de progresso sem materiais
         echo $this->twig->render('user/progress/show.twig', [
-            'materials' => $materials,
-            'doneList'  => $doneList,
             'courseId'  => $courseId,
         ]);
     }

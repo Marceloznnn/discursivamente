@@ -5,7 +5,6 @@ namespace Controller\pages;
 use Middleware\TeacherMiddleware;
 use Repositories\ModuleRepository;
 use Repositories\CourseRepository;
-use Repositories\MaterialRepository;
 use Twig\Environment;
 use PDO;
 
@@ -14,7 +13,6 @@ class TeacherModuleController
     private Environment $twig;
     private ModuleRepository $moduleRepo;
     private CourseRepository $courseRepo;
-    private MaterialRepository $materialRepo;
 
     public function __construct(
         Environment $twig,
@@ -25,7 +23,6 @@ class TeacherModuleController
         $this->twig        = $twig;
         $this->moduleRepo  = new ModuleRepository($pdo);
         $this->courseRepo  = new CourseRepository($pdo);
-        $this->materialRepo = new MaterialRepository($pdo);
     }
 
     /**
@@ -120,7 +117,7 @@ class TeacherModuleController
         $module = $this->moduleRepo->findById($moduleId);
         if (!$module) {
             http_response_code(404);
-            echo "Módulo não encontrado.";
+            echo "Módulo não encontrado."; 
             exit;
         }
 
@@ -173,29 +170,6 @@ class TeacherModuleController
         $this->moduleRepo->reorderModules($courseId, $order);
         echo json_encode(['success' => true]);
         exit;
-    }
-
-    /**
-     * Lista materiais vinculados a um módulo.
-     */
-    public function materials(int $courseId, int $moduleId): void
-    {
-        $course = $this->courseRepo->findById($courseId);
-        $this->authorize($course);
-
-        $module = $this->moduleRepo->findById($moduleId);
-        if (!$module) {
-            http_response_code(404);
-            echo "Módulo não encontrado.";
-            exit;
-        }
-
-        $materials = $this->materialRepo->findByModuleId($courseId, $moduleId);
-        echo $this->twig->render('teacher/modules/materials.twig', [
-            'course'    => $course,
-            'module'    => $module,
-            'materials' => $materials,
-        ]);
     }
 
     /**

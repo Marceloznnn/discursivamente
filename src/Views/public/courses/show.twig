@@ -23,8 +23,9 @@
                 Sair do curso
               </button>
             </form>
-            <a href="/courses/{{ course.id }}/materials" class="button-materials">
-              Ver Materiais ({{ materials|length }})
+            <!-- Atualizado: botão agora leva aos módulos -->
+            <a href="/courses/{{ course.id }}/modules" class="button-materials">
+              Ver Módulos ({{ materials|length }})
             </a>
           {% else %}
             <form action="/courses/{{ course.id }}/join" method="post" class="action-form">

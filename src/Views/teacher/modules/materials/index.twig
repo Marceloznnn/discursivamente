@@ -1,0 +1,48 @@
+{# File: templates/teacher/modules/materials/index.twig #}
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Materiais de {{ module.title }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6">
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-semibold">Materiais do Módulo: {{ module.title }}</h1>
+    <a href="/teacher/courses/{{ course.id }}/modules/{{ module.id }}/materials/create" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+      Novo Material
+    </a>
+  </div>
+
+  {% if entries is empty %}
+    <p class="text-gray-600">Nenhum material enviado ainda.</p>
+  {% else %}
+    <table class="min-w-full bg-white border">
+      <thead>
+        <tr>
+          <th class="px-4 py-2 border text-left">Título</th>
+          <th class="px-4 py-2 border text-left">URL</th>
+          <th class="px-4 py-2 border text-left">Tipo</th>
+          <th class="px-4 py-2 border text-left">Enviado em</th>
+          <th class="px-4 py-2 border text-left">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in entries %}
+          <tr class="hover:bg-gray-100">
+            <td class="px-4 py-2 border">{{ entry.title }}</td>
+            <td class="px-4 py-2 border">
+              <a href="{{ entry.contentUrl }}" target="_blank" class="text-blue-500 hover:underline">Ver</a>
+            </td>
+            <td class="px-4 py-2 border">{{ entry.contentType }}</td>
+            <td class="px-4 py-2 border">{{ entry.createdAt.format('d/m/Y H:i') }}</td>
+            <td class="px-4 py-2 border space-x-2">
+              <form action="/teacher/courses/{{ course.id }}/modules/{{ module.id }}/materials/{{ entry.id }}/delete" method="POST" class="inline" onsubmit="return confirm('Deseja excluir este material?');">
+                <button type="submit" class="text-red-500 hover:underline">Excluir</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+</div>
+{% endblock %}

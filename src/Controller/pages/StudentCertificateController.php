@@ -4,27 +4,18 @@ namespace Controller\pages;
 use Middleware\AuthMiddleware;
 use Repositories\CertificateRepository;
 use Repositories\CourseRepository;
-use Repositories\UserProgressRepository;
-use Repositories\MaterialRepository;
 use App\Models\Certificate;
 use PDO;
 use Twig\Environment;
 
 class StudentCertificateController
-{
-    private Environment $twig;
+{    private Environment $twig;
     private CertificateRepository $certificateRepo;
-    private CourseRepository $courseRepo;
-    private UserProgressRepository $progressRepo;
-    private MaterialRepository $materialRepo;
-
-    public function __construct(Environment $twig, PDO $pdo)
+    private CourseRepository $courseRepo;    public function __construct(Environment $twig, PDO $pdo)
     {
         $this->twig = $twig;
         $this->certificateRepo = new CertificateRepository($pdo);
         $this->courseRepo = new CourseRepository($pdo);
-        $this->progressRepo = new UserProgressRepository($pdo);
-        $this->materialRepo = new MaterialRepository($pdo);
         
         // Aplicar middleware para garantir que o usuário esteja logado
         (new AuthMiddleware())->handle();
@@ -94,16 +85,8 @@ class StudentCertificateController
             header("Location: /student/certificates/view/{$existingCertificate->getId()}");
             exit;
         }
-        
-        // Verificar progresso
-        $materials = $this->materialRepo->findByCourseId($courseId);
-        $progress = $this->progressRepo->findByUserId($userId);
-        
-        $materialIds = array_map(fn($m) => $m->getId(), $materials);
-        $completedMaterialIds = array_map(fn($p) => $p->getMaterialId(), $progress);
-        
-        $allCompleted = count($materialIds) > 0 && 
-            count(array_intersect($materialIds, $completedMaterialIds)) === count($materialIds);
+          // Todo: Implementar nova lógica de progresso do curso
+        $allCompleted = true; // Temporariamente sempre true até nova implementação
         
         if (!$allCompleted) {
             $_SESSION['flash']['error'] = 'Você precisa completar todo o conteúdo para receber o certificado.';

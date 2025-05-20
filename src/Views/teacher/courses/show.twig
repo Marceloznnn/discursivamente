@@ -1,4 +1,4 @@
-{# templates/teacher/courses/show.twig #}
+{# File: templates/teacher/courses/show.twig #}
 {% extends 'layouts/base.twig' %}
 
 {% block title %}{{ course.getTitle() }} – Detalhes do Curso{% endblock %}
@@ -52,8 +52,8 @@
         </form>
       </div>
       <div class="action-group secondary-actions">
-        <a href="/teacher/courses/{{ course.getId() }}/materials" class="btn btn-materials">
-          <i class="fas fa-book"></i> Gerenciar Materiais
+        <a href="/teacher/courses/{{ course.getId() }}/modules" class="btn btn-materials">
+          <i class="fas fa-book"></i> Gerenciar Módulos
         </a>
         <a href="/teacher/courses/{{ course.getId() }}/comments" class="btn btn-comments">
           <i class="fas fa-comment-dots"></i> Ver Comentários

@@ -7,11 +7,11 @@ use Cloudinary\Cloudinary;
 use Cloudinary\Configuration\Configuration;
 
 class CloudinaryService {
-    private $cloudinaryImages;
-    private $cloudinaryVideos;
+    private Cloudinary $cloudinaryImages;
+    private Cloudinary $cloudinaryVideos;
 
     public function __construct() {
-        // Configuração para a primeira conta (imagens)
+        // Configuração para a primeira conta (imagens e raw)
         $this->cloudinaryImages = new Cloudinary(
             Configuration::instance([
                 'cloud' => [
@@ -40,57 +40,65 @@ class CloudinaryService {
      * Faz upload de um arquivo para o Cloudinary
      *
      * @param string $filePath Caminho do arquivo
-     * @param string $fileType Tipo do arquivo ('image' ou 'video')
+     * @param string $fileType Tipo do arquivo ('image', 'video' ou 'raw')
      * @param string|null $folder Pasta onde o arquivo será armazenado
      * @return array Resposta do Cloudinary contendo URL, etc.
      * @throws \Exception em caso de erro
      */
     public function uploadFile(string $filePath, string $fileType, ?string $folder = null): array {
-        error_log("[CloudinaryService] uploadFile called: filePath={$filePath}, fileType={$fileType}, folder={$folder}");
-
-        // Escolhe instância apropriada
-        $cloudinary = ($fileType === 'video')
-            ? $this->cloudinaryVideos
-            : $this->cloudinaryImages;
+        $cloudinary = match($fileType) {
+            'video' => $this->cloudinaryVideos,
+            default => $this->cloudinaryImages,
+        };
 
         $options = ['resource_type' => $fileType];
         if ($folder) {
             $options['folder'] = $folder;
         }
 
-        try {
-            $result = $cloudinary->uploadApi()->upload($filePath, $options);
-            error_log("[CloudinaryService] upload successful: " . print_r($result, true));
+        $result = $cloudinary->uploadApi()->upload($filePath, $options);
 
-            return [
-                'url'           => $result['secure_url'],
-                'public_id'     => $result['public_id'],
-                'resource_type' => $result['resource_type'],
-                'format'        => $result['format'],
-                'created_at'    => $result['created_at'],
-            ];
-        } catch (\Exception $e) {
-            error_log("[CloudinaryService] upload failed: " . $e->getMessage() . " | options: " . print_r($options, true));
-            throw $e;
-        }
+        // Sempre usa a secure_url para download
+        $url = $result['secure_url'];
+
+        // LOG para depuração
+        $logDir = __DIR__ . '/../../../logs';
+        if (!is_dir($logDir)) { mkdir($logDir, 0777, true); }
+        $logFile = $logDir . '/cloudinary_upload.log';
+        $logMsg = date('Y-m-d H:i:s') . "\n" .
+            "Tipo: $fileType\n" .
+            "Public ID: " . ($result['public_id'] ?? 'N/A') . "\n" .
+            "Format: " . ($result['format'] ?? 'N/A') . "\n" .
+            "Secure URL: " . ($result['secure_url'] ?? 'N/A') . "\n" .
+            "URL Inline: (não usada)\n" .
+            str_repeat('-', 40) . "\n";
+        file_put_contents($logFile, $logMsg, FILE_APPEND);
+
+        return [
+            'url'           => $url,
+            'public_id'     => $result['public_id'],
+            'resource_type' => $result['resource_type'],
+            'format'        => $result['format'] ?? 'pdf',
+            'created_at'    => $result['created_at'],
+        ];
     }
 
     /**
-     * Determina o tipo de arquivo baseado no MIME (mais confiável que extensão tmp)
+     * Determina o tipo de arquivo baseado no MIME
      *
      * @param string $filePath Caminho do arquivo temporário
-     * @return string 'image' ou 'video'
+     * @return string 'image', 'video' ou 'raw'
      */
     public function determineFileType(string $filePath): string {
         $mimeType = mime_content_type($filePath);
-        error_log("[CloudinaryService] determineFileType: mimeType={$mimeType}");
 
+        if (str_starts_with($mimeType, 'image/')) {
+            return 'image';
+        }
         if (str_starts_with($mimeType, 'video/')) {
             return 'video';
         }
-
-        // padrão: trata tudo como imagem
-        return 'image';
+        return 'raw'; // PDFs e outros tipos
     }
 
     /**
@@ -98,7 +106,7 @@ class CloudinaryService {
      *
      * @param string $filePath Caminho do arquivo temporário
      * @param string|null $folder Pasta de destino
-     * @param string|null $fileType Se já souber ('image' ou 'video')
+     * @param string|null $fileType Se já souber ('image', 'video' ou 'raw')
      * @return array
      */
     public function upload(string $filePath, ?string $folder = null, ?string $fileType = null): array {
@@ -112,18 +120,16 @@ class CloudinaryService {
      * Deleta um arquivo do Cloudinary
      *
      * @param string $publicId ID público
+     * @param string $resourceType ('image', 'video' ou 'raw')
      * @return array Resultado da operação
      */
-    public function deleteFile(string $publicId): array {
-        try {
-            $result = $this->cloudinaryImages->uploadApi()->destroy($publicId);
-            return ['result' => $result['result']];
-        } catch (\Exception $e) {
-            error_log("[CloudinaryService] deleteFile failed: " . $e->getMessage());
-            return [
-                'result'  => 'error',
-                'message' => $e->getMessage(),
-            ];
+    public function deleteFile(string $publicId, string $resourceType = 'image'): array {
+        $api = $this->cloudinaryImages->uploadApi();
+        if ($resourceType === 'video') {
+            $api = $this->cloudinaryVideos->uploadApi();
         }
+
+        $result = $api->destroy($publicId, ['resource_type' => $resourceType]);
+        return ['result' => $result['result']];
     }
 }

@@ -11,10 +11,8 @@ use Middleware\AuthMiddleware;
 use Middleware\GuestMiddleware;
 use Controller\PagesController;
 use Controller\pages\PublicCourseController;
-use Repositories\CourseRepository;
-use Repositories\MaterialRepository;
-use Repositories\MaterialEntryRepository;
-use Controller\pages\TeacherMaterialController;
+use Controller\pages\TeacherModuleController;
+use Controller\pages\TeacherModuleMaterialController;
 
 // ==========================================
 // Rotas públicas (sem autenticação)
@@ -318,80 +316,7 @@ $r->addRoute('POST','/teacher/courses/{id}/delete', function($twig, $pdo, $id) {
     $cloud = new CloudinaryService();
     (new \Controller\pages\TeacherCourseController($twig, $pdo, $cloud))->destroy((int)$id);
 });
-// Materiais de um curso
-$r->addRoute('GET', '/teacher/courses/{courseId}/materials', function($twig, $pdo, $courseId) {
-    $cloud = new CloudinaryService();
-    $materialRepo = new \Repositories\MaterialRepository($pdo);
-    $courseRepo = new \Repositories\CourseRepository($pdo);
-    $materialEntryRepo = new \Repositories\MaterialEntryRepository($pdo);
-    (new \Controller\pages\TeacherMaterialController($twig, $materialRepo, $courseRepo, $cloud, $materialEntryRepo))
-        ->index((int)$courseId);
-});
-
-$r->addRoute('GET', '/teacher/courses/{courseId}/materials/create', function($twig, $pdo, $courseId) {
-    $cloud = new CloudinaryService();
-    $materialRepo = new \Repositories\MaterialRepository($pdo);
-    $courseRepo = new \Repositories\CourseRepository($pdo);
-    $materialEntryRepo = new \Repositories\MaterialEntryRepository($pdo);
-    (new \Controller\pages\TeacherMaterialController($twig, $materialRepo, $courseRepo, $cloud, $materialEntryRepo))
-        ->create((int)$courseId);
-});
-
-$r->addRoute('POST', '/teacher/courses/{courseId}/materials', function($twig, $pdo, $courseId) {
-    $cloud = new CloudinaryService();
-    $materialRepo = new \Repositories\MaterialRepository($pdo);
-    $courseRepo = new \Repositories\CourseRepository($pdo);
-    $materialEntryRepo = new \Repositories\MaterialEntryRepository($pdo);
-    (new \Controller\pages\TeacherMaterialController($twig, $materialRepo, $courseRepo, $cloud, $materialEntryRepo))
-        ->store((int)$courseId);
-});
-
-$r->addRoute('POST', '/teacher/courses/{courseId}/materials/{id}/delete', function($twig, $pdo, $courseId, $id) {
-    $cloud = new CloudinaryService();
-    $materialRepo = new \Repositories\MaterialRepository($pdo);
-    $courseRepo = new \Repositories\CourseRepository($pdo);
-    $materialEntryRepo = new \Repositories\MaterialEntryRepository($pdo);
-    (new \Controller\pages\TeacherMaterialController($twig, $materialRepo, $courseRepo, $cloud, $materialEntryRepo))
-        ->destroy((int)$courseId, (int)$id);
-});
-
-// Exibe detalhe de um material específico (professor)
-$r->addRoute('GET', '/teacher/courses/{courseId}/materials/{id}', function($twig, $pdo, $courseId, $id) {
-    $cloud = new CloudinaryService();
-    $materialRepo = new \Repositories\MaterialRepository($pdo);
-    $courseRepo = new \Repositories\CourseRepository($pdo);
-    $materialEntryRepo = new \Repositories\MaterialEntryRepository($pdo);
-    (new \Controller\pages\TeacherMaterialController($twig, $materialRepo, $courseRepo, $cloud, $materialEntryRepo))
-        ->show((int)$courseId, (int)$id);
-});
-
-// Novas rotas para entradas de material serão implementadas posteriormente com um novo controlador.
-
-$r->addRoute(
-    'GET',
-    '/teacher/courses/{courseId}/modules/{moduleId}/materials/add',
-    function($twig, $pdo, $courseId, $moduleId) {
-        $cloud        = new CloudinaryService();
-        $materialRepo = new MaterialRepository($pdo);
-        $courseRepo   = new CourseRepository($pdo);
-        $materialEntryRepo = new MaterialEntryRepository($pdo);
-        (new TeacherMaterialController($twig, $materialRepo, $courseRepo, $cloud, $materialEntryRepo))
-            ->addToModule((int)$courseId, (int)$moduleId);
-    }
-);
-
-$r->addRoute(
-    'POST',
-    '/teacher/courses/{courseId}/modules/{moduleId}/materials/add',
-    function($twig, $pdo, $courseId, $moduleId) {
-        $cloud        = new CloudinaryService();
-        $materialRepo = new MaterialRepository($pdo);
-        $courseRepo   = new CourseRepository($pdo);
-        $materialEntryRepo = new MaterialEntryRepository($pdo);
-        (new TeacherMaterialController($twig, $materialRepo, $courseRepo, $cloud, $materialEntryRepo))
-            ->storeToModule((int)$courseId, (int)$moduleId);
-    }
-);
+// Rotas de materiais foram removidas
 
 // Comentários de um curso
 $r->addRoute('GET', '/teacher/courses/{id}/comments', function($twig, $pdo, $id) {
@@ -407,24 +332,149 @@ $r->addRoute(
 );
 
 
-// Materiais de um curso continuam após...
 
+// Listar módulos
+$r->addRoute(
+    'GET',
+    '/teacher/courses/{courseId:\d+}/modules',
+    function($twig, $pdo, $courseId) {
+        (new TeacherModuleController($twig, $pdo))
+            ->index((int)$courseId);
+    }
+);
+
+// Formulário de criação
+$r->addRoute(
+    'GET',
+    '/teacher/courses/{courseId:\d+}/modules/create',
+    function($twig, $pdo, $courseId) {
+        (new TeacherModuleController($twig, $pdo))
+            ->create((int)$courseId);
+    }
+);
+
+
+// Listar materiais de um módulo
+$r->addRoute(
+    'GET',
+    '/teacher/courses/{courseId:\d+}/modules/{moduleId:\d+}/materials',
+    function($twig, $pdo, $courseId, $moduleId) {
+        $cloud = new CloudinaryService();
+        (new TeacherModuleMaterialController($twig, $pdo, $cloud))
+            ->index((int)$courseId, (int)$moduleId);
+    }
+);
+
+// Formulário de upload de material
+$r->addRoute(
+    'GET',
+    '/teacher/courses/{courseId:\d+}/modules/{moduleId:\d+}/materials/create',
+    function($twig, $pdo, $courseId, $moduleId) {
+        $cloud = new CloudinaryService();
+        (new TeacherModuleMaterialController($twig, $pdo, $cloud))
+            ->create((int)$courseId, (int)$moduleId);
+    }
+);
+
+// Persistir novo material
+$r->addRoute(
+    'POST',
+    '/teacher/courses/{courseId:\d+}/modules/{moduleId:\d+}/materials',
+    function($twig, $pdo, $courseId, $moduleId) {
+        $cloud = new CloudinaryService();
+        (new TeacherModuleMaterialController($twig, $pdo, $cloud))
+            ->store((int)$courseId, (int)$moduleId);
+    }
+);
+
+// Excluir material
+$r->addRoute(
+    'POST',
+    '/teacher/courses/{courseId:\d+}/modules/{moduleId:\d+}/materials/{entryId:\d+}/delete',
+    function($twig, $pdo, $courseId, $moduleId, $entryId) {
+        $cloud = new CloudinaryService();
+        (new TeacherModuleMaterialController($twig, $pdo, $cloud))
+            ->destroy((int)$courseId, (int)$moduleId, (int)$entryId);
+    }
+);
+
+
+// Persistir novo módulo
+$r->addRoute(
+    'POST',
+    '/teacher/courses/{courseId:\d+}/modules',
+    function($twig, $pdo, $courseId) {
+        (new TeacherModuleController($twig, $pdo))
+            ->store((int)$courseId);
+    }
+);
+
+// 9) Listar módulos e materiais de um curso público
+$r->addRoute(
+    'GET',
+    '/courses/{courseId:\d+}/modules',
+    function($twig, $pdo, $courseId) {
+        (new PublicCourseController($twig, $pdo))
+            ->modules((int)$courseId);
+    }
+);
+
+// 10) Visualizar um material específico de um módulo público
+$r->addRoute(
+    'GET',
+    '/courses/{courseId:\d+}/modules/{moduleId:\d+}/material/{entryId:\d+}',
+    function($twig, $pdo, $courseId, $moduleId, $entryId) {
+        (new PublicCourseController($twig, $pdo))
+            ->viewMaterial((int)$courseId, (int)$moduleId, (int)$entryId);
+    }
+);
+
+// Formulário de edição
+$r->addRoute(
+    'GET',
+    '/teacher/courses/{courseId:\d+}/modules/{moduleId:\d+}/edit',
+    function($twig, $pdo, $courseId, $moduleId) {
+        (new TeacherModuleController($twig, $pdo))
+            ->edit((int)$courseId, (int)$moduleId);
+    }
+);
+
+// Atualizar módulo
+$r->addRoute(
+    'POST',
+    '/teacher/courses/{courseId:\d+}/modules/{moduleId:\d+}',
+    function($twig, $pdo, $courseId, $moduleId) {
+        (new TeacherModuleController($twig, $pdo))
+            ->update((int)$courseId, (int)$moduleId);
+    }
+);
+
+// Excluir módulo
+$r->addRoute(
+    'POST',
+    '/teacher/courses/{courseId:\d+}/modules/{moduleId:\d+}/delete',
+    function($twig, $pdo, $courseId, $moduleId) {
+        (new TeacherModuleController($twig, $pdo))
+            ->destroy((int)$courseId, (int)$moduleId);
+    }
+);
+
+// Reordenar módulos (AJAX)
+$r->addRoute(
+    'POST',
+    '/teacher/courses/{courseId:\d+}/modules/reorder',
+    function($twig, $pdo, $courseId) {
+        (new TeacherModuleController($twig, $pdo))
+            ->reorder((int)$courseId);
+    }
+);
 
 // Rotas públicas para cursos e materiais
 $r->addRoute('GET', '/courses', [PublicCourseController::class, 'index']);
 $r->addRoute('GET', '/courses/{id:\d+}', [PublicCourseController::class, 'show']);
 $r->addRoute('POST','/courses/{id:\d+}/comment', [PublicCourseController::class, 'storeComment']);
 
-// Rota para listar todos os materiais de um curso (materials.twig)
-$r->addRoute('GET', '/courses/{id:\d+}/materials', [PublicCourseController::class, 'listMaterials']);
-
-// Rota para exibir um material específico (material.twig)
-$r->addRoute(
-    'GET',
-    '/courses/{courseId:\d+}/materials/{materialId:\d+}',
-    [PublicCourseController::class, 'showMaterial']
-);
-// Entrar no curso (torna participativo e libera materiais)
+// Entrar no curso(torna participativo e libera materiais)
 $r->addRoute('POST', '/courses/{id:\d+}/join',  [PublicCourseController::class, 'join']);
 
 // Sair do curso (marca left_at e esconde materiais)
@@ -435,8 +485,7 @@ $r->addRoute('POST', '/courses/{id:\d+}/complete', [PublicCourseController::clas
 // Desmarcar curso como concluído
 $r->addRoute('POST', '/courses/{id:\d+}/uncomplete', [PublicCourseController::class, 'uncomplete']);
 
-// Progresso de material (AJAX)
-$r->addRoute('POST', '/user/progress/toggle/{materialId:\d+}', [\Controller\pages\UserProgressController::class, 'toggle']);
+// Rotas de progresso removidas
 
 // Detalhes do curso do professor
 $r->addRoute('GET', '/teacher/courses/{id}', function($twig, $pdo, $id) {

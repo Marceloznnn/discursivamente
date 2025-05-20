@@ -1,122 +1,66 @@
-{# 
-  Template: Material do Curso
-  Propósito: Exibir o conteúdo do material selecionado e lista de materiais do curso.
-  Variáveis esperadas:
-    - course: objeto do curso com propriedades id, title e lista de materials
-    - material: objeto do material atual com propriedades id, title, content, contentType, hasQuiz, moduleId, quizId
-#}
-
 {% extends 'layouts/base.twig' %}
 
-{# Título da página dinâmico baseado no material e curso #}
-{% block title %}{{ material.title }} - {{ course.title }}{% endblock %}
+{% block title %}{{ entry.getTitle() ?: 'Material' }} – {{ module.getTitle() }}{% endblock %}
 
-{# Inclusão de CSS específico para esta página #}
-{% block styles %}
-  <link rel="stylesheet" href="/assets/css/pages/curso/aluno/material.css">
-{% endblock %}
-
-{# Conteúdo principal da página #}
 {% block content %}
-  <div class="material-container">
-    
-    {# Sidebar com lista de materiais do curso #}
-    <aside class="material-sidebar" role="navigation" aria-label="Lista de materiais do curso">
-      <h2>Materiais do Curso</h2>
-      <ul class="material-list">
-        {% for m in course.materials %}
-          <li class="material-item {{ m.id == material.id ? 'active' }}" >
-            <a href="/courses/{{ course.id }}/materials/{{ m.id }}" 
-               aria-current="{{ m.id == material.id ? 'page' }}">
-              {{ m.title }}
-            </a>
-          </li>
-        {% endfor %}
-      </ul>
-    </aside>
+  <div class="container">
 
-    {# Área principal com detalhes e conteúdo do material selecionado #}
-    <main class="material-main" role="main">
-      <header class="material-header">
-        <h1>{{ material.title }}</h1>
-        <p>
-          <strong>Curso:</strong> 
-          <a href="/courses/{{ course.id }}">{{ course.title }}</a>
-        </p>
-      </header>
+    {# Breadcrumb #}
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="/courses">Cursos</a></li>
+        <li><a href="/courses/{{ course.getId() }}">{{ course.getTitle() }}</a></li>
+        <li><a href="/courses/{{ course.getId() }}/modules">Módulos</a></li>
+        <li><a href="/courses/{{ course.getId() }}/modules/{{ module.getId() }}">{{ module.getTitle() }}</a></li>
+        <li class="current">{{ entry.getTitle() ?: 'Material' }}</li>
+      </ol>
+    </nav>
 
-      <section class="material-content" aria-live="polite">
-        {% if material.content %}
-          {% set url = material.content starts with 'http' ? material.content : '/' ~ material.content %}
-          {% set type = material.contentType %}
+    <h1 class="page-heading">{{ entry.getTitle() ?: 'Material #' ~ entry.getId() }}</h1>
+    <h2 class="subheading">Módulo: {{ module.getTitle() }}</h2>
 
-          {# Renderização condicional do conteúdo conforme tipo MIME #}
-          {% if type starts with 'video/' %}
-            <div class="media-wrapper video">
-              <video controls preload="metadata" tabindex="0">
-                <source src="{{ url }}" type="{{ type }}">
-                Seu navegador não suporta vídeo.
-              </video>
-            </div>
+    <div class="content-area">
+      {% set url = entry.getContentUrl() %}
 
-          {% elseif type starts with 'audio/' %}
-            <div class="media-wrapper audio">
-              <audio controls preload="metadata" tabindex="0">
-                <source src="{{ url }}" type="{{ type }}">
-                Seu navegador não suporta áudio.
-              </audio>
-            </div>
+      {% if entry.getContentType() == 'image' %}
+        <img src="{{ url }}" alt="{{ entry.getTitle() }}" class="media" />
 
-          {% elseif type == 'application/pdf' %}
-            <div class="media-wrapper pdf">
-              <embed src="{{ url }}" type="application/pdf" aria-label="Visualizador de PDF do material">
-            </div>
+      {% elseif entry.getContentType() == 'video' %}
+        <video controls src="{{ url }}" class="media"></video>
 
-          {% elseif type starts with 'image/' %}
-            <div class="media-wrapper image">
-              <img src="{{ url }}" alt="{{ material.title }}" loading="lazy" />
-            </div>
-
-          {% else %}
-            <div class="media-wrapper iframe">
-              <iframe src="{{ url }}" title="Conteúdo do material {{ material.title }}" frameborder="0" allowfullscreen></iframe>
-            </div>
-          {% endif %}
-        {% else %}
-          <p class="no-content">Nenhum conteúdo disponível para este material.</p>
-        {% endif %}
-        {% if session.user %}
-          <form id="progress-form" data-material-id="{{ material.id }}" style="margin-top:2rem;">
-            <label style="font-weight:600;">
-              <input type="checkbox" id="material-completed" {% if material.id in completedMaterials %}checked{% endif %}>
-              Marcar este material como concluído
-            </label>
-            <span id="progress-feedback" style="margin-left:1rem;color:var(--success-color);"></span>
-          </form>
-          <script src="/assets/js/pages/curso/progresso.js" defer></script>
-        {% endif %}
-      </section>
-
-      {# Botão para acessar quiz do módulo, se houver #}
-      {% if material.hasQuiz %}
-        <div class="quiz-access">
-          <a href="/courses/module/{{ material.moduleId }}/quizzes/{{ material.quizId }}" class="btn btn-secondary" role="button">
-            Acessar Quiz deste Módulo →
-          </a>
-        </div>
-      {% endif %}
-
-      {# Link para voltar à lista de materiais #}
-      <footer class="material-footer">
-        <a href="/courses/{{ course.id }}/materials" class="back-link" role="link">
-          ← Voltar à lista de materiais
+      {% else %}
+        <a href="{{ url }}" download class="btn-secondary">
+          Baixar Arquivo
         </a>
-      </footer>
-    </main>
-  </div>
-{% endblock %}
+      {% endif %}
+    </div>
 
-{# Inclusão do script JavaScript específico para esta página #}
-{% block scripts %}
-  <script src="/assets/js/pages/curso/material.js" defer></script>
+    <a href="/courses/{{ course.getId() }}/modules/{{ module.getId() }}" class="back-link">&larr; Voltar para Módulos</a>
+  </div>
+
+  <style>
+    .container { max-width:800px; margin:0 auto; padding:20px; font-family:Arial,sans-serif; }
+    .breadcrumb ol { list-style:none; padding:0; margin:0 0 20px; display:flex; flex-wrap:wrap; }
+    .breadcrumb li { margin-right:8px; }
+    .breadcrumb li::after { content:"/"; margin-left:8px; }
+    .breadcrumb li.current::after { content:""; }
+    .breadcrumb a { color:#0366d6; text-decoration:none; }
+    .breadcrumb a:hover { text-decoration:underline; }
+    .page-heading { font-size:28px; margin-bottom:8px; }
+    .subheading { font-size:18px; color:#555; margin-bottom:20px; }
+    .content-area { margin-bottom:24px; }
+    .media { display:block; max-width:100%; margin:0 auto 16px; border:1px solid #ccc; border-radius:4px; }
+    .pdf-frame { width:100%; height:600px; border:1px solid #ccc; border-radius:4px; }
+    .btn-primary,
+    .btn-secondary {
+      display:inline-block; padding:8px 12px; margin-right:8px;
+      font-size:14px; text-decoration:none; border:none; border-radius:4px; cursor:pointer;
+    }
+    .btn-primary { background:#007bff; color:#fff; }
+    .btn-secondary { background:#28a745; color:#fff; }
+    .btn-primary:hover { background:#0056b3; }
+    .btn-secondary:hover { background:#218838; }
+    .back-link { color:#0366d6; font-size:14px; text-decoration:none; }
+    .back-link:hover { text-decoration:underline; }
+  </style>
 {% endblock %}

@@ -1,0 +1,115 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Módulos de {{ course.getTitle() }}{% endblock %}
+
+{% block content %}
+  <div class="container">
+
+    {# Breadcrumb #}
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="/courses">Cursos</a></li>
+        <li><a href="/courses/{{ course.getId() }}">{{ course.getTitle() }}</a></li>
+        <li class="current">Módulos</li>
+      </ol>
+    </nav>
+
+    <h1 class="page-heading">Módulos do Curso: {{ course.getTitle() }}</h1>
+
+    {% if modules is empty %}
+      <p class="empty-message">Este curso ainda não possui módulos.</p>
+    {% else %}
+      <div class="modules-list">
+        {% for module in modules %}
+          <div class="module-card">
+            <h2 class="module-title">{{ module.getTitle() }}</h2>
+
+            {% set entries = materials[module.getId()] %}
+            {% if entries is empty %}
+              <p class="empty-message">Nenhum material disponível.</p>
+            {% else %}
+              <ul class="materials-list">
+                {% for entry in entries %}
+                  <li>
+                    <a href="/courses/{{ course.getId() }}/modules/{{ module.getId() }}/material/{{ entry.getId() }}">
+                      {{ entry.getTitle() ?: 'Material #' ~ entry.getId() }}
+                    </a>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+  </div>
+
+  <style>
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+    .breadcrumb ol {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 16px;
+      display: flex;
+    }
+    .breadcrumb li {
+      margin-right: 8px;
+    }
+    .breadcrumb li::after {
+      content: "/";
+      margin-left: 8px;
+    }
+    .breadcrumb li.current::after {
+      content: "";
+    }
+    .breadcrumb a {
+      text-decoration: none;
+      color: #007bff;
+    }
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    .page-heading {
+      font-size: 24px;
+      margin-bottom: 24px;
+    }
+    .empty-message {
+      color: #666;
+      font-style: italic;
+    }
+    .modules-list {
+      margin-top: 16px;
+    }
+    .module-card {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .module-title {
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+    .materials-list {
+      list-style: disc inside;
+      margin: 0;
+      padding: 0;
+    }
+    .materials-list li {
+      margin-bottom: 8px;
+    }
+    .materials-list a {
+      color: #333;
+      text-decoration: none;
+    }
+    .materials-list a:hover {
+      text-decoration: underline;
+    }
+  </style>
+
+{% endblock %}

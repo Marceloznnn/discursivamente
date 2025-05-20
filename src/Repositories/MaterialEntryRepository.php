@@ -4,7 +4,7 @@ namespace Repositories;
 use App\Models\MaterialEntry;
 use PDO;
 
-class MaterialEntryRepository 
+class MaterialEntryRepository
 {
     private PDO $pdo;
 
@@ -20,18 +20,22 @@ class MaterialEntryRepository
     {
         $stmt = $this->pdo->prepare(
             'INSERT INTO material_entries 
-                (material_id, title, content_url, content_type, created_at)
+                (material_id, title, content_url, content_type, public_id, created_at)
              VALUES 
-                (:materialId, :title, :contentUrl, :contentType, :createdAt)'
+                (:materialId, :title, :contentUrl, :contentType, :publicId, :createdAt)'
         );
 
         $stmt->execute([
             ':materialId'  => $entry->getMaterialId(),
-            ':title'      => $entry->getTitle(),
-            ':contentUrl' => $entry->getContentUrl(),
+            ':title'       => $entry->getTitle(),
+            ':contentUrl'  => $entry->getContentUrl(),
             ':contentType' => $entry->getContentType(),
-            ':createdAt'  => $entry->getCreatedAt()->format('Y-m-d H:i:s')
+            ':publicId'    => $entry->getPublicId(),
+            ':createdAt'   => $entry->getCreatedAt()->format('Y-m-d H:i:s')
         ]);
+
+        // seta ID gerado
+        $entry->setId((int)$this->pdo->lastInsertId());
     }
 
     /**
@@ -43,11 +47,39 @@ class MaterialEntryRepository
             'SELECT * FROM material_entries WHERE material_id = :materialId ORDER BY created_at'
         );
         $stmt->execute([':materialId' => $materialId]);
-        
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         return array_map(
             fn(array $row) => $this->hydrate($row),
-            $stmt->fetchAll(PDO::FETCH_ASSOC)
+            $rows
         );
+    }
+
+    /**
+     * Busca uma entrada específica pelo ID
+     */
+    public function findById(int $id): ?MaterialEntry
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT * FROM material_entries WHERE id = :id'
+        );
+        $stmt->execute([':id' => $id]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$row) {
+            return null;
+        }
+
+        return $this->hydrate($row);
+    }
+
+    /**
+     * Exclui uma entrada de material
+     */
+    public function delete(int $id): void
+    {
+        $stmt = $this->pdo->prepare('DELETE FROM material_entries WHERE id = :id');
+        $stmt->execute([':id' => $id]);
     }
 
     /**
@@ -55,11 +87,15 @@ class MaterialEntryRepository
      */
     private function hydrate(array $row): MaterialEntry
     {
-        return new MaterialEntry(
-            (int)$row['material_id'],
+        $entry = new MaterialEntry(
+            (int)$row['material_id'],      
             $row['title'],
             $row['content_url'],
-            $row['content_type']
+            $row['content_type'],
+            $row['public_id']
         );
+        $entry->setId((int)$row['id']);
+        // created_at já é criado no construtor, mas se quiser manter original, pode adicionar setter
+        return $entry;
     }
 }
