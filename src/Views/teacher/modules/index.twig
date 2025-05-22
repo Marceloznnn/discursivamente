@@ -1,59 +1,80 @@
-{# File: templates/teacher/modules/index.twig #}
 {% extends 'layouts/base.twig' %}
 
 {% block title %}Módulos de {{ course.title }}{% endblock %}
 
+{% block styles %}
+  <link rel="stylesheet" href="/assets/css/pages/curso/teacher/module/index.css">
+{% endblock %}
+
 {% block content %}
-<div class="container mx-auto p-6">
-  <div class="flex justify-between items-center mb-4">
-    <h1 class="text-2xl font-semibold">Módulos do curso: {{ course.title }}</h1>
-    <a href="/teacher/courses/{{ course.id }}/modules/create" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Novo Módulo</a>
+<section class="modules-dashboard-unique">
+  <div class="modules-header-unique">
+    <div>
+      <h1 class="modules-title-unique">Módulos do curso</h1>
+      <p class="modules-course-title-unique">{{ course.title }}</p>
+    </div>
+    <a href="/teacher/courses/{{ course.id }}/modules/create" class="btn-modules-unique btn-primary-modules-unique" aria-label="Criar novo módulo">
+      <i class="fas fa-plus-circle"></i> Novo Módulo
+    </a>
   </div>
 
+  <div class="divider-modules-unique"></div>
+
   {% if modules is empty %}
-    <p class="text-gray-600">Nenhum módulo cadastrado ainda.</p>
+    <div class="modules-empty-unique">
+      <img src="/assets/img/empty-modules.svg" alt="Nenhum módulo cadastrado" class="modules-empty-img-unique" />
+      <p>Nenhum módulo cadastrado ainda.</p>
+      <a href="/teacher/courses/{{ course.id }}/modules/create" class="btn-modules-unique btn-primary-modules-unique mt-2-modules-unique">
+        <i class="fas fa-plus-circle"></i> Criar primeiro módulo
+      </a>
+    </div>
   {% else %}
-    <table class="min-w-full bg-white border">
-      <thead>
-        <tr>
-          <th class="px-4 py-2 border">Posição</th>
-          <th class="px-4 py-2 border">Título</th>
-          <th class="px-4 py-2 border">Ações</th>
-        </tr>
-      </thead>
-      <tbody id="modules-list">
-        {% for module in modules %}
-          <tr data-id="{{ module.id }}" class="hover:bg-gray-100">
-            <td class="px-4 py-2 border">{{ module.position }}</td>
-            <td class="px-4 py-2 border">{{ module.title }}</td>
-            <td class="px-4 py-2 border space-x-2">
-              <a href="/teacher/courses/{{ course.id }}/modules/{{ module.id }}/edit" class="text-blue-500 hover:underline">Editar</a>
-              <a href="/teacher/courses/{{ course.id }}/modules/{{ module.id }}/materials" class="text-green-500 hover:underline">Materiais</a>
-              <form action="/teacher/courses/{{ course.id }}/modules/{{ module.id }}/delete" method="POST" class="inline" onsubmit="return confirm('Deseja excluir este módulo?');">
-                <button type="submit" class="text-red-500 hover:underline">Excluir</button>
-              </form>
-            </td>
+    <div class="table-responsive-modules-unique">
+      <table class="modules-table-unique">
+        <thead>
+          <tr>
+            <th>Posição</th>
+            <th>Título</th>
+            <th class="text-center">Ações</th>
           </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+        </thead>
+        <tbody id="modules-list">
+          {% for module in modules %}
+            <tr data-id="{{ module.id }}">
+              <td class="modules-position-unique">{{ module.position }}</td>
+              <td class="modules-title-cell-unique">{{ module.title }}</td>
+              <td class="modules-actions-unique">
+                <a href="/teacher/courses/{{ course.id }}/modules/{{ module.id }}/edit" class="btn-action-modules-unique edit-modules-unique" title="Editar"><i class="fas fa-edit"></i> Editar</a>
+                <a href="/teacher/courses/{{ course.id }}/modules/{{ module.id }}/materials" class="btn-action-modules-unique materials-modules-unique" title="Materiais"><i class="fas fa-book"></i> Materiais</a>
+                <form action="/teacher/courses/{{ course.id }}/modules/{{ module.id }}/delete" method="POST" class="inline" onsubmit="return confirm('Deseja excluir este módulo?');">
+                  <button type="submit" class="btn-action-modules-unique delete-modules-unique" title="Excluir"><i class="fas fa-trash-alt"></i> Excluir</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   {% endif %}
-</div>
+</section>
 {% endblock %}
 
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
 <script>
   const el = document.getElementById('modules-list');
-  new Sortable(el, {
-    onEnd: function (evt) {
-      const order = Array.from(el.children).map(row => row.dataset.id);
-      fetch('/teacher/courses/{{ course.id }}/modules/reorder', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ order: order })
-      });
-    }
-  });
+  if (el) {
+    new Sortable(el, {
+      animation: 170,
+      onEnd: function (evt) {
+        const order = Array.from(el.children).map(row => row.dataset.id);
+        fetch('/teacher/courses/{{ course.id }}/modules/reorder', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ order: order })
+        });
+      }
+    });
+  }
 </script>
 {% endblock %}

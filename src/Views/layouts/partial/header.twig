@@ -60,10 +60,6 @@
                           ]
                 ) }}
 
-                {{ _self.dropdown('Compromissos', 'tasks', 'commitments', [
-                    { href: '/commitments/goals', text: 'Metas' }
-                ]) }}
-
                 <a href="/profile"
                    class="nav-link profile-link {% if current_page == 'profile' %}active{% endif %}"
                    aria-current="{% if current_page == 'profile' %}page{% endif %}">
@@ -74,11 +70,10 @@
                         <i class="fas fa-user-circle nav-icon user-avatar-icon"></i>
                     {% endif %}
                     <span>{{ session.user.name|default('Perfil') }}</span>
-                </a>
-            {% else %}
-                <div class="auth-buttons">
-                    <a href="/login" class="btn btn-secondary">
-                        <i class="fas fa-sign-in-alt"></i> Entrar
+                </a>            {% else %}
+                <div id="header-auth-nav">
+                    <a href="/login" id="header-login-btn" class="header-btn header-btn-secondary">
+                        <i class="fas fa-sign-in-alt"></i> ENTRAR
                     </a>
                 </div>
             {% endif %}
@@ -130,9 +125,6 @@
                          <i class="fas fa-tasks"></i> Compromissos
                          <i class="fas fa-chevron-down arrow"></i>
                      </button>
-                     <div id="mobile-section-compromissos" class="mobile-menu-subsection">
-                         <a href="/commitments/goals" class="mobile-link">Metas</a>
-                     </div>
                 </div>
 
                 <hr class="mobile-menu-divider">

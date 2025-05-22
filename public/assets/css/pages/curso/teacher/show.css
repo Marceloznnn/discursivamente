@@ -1,158 +1,251 @@
+/* 
+ * File: assets/css/pages/curso/teacher/show.css
+ * Estilização profissional para a página de detalhes do curso
+ */
+
 :root {
-  --color-primary: #4F46E5;
-  --color-primary-light: #6366F1;
-  --color-primary-dark: #4338CA;
-  --color-danger: #EF4444;
-  --color-danger-dark: #DC2626;
-  --color-materials: #10B981;
-  --color-materials-dark: #059669;
-  --color-comments: #F59E0B;
-  --color-comments-dark: #D97706;
-  --color-bg: #F9FAFB;
-  --color-white: #FFFFFF;
-  --color-gray-light: #E5E7EB;
-  --color-text: #111827;
-  --border-radius: 16px;
-  --transition: 0.25s ease-in-out;
-  --font-family: 'Inter', sans-serif;
+  --primary-color: #3f51b5;
+  --primary-dark: #303f9f;
+  --primary-light: #c5cae9;
+  --accent-color: #ff4081;
+  --text-primary: #212121;
+  --text-secondary: #757575;
+  --divider-color: #bdbdbd;
+  --background-light: #f5f7fa;
+  --background-white: #ffffff;
+  --success-color: #4caf50;
+  --danger-color: #f44336;
+  --shadow-light: 0 2px 5px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 4px 10px rgba(0, 0, 0, 0.12);
+  --radius-small: 4px;
+  --radius-medium: 8px;
+  --transition-default: all 0.3s ease;
 }
 
-.course-detail {
-  max-width: 960px;
-  margin: 50px auto;
-  background: var(--color-white);
-  border-radius: var(--border-radius);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+/* Container principal */
+.course-detail-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+/* Box principal */
+.course-detail-box {
+  background-color: var(--background-white);
+  border-radius: var(--radius-medium);
+  box-shadow: var(--shadow-medium);
   overflow: hidden;
-  font-family: var(--font-family);
 }
 
-/* Header section with gradient background */
-.detail-header {
-  background: linear-gradient(120deg, var(--color-primary), var(--color-primary-light));
-  color: var(--color-white);
-  padding: 32px;
-}
-.header-content {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-.detail-title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-}
-
-.detail-badges {
-  display: inline-flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
-  border-radius: var(--border-radius);
-  font-size: 0.875rem;
-  font-weight: 600;
-  background: rgba(255,255,255,0.25);
-  transition: background var(--transition);
-}
-.badge:hover {
-  background: rgba(255,255,255,0.4);
-}
-
-/* Body */
-.detail-body {
-  padding: 40px 32px;
-  background: var(--color-bg);
-}
-.section-title {
-  font-size: 1.75rem;
-  margin-bottom: 20px;
-  color: var(--color-text);
-  border-bottom: 3px solid var(--color-primary);
-  padding-bottom: 10px;
-}
-.course-description {
-  font-size: 1rem;
-  line-height: 1.8;
-  color: var(--color-text);
-}
-
-/* Actions area */
-.detail-actions {
+/* Cabeçalho do curso */
+.course-detail-header {
   display: flex;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 16px;
-  padding: 32px;
-  background: var(--color-white);
-}
-.action-group {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(120deg, var(--primary-color), var(--primary-dark));
+  color: white;
+  position: relative;
 }
 
-/* Button base */
-.btn {
+.course-detail-heading {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: white;
+}
+
+.course-detail-heading i {
+  font-size: 1.5rem;
+}
+
+/* Menu dropdown */
+.course-detail-menu-wrapper {
+  position: relative;
+}
+
+.course-detail-menu-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-default);
+}
+
+.course-detail-menu-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.course-detail-menu-options {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  background-color: var(--background-white);
+  border-radius: var(--radius-small);
+  box-shadow: var(--shadow-medium);
+  min-width: 200px;
+  z-index: 100;
+  overflow: hidden;
+  display: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.course-detail-menu-options.active {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+}
+
+.course-detail-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.25rem;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: var(--transition-default);
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-size: 0.9375rem;
+}
+
+.course-detail-menu-item:hover {
+  background-color: var(--background-light);
+}
+
+.course-detail-danger {
+  color: var(--danger-color);
+}
+
+/* Seção de tags */
+.course-detail-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem 2rem;
+  background-color: var(--background-light);
+  border-bottom: 1px solid var(--divider-color);
+}
+
+.course-detail-tag {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 22px;
-  border-radius: var(--border-radius);
+  gap: 0.5rem;
+  padding: 0.375rem 0.875rem;
+  background-color: var(--primary-light);
+  color: var(--primary-dark);
+  border-radius: 2rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.course-detail-tag i {
+  font-size: 0.8125rem;
+}
+
+/* Seções de conteúdo */
+.course-detail-section {
+  padding: 2rem;
+  border-bottom: 1px solid var(--divider-color);
+}
+
+.course-detail-section-title {
+  font-size: 1.375rem;
   font-weight: 600;
+  color: var(--text-primary);
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  position: relative;
+}
+
+.course-detail-section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background-color: var(--primary-color);
+  border-radius: 3px;
+}
+
+.course-detail-text {
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Botões de ação */
+.course-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  background-color: var(--background-light);
+}
+
+.course-detail-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: var(--radius-small);
   text-decoration: none;
-  cursor: pointer;
-  transition: var(--transition);
-  border: none;
-  font-size: 1rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-.btn i {
-  font-size: 1.2rem;
+  font-weight: 500;
+  transition: var(--transition-default);
+  box-shadow: var(--shadow-light);
 }
 
-/* Primary */
-.btn-primary {
-  background: var(--color-primary);
-  color: var(--color-white);
-}
-.btn-primary:hover {
-  background: var(--color-primary-dark);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+.course-detail-action-button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Danger */
-.btn-danger {
-  background: var(--color-danger);
-  color: var(--color-white);
+/* Responsividade */
+@media (max-width: 768px) {
+  .course-detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem;
+  }
+  
+  .course-detail-menu-wrapper {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+  }
+  
+  .course-detail-tags,
+  .course-detail-section,
+  .course-detail-actions {
+    padding: 1.25rem;
+  }
+  
+  .course-detail-actions {
+    flex-direction: column;
+  }
+  
+  .course-detail-action-button {
+    width: 100%;
+  }
 }
-.btn-danger:hover {
-  background: var(--color-danger-dark);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
-}
-
-/* Materials */
-.btn-materials {
-  background: var(--color-materials);
-  color: var(--color-white);
-}
-.btn-materials:hover {
-  background: var(--color-materials-dark);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
-}
-
-/* Comments */
-.btn-comments {
-  background: var(--color-comments);
-  color: var(--color-white);
-}
-.btn-comments:hover {
-  background: var(--color-c

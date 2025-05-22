@@ -1,4 +1,3 @@
-{# templates/pages/curso/teacher/index.twig #}
 {% extends 'layouts/base.twig' %}
 
 {% block title %}Painel de Cursos{% endblock %}
@@ -10,11 +9,16 @@
 {% block content %}
   <section class="course-dashboard">
     <div class="dashboard-topbar">
-      <h1 class="page-title">Painel de Cursos</h1>
-      <a href="/teacher/courses/create" class="btn btn-primary">
+      <div class="dashboard-title-group">
+        <h1 class="page-title">Painel de Cursos</h1>
+        <p class="dashboard-subtitle">Gerencie, organize e acompanhe seus cursos com facilidade</p>
+      </div>
+      <a href="/teacher/courses/create" class="btn btn-primary" aria-label="Criar novo curso">
         <i class="fas fa-plus-circle"></i> Criar Curso
       </a>
     </div>
+
+    <div class="divider"></div>
 
     <div class="course-grid">
       {% if courses|length > 0 %}
@@ -24,15 +28,19 @@
               <h2 class="course-name">{{ course.getTitle() }}</h2>
             </div>
             <div class="card-footer">
-              <a href="/teacher/courses/{{ course.getId() }}" class="btn btn-view-details">
-                Ver Detalhes
+              <a href="/teacher/courses/{{ course.getId() }}" class="btn btn-view-details" aria-label="Ver detalhes do curso {{ course.getTitle() }}">
+                <i class="fas fa-eye"></i> Ver Detalhes
               </a>
             </div>
           </div>
         {% endfor %}
       {% else %}
         <div class="no-courses">
+          <img src="/assets/img/empty-courses.svg" alt="Nenhum curso criado" class="no-courses-img" />
           <p>Você ainda não criou nenhum curso.</p>
+          <a href="/teacher/courses/create" class="btn btn-primary mt-2">
+            <i class="fas fa-plus-circle"></i> Criar primeiro curso
+          </a>
         </div>
       {% endif %}
     </div>

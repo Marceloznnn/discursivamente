@@ -71,6 +71,16 @@ class MaterialEntryRepository
         }
 
         return $this->hydrate($row);
+    }    /**
+     * Conta o número total de entradas de um material
+     */
+    public function countByMaterialId(int $materialId): int
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT COUNT(*) FROM material_entries WHERE material_id = :materialId'
+        );
+        $stmt->execute([':materialId' => $materialId]);
+        return (int) $stmt->fetchColumn();
     }
 
     /**

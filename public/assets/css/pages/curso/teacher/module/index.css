@@ -1,0 +1,195 @@
+.modules-dashboard-unique {
+  max-width: 1100px;
+  margin: 42px auto 0 auto;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px 0 rgba(40, 70, 150, 0.10), 0 1.5px 4.5px 0 rgba(40, 70, 150, 0.07);
+  padding: 32px 26px 40px 26px;
+  font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+}
+
+.modules-header-unique {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.modules-title-unique {
+  font-size: 2.1rem;
+  color: #273469;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -1px;
+}
+.modules-course-title-unique {
+  color: #6b7a99;
+  font-size: 1.14rem;
+  margin-top: 3px;
+}
+
+.btn-modules-unique {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+  font-weight: 500;
+  font-size: 1.08rem;
+  border: none;
+  border-radius: 10px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+.btn-primary-modules-unique {
+  background: linear-gradient(90deg, #2e64e7 0%, #4063e0 100%);
+  color: #fff;
+  padding: 12px 28px 12px 18px;
+  box-shadow: 0 2px 8px 0 rgba(66, 133, 244, 0.10);
+}
+.btn-primary-modules-unique:hover, .btn-primary-modules-unique:focus {
+  background: linear-gradient(90deg, #4063e0 0%, #2e64e7 100%);
+  transform: translateY(-2px) scale(1.03);
+  color: #fff;
+  text-decoration: none;
+}
+
+.divider-modules-unique {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(90deg, #e4e8f3 0%, #eaeef7 100%);
+  margin: 26px 0 18px 0;
+}
+
+.modules-empty-unique {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 55px 0 35px 0;
+  text-align: center;
+}
+.modules-empty-img-unique {
+  width: 110px;
+  margin-bottom: 18px;
+  opacity: 0.82;
+}
+.modules-empty-unique p {
+  font-size: 1.22rem;
+  color: #8a92b6;
+  margin: 0 0 10px 0;
+  font-weight: 400;
+}
+.modules-empty-unique .btn-modules-unique {
+  margin-top: 13px;
+}
+
+.mt-2-modules-unique { margin-top: 14px; }
+
+.table-responsive-modules-unique {
+  overflow-x: auto;
+}
+
+.modules-table-unique {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fcfcfe;
+  border-radius: 11px;
+  overflow: hidden;
+  box-shadow: 0 1px 7px 0 rgba(40, 70, 150, 0.08);
+  font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+}
+
+.modules-table-unique th, .modules-table-unique td {
+  padding: 16px 12px;
+  border-bottom: 1px solid #ebedf5;
+  text-align: left;
+  background: #fcfcfe;
+}
+
+.modules-table-unique th {
+  background: #f6f7fa;
+  color: #253858;
+  font-size: 1.04rem;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+}
+.modules-table-unique tr:last-child td {
+  border-bottom: none;
+}
+
+.modules-position-unique {
+  width: 85px;
+  color: #53618b;
+  font-weight: 500;
+  text-align: center;
+}
+
+.modules-title-cell-unique {
+  font-weight: 500;
+  color: #232a45;
+}
+
+.modules-actions-unique {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-action-modules-unique {
+  background: none;
+  border: none;
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+}
+.edit-modules-unique {
+  color: #296dff;
+}
+.materials-modules-unique {
+  color: #35b37f;
+}
+.delete-modules-unique {
+  color: #e73d4a;
+}
+.btn-action-modules-unique:hover, .btn-action-modules-unique:focus {
+  background: #f0f4fd;
+  text-decoration: underline;
+}
+
+@media (max-width: 850px) {
+  .modules-dashboard-unique {
+    padding: 12px 2px 24px 2px;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .modules-header-unique {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .modules-title-unique {
+    font-size: 1.35rem;
+  }
+  .modules-course-title-unique {
+    font-size: 1rem;
+  }
+  .table-responsive-modules-unique {
+    overflow-x: auto;
+  }
+  .modules-table-unique th, .modules-table-unique td {
+    padding: 13px 7px;
+    font-size: 0.98rem;
+  }
+}

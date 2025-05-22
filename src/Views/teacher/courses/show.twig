@@ -4,61 +4,70 @@
 {% block title %}{{ course.getTitle() }} – Detalhes do Curso{% endblock %}
 
 {% block styles %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link rel="stylesheet" href="/assets/css/pages/curso/teacher/show.css">
+  <!-- Se você optar por separar as animações em arquivo diferente -->
+  <!-- <link rel="stylesheet" href="/assets/css/pages/curso/teacher/show-animations.css"> -->
 {% endblock %}
 
 {% block content %}
-  <section class="course-detail">
-    <header class="detail-header">
-      <div class="header-content">
-        <h1 class="detail-title">
-          <i class="fas fa-graduation-cap"></i>
-          {{ course.getTitle() }}
-        </h1>
-        <div class="detail-badges">
-          <span class="badge badge-category">
-            <i class="fas fa-tags"></i>
-            {{ category ? category.getName() : 'Sem categoria' }}
-          </span>
-          <span class="badge badge-participants">
-            <i class="fas fa-user-friends"></i>
-            {{ participantCount }} participantes
-          </span>
-          <span class="badge badge-comments">
-            <i class="fas fa-comments"></i>
-            {{ commentCount }} comentários
-          </span>
+<section class="course-detail-container">
+  <div class="course-detail-box">
+    <div class="course-detail-header">
+      <h1 class="course-detail-heading">
+        <i class="fas fa-graduation-cap"></i>
+        {{ course.getTitle() }}
+      </h1>
+      <div class="course-detail-menu-wrapper">
+        <button id="dropdownMenu" class="course-detail-menu-button" aria-label="Menu de opções">
+          <i class="fas fa-ellipsis-v"></i>
+        </button>
+        <div id="dropdownMenuOptions" class="course-detail-menu-options">
+          <a href="/teacher/courses/{{ course.getId() }}/edit" class="course-detail-menu-item">
+            <i class="fas fa-edit"></i> Editar Curso
+          </a>
+          <form method="POST" action="/teacher/courses/{{ course.getId() }}/delete"
+                onsubmit="return confirm('Tem certeza que deseja remover este curso?');">
+            <button type="submit" class="course-detail-menu-item course-detail-danger">
+              <i class="fas fa-trash-alt"></i> Remover Curso
+            </button>
+          </form>
         </div>
       </div>
-    </header>
+    </div>
+    
+    <div class="course-detail-tags">
+      <span class="course-detail-tag">
+        <i class="fas fa-tags"></i>
+        {{ category ? category.getName() : 'Sem categoria' }}
+      </span>
+      <span class="course-detail-tag">
+        <i class="fas fa-user-friends"></i>
+        {{ participantCount }} participantes
+      </span>
+      <span class="course-detail-tag">
+        <i class="fas fa-comments"></i>
+        {{ commentCount }} comentários
+      </span>
+    </div>
+    
+    <div class="course-detail-section">
+      <h2 class="course-detail-section-title">Visão Geral</h2>
+      <p class="course-detail-text">{{ course.getDescription() }}</p>
+    </div>
+    
+    <div class="course-detail-actions">
+      <a href="/teacher/courses/{{ course.getId() }}/modules" class="course-detail-action-button">
+        <i class="fas fa-book"></i> Gerenciar Módulos
+      </a>
+      <a href="/teacher/courses/{{ course.getId() }}/comments" class="course-detail-action-button">
+        <i class="fas fa-comment-dots"></i> Ver Comentários
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}
 
-    <article class="detail-body">
-      <h2 class="section-title">Visão Geral</h2>
-      <p class="course-description">{{ course.getDescription() }}</p>
-    </article>
-
-    <footer class="detail-actions">
-      <div class="action-group primary-actions">
-        <a href="/teacher/courses/{{ course.getId() }}/edit" class="btn btn-primary">
-          <i class="fas fa-edit"></i> Editar Curso
-        </a>
-        <form method="POST"
-              action="/teacher/courses/{{ course.getId() }}/delete"
-              onsubmit="return confirm('Tem certeza que deseja remover este curso?');"
-              class="inline-form">
-          <button type="submit" class="btn btn-danger">
-            <i class="fas fa-trash-alt"></i> Remover Curso
-          </button>
-        </form>
-      </div>
-      <div class="action-group secondary-actions">
-        <a href="/teacher/courses/{{ course.getId() }}/modules" class="btn btn-materials">
-          <i class="fas fa-book"></i> Gerenciar Módulos
-        </a>
-        <a href="/teacher/courses/{{ course.getId() }}/comments" class="btn btn-comments">
-          <i class="fas fa-comment-dots"></i> Ver Comentários
-        </a>
-      </div>
-    </footer>
-  </section>
+{% block scripts %}
+  <script src="/assets/js/pages/curso/teacher/show.js"></script>
 {% endblock %}

@@ -10,6 +10,7 @@ use Repositories\UserRepository;
 use Repositories\CourseParticipationRepository;
 use Repositories\ModuleRepository;
 use Repositories\MaterialEntryRepository;
+use Repositories\UserProgressRepository;
 use App\Models\CourseComment;
 use PDO;
 use Twig\Environment;
@@ -18,6 +19,7 @@ class PublicCourseController
 {
     private Environment $twig;
     private PDO $pdo;
+
     private CourseRepository $courseRepo;
     private CategoryRepository $categoryRepo;
     private CourseCommentRepository $commentRepo;
@@ -25,6 +27,7 @@ class PublicCourseController
     private CourseParticipationRepository $participationRepo;
     private ModuleRepository $moduleRepo;
     private MaterialEntryRepository $entryRepo;
+    private UserProgressRepository $progressRepo;
 
     public function __construct(Environment $twig, PDO $pdo)
     {
@@ -37,6 +40,7 @@ class PublicCourseController
         $this->participationRepo = new CourseParticipationRepository($pdo);
         $this->moduleRepo        = new ModuleRepository($pdo);
         $this->entryRepo         = new MaterialEntryRepository($pdo);
+        $this->progressRepo      = new UserProgressRepository($pdo);
     }
 
     /**
@@ -44,18 +48,26 @@ class PublicCourseController
      */
     public function index(): void
     {
-        $q           = trim($_GET['q'] ?? '');
-        $categoryId  = isset($_GET['category_id']) && $_GET['category_id'] !== ''
-                       ? (int) $_GET['category_id']
-                       : null;
+        $q          = trim($_GET['q'] ?? '');
+        $categoryId = isset($_GET['category_id']) && $_GET['category_id'] !== ''
+                      ? (int) $_GET['category_id']
+                      : null;
+        $page       = max(1, (int)($_GET['page'] ?? 1));
+        $perPage    = 20;
+        $offset     = ($page - 1) * $perPage;
 
         if ($categoryId) {
-            $courses = $this->courseRepo->findByCategoryId($categoryId);
+            $totalCourses = $this->courseRepo->countByCategory($categoryId);
+            $courses      = $this->courseRepo->findPaginatedByCategory($categoryId, $perPage, $offset);
         } elseif ($q !== '') {
-            $courses = $this->courseRepo->search($q);
+            $totalCourses = $this->courseRepo->countBySearch($q);
+            $courses      = $this->courseRepo->searchPaginated($q, $perPage, $offset);
         } else {
-            $courses = $this->courseRepo->findAll();
+            $totalCourses = $this->courseRepo->countAll();
+            $courses      = $this->courseRepo->findPaginated($perPage, $offset);
         }
+
+        $totalPages = (int) ceil($totalCourses / $perPage);
 
         $participantCounts = [];
         foreach ($courses as $c) {
@@ -71,6 +83,8 @@ class PublicCourseController
             'categories'        => $categories,
             'selectedCategory'  => $categoryId,
             'participantCounts' => $participantCounts,
+            'currentPage'       => $page,
+            'totalPages'        => $totalPages,
         ]);
     }
 
@@ -78,49 +92,56 @@ class PublicCourseController
      * 2) Detalhes do curso: categoria, comentários e participação.
      */
     public function show($id): void
-    {
-        $courseId = (int)$id;
-        $course   = $this->courseRepo->findById($courseId);
+{
+    $courseId = (int) $id;
+    $course   = $this->courseRepo->findById($courseId);
 
-        if (! $course) {
-            http_response_code(404);
-            echo $this->twig->render('errors/404.twig');
-            return;
-        }
-
-        $category = null;
-        if ($cid = $course->getCategoryId()) {
-            $category = $this->categoryRepo->findById($cid);
-        }
-
-        $userId = $_SESSION['user']['id'] ?? null;
-
-        $rawComments = $this->commentRepo->findByCourseId($courseId);
-        $comments = array_map(function(CourseComment $c) {
-            $user = $this->userRepo->findById($c->getUserId());
-            return [
-                'id'        => $c->getId(),
-                'userId'    => $c->getUserId(),
-                'userName'  => $user ? $user->getName() : "Usuário #{$c->getUserId()}",
-                'comment'   => $c->getComment(),
-                'rating'    => $c->getRating(),
-                'createdAt' => $c->getCreatedAt(),
-            ];
-        }, $rawComments);
-
-        $isParticipating  = $userId
-            ? $this->participationRepo->isParticipating((int)$userId, $courseId)
-            : false;
-        $participantCount = $this->participationRepo->countActiveByCourse($courseId);
-
-        echo $this->twig->render('public/courses/show.twig', [
-            'course'           => $course,
-            'category'         => $category,
-            'comments'         => $comments,
-            'isParticipating'  => $isParticipating,
-            'participantCount' => $participantCount,
-        ]);
+    if (! $course) {
+        http_response_code(404);
+        echo $this->twig->render('errors/404.twig');
+        return;
     }
+
+    // --- NOVO: buscar módulos e contar ---
+    $modules     = $this->moduleRepo->findByCourse($courseId);
+    $modulesCount = count($modules);
+
+    $category = null;
+    if ($cid = $course->getCategoryId()) {
+        $category = $this->categoryRepo->findById($cid);
+    }
+
+    $userId = $_SESSION['user']['id'] ?? null;
+
+    // restante do código…
+    $rawComments     = $this->commentRepo->findByCourseId($courseId);
+    $comments = [];
+    foreach ($rawComments as $comment) {
+        $user = $this->userRepo->findById($comment->getUserId());
+        $comments[] = [
+            'comment' => $comment,
+            'user'    => $user,
+        ];
+    }
+    $isParticipating = $userId
+        ? $this->participationRepo->isParticipating($userId, $courseId)
+        : false;
+
+    $participantCount = $this->participationRepo->countActiveByCourse($courseId);
+
+    echo $this->twig->render('public/courses/show.twig', [
+        'course'            => $course,
+        'category'          => $category,
+        'comments'          => $comments,
+        'isParticipating'   => $isParticipating,
+        'participantCount'  => $participantCount,
+
+        // --- passar os módulos e a contagem ---
+        'modules'           => $modules,
+        'modulesCount'      => $modulesCount,
+    ]);
+}
+
 
     /**
      * 3) Entrar no curso.
@@ -128,8 +149,8 @@ class PublicCourseController
     public function join($id): void
     {
         AuthMiddleware::handle();
-        $courseId = (int)$id;
-        $userId   = (int)$_SESSION['user']['id'];
+        $courseId = (int) $id;
+        $userId   = (int) $_SESSION['user']['id'];
 
         if (! $this->courseRepo->findById($courseId)) {
             http_response_code(404);
@@ -148,8 +169,8 @@ class PublicCourseController
     public function leave($id): void
     {
         AuthMiddleware::handle();
-        $courseId = (int)$id;
-        $userId   = (int)$_SESSION['user']['id'];
+        $courseId = (int) $id;
+        $userId   = (int) $_SESSION['user']['id'];
 
         $this->participationRepo->leaveCourse($userId, $courseId);
         header("Location: /courses/{$courseId}");
@@ -161,7 +182,7 @@ class PublicCourseController
      */
     public function storeComment($id): void
     {
-        $courseId = (int)$id;
+        $courseId = (int) $id;
         if (empty($_SESSION['user']['id'])) {
             http_response_code(403);
             echo "Você precisa estar logado para comentar.";
@@ -196,7 +217,7 @@ class PublicCourseController
         $commentId = (int) $commentId;
 
         $comment = $this->commentRepo->findById($commentId);
-        if (! $comment || $comment->getCourseId() !== $courseId) {
+        if (!$comment || $comment->getCourseId() !== $courseId) {
             http_response_code(404);
             echo $this->twig->render('errors/404.twig');
             return;
@@ -226,16 +247,23 @@ class PublicCourseController
             return;
         }
 
-        $modules = $this->moduleRepo->findByCourse($courseId);
+        $modules   = $this->moduleRepo->findByCourse($courseId);
         $materials = [];
         foreach ($modules as $mod) {
             $materials[$mod->getId()] = $this->entryRepo->findByMaterialId($mod->getId());
         }
 
+        // IDs de materiais concluídos pelo usuário
+        $userId              = $_SESSION['user']['id'] ?? null;
+        $completedMaterials  = $userId
+            ? $this->participationRepo->getCompletedIdsByUser((int)$userId, $courseId)
+            : [];
+
         echo $this->twig->render('public/courses/modules.twig', [
-            'course'    => $course,
-            'modules'   => $modules,
-            'materials' => $materials,
+            'course'             => $course,
+            'modules'            => $modules,
+            'materials'          => $materials,
+            'completedMaterials' => $completedMaterials,
         ]);
     }
 
@@ -265,9 +293,9 @@ class PublicCourseController
             return;
         }
 
-        // Busca o próximo material do mesmo módulo (por ID maior)
-        $nextEntry = null;
+        // Próximo material
         $allEntries = $this->entryRepo->findByMaterialId($moduleId);
+        $nextEntry  = null;
         foreach ($allEntries as $e) {
             if ($e->getId() > $entry->getId()) {
                 $nextEntry = $e;
@@ -275,11 +303,30 @@ class PublicCourseController
             }
         }
 
+        // Progresso do módulo
+        $userId             = $_SESSION['user']['id'] ?? null;
+        $completedMaterials = $userId
+            ? $this->participationRepo->getCompletedIdsByUser((int)$userId, $courseId)
+            : [];
+
+        $totalMaterials = $this->entryRepo->countByMaterialId($moduleId);
+        $doneMaterials  = 0;
+        foreach ($allEntries as $e) {
+            if (in_array($e->getId(), $completedMaterials, true)) {
+                $doneMaterials++;
+            }
+        }
+        $moduleProgress = $totalMaterials
+            ? (int) round($doneMaterials / $totalMaterials * 100)
+            : 0;
+
         echo $this->twig->render('public/courses/material.twig', [
-            'course'    => $course,
-            'module'    => $module,
-            'entry'     => $entry,
-            'nextEntry' => $nextEntry,
+            'course'             => $course,
+            'module'             => $module,
+            'entry'              => $entry,
+            'nextEntry'          => $nextEntry,
+            'completedMaterials' => $completedMaterials,
+            'moduleProgress'     => $moduleProgress,
         ]);
     }
 }

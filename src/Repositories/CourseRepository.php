@@ -24,7 +24,9 @@ class CourseRepository
 
     public function findByCreatorId(int $creatorId): array
     {
-        $stmt = $this->pdo->prepare('SELECT * FROM courses WHERE creator_id = :id ORDER BY created_at DESC');
+        $stmt = $this->pdo->prepare(
+            'SELECT * FROM courses WHERE creator_id = :id ORDER BY created_at DESC'
+        );
         $stmt->execute([':id' => $creatorId]);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return array_map(fn(array $r) => $this->hydrate($r), $rows);
@@ -37,8 +39,132 @@ class CourseRepository
         return array_map(fn(array $row) => $this->hydrate($row), $rows);
     }
 
+    // ---------- Paginação (backend) ----------
+
     /**
-     * Retorna todos os cursos de uma determinada categoria
+     * Retorna cursos paginados (todas categorias)
+     *
+     * @param int $limit
+     * @param int $offset
+     * @return Course[]
+     */
+    public function findPaginated(int $limit, int $offset): array
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT * FROM courses ORDER BY created_at DESC LIMIT :limit OFFSET :offset'
+        );
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(fn(array $r) => $this->hydrate($r), $rows);
+    }
+
+    /**
+     * Conta todos os cursos (todas categorias)
+     *
+     * @return int
+     */
+    public function countAll(): int
+    {
+        return (int) $this->pdo->query('SELECT COUNT(*) FROM courses')->fetchColumn();
+    }
+
+    // ---------- Filtros com paginação ----------
+
+    /**
+     * Retorna cursos de uma categoria, paginados
+     *
+     * @param int $categoryId
+     * @param int $limit
+     * @param int $offset
+     * @return Course[]
+     */
+    public function findPaginatedByCategory(int $categoryId, int $limit, int $offset): array
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT *
+               FROM courses
+              WHERE category_id = :category_id
+           ORDER BY created_at DESC
+              LIMIT :limit OFFSET :offset'
+        );
+        $stmt->bindValue(':category_id', $categoryId, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return array_map(fn(array $r) => $this->hydrate($r), $rows);
+    }
+
+    /**
+     * Conta cursos de uma categoria
+     *
+     * @param int $categoryId
+     * @return int
+     */
+    public function countByCategory(int $categoryId): int
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT COUNT(*) FROM courses WHERE category_id = :category_id'
+        );
+        $stmt->execute([':category_id' => $categoryId]);
+        return (int) $stmt->fetchColumn();
+    }
+
+    /**
+     * Busca cursos por título/descrição, paginados
+     *
+     * @param string $q
+     * @param int    $limit
+     * @param int    $offset
+     * @return Course[]
+     */
+    public function searchPaginated(string $q, int $limit, int $offset): array
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT *
+               FROM courses
+              WHERE title       LIKE :q
+                 OR description LIKE :q
+           ORDER BY created_at DESC
+              LIMIT :limit OFFSET :offset'
+        );
+        $like = "%{$q}%";
+        $stmt->bindValue(':q', $like, PDO::PARAM_STR);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return array_map(fn(array $r) => $this->hydrate($r), $rows);
+    }
+
+    /**
+     * Conta resultados de busca
+     *
+     * @param string $q
+     * @return int
+     */
+    public function countBySearch(string $q): int
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT COUNT(*)
+               FROM courses
+              WHERE title       LIKE :q
+                 OR description LIKE :q'
+        );
+        $like = "%{$q}%";
+        $stmt->execute([':q' => $like]);
+        return (int) $stmt->fetchColumn();
+    }
+
+    // ---------- Métodos existentes (sem paginação) ----------
+
+    /**
+     * Retorna todos os cursos de uma determinada categoria (sem paginação)
      *
      * @param int $categoryId
      * @return Course[]
@@ -59,11 +185,11 @@ class CourseRepository
     public function search(string $q): array
     {
         $stmt = $this->pdo->prepare(
-            "SELECT *  
-               FROM courses  
-              WHERE title       LIKE :q  
+            'SELECT *
+               FROM courses
+              WHERE title       LIKE :q
                  OR description LIKE :q
-           ORDER BY created_at DESC"
+           ORDER BY created_at DESC'
         );
         $like = "%{$q}%";
         $stmt->execute([':q' => $like]);
@@ -94,7 +220,8 @@ class CourseRepository
             ]);
         } else {
             $stmt = $this->pdo->prepare(
-                'INSERT INTO courses (title, description, creator_id, price, category_id, created_at, updated_at)
+                'INSERT INTO courses
+                 (title, description, creator_id, price, category_id, created_at, updated_at)
                  VALUES (:title, :description, :creator_id, :price, :category_id, NOW(), NOW())'
             );
             $stmt->execute([

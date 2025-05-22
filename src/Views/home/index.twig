@@ -85,7 +85,7 @@
                     ? course.description|slice(0, 100) ~ '…'
                     : course.description }}
               </p>
-              <a href="{{ course.url|default('#') }}" class="course-link">Saiba mais</a>
+              <a href="/courses/{{ course.getId() }}" class="course-link">Saiba mais</a>
             </div>
           </div>
         {% endfor %}

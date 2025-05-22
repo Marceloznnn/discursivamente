@@ -127,9 +127,7 @@ class CourseParticipationRepository
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':course_id' => $courseId]);
         return (int) $stmt->fetchColumn();
-    }
-
-    /**
+    }    /**
      * Mapeia a linha do banco para o model CourseParticipation.
      */
     private function hydrate(array $row): CourseParticipation
@@ -141,5 +139,35 @@ class CourseParticipationRepository
             $row['left_at'],
             (int)    $row['id']
         );
+    }
+      /**
+     * Retorna os IDs dos materiais completados por um usuário em um curso específico
+     * 
+     * @return array IDs dos materiais completados
+     */
+    public function getCompletedIdsByUser(int $userId, int $courseId): array
+    {
+        try {
+            $sql = "
+                SELECT up.material_id
+                FROM user_progress up
+                JOIN material_entries me ON up.material_id = me.id
+                JOIN modules m ON me.material_id = m.id
+                WHERE up.user_id = :userId
+                AND m.course_id = :courseId
+            ";
+            
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([
+                ':userId' => $userId,
+                ':courseId' => $courseId
+            ]);
+            
+            return $stmt->fetchAll(PDO::FETCH_COLUMN);
+        } catch (\PDOException $e) {
+            // Log do erro e retorno de array vazio
+            error_log("Erro ao buscar materiais completados: " . $e->getMessage());
+            return [];
+        }
     }
 }

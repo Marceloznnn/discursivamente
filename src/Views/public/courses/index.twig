@@ -5,27 +5,13 @@
 {% endblock %}
 
 {% block content %}
-  {# Seção “Cursos Gratuitos” #}
-  <section class="free-courses-section">
-    <div class="free-image">
-      <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=500&auto=format&fit=crop&q=60"
-           alt="Cursos gratuitos">
-    </div>
-    <div class="free-content">
-      <h2>Todos os nossos cursos são 100% gratuitos</h2>
-      <p>
-        Acreditamos que o conhecimento deve ser acessível a todos.  
-        Aproveite conteúdos de alta qualidade sem custo algum!
-      </p>
-    </div>
-  </section>
-
+  
   {# Formulário de busca #}
   <form method="get" action="/courses" class="search-form">
     <input
       type="text"
       name="q"
-      placeholder="Pesquisar cursos..."
+      placeholder="Pesquisar cursos"
       value="{{ q|e }}"
       class="search-input"
     />
@@ -70,4 +56,19 @@
       </li>
     {% endfor %}
   </ul>
+
+  {# Paginação #}
+  {% if totalPages > 1 %}
+    <nav class="pagination">
+      <ul>
+        {% for p in 1..totalPages %}
+          <li class="{{ p == currentPage ? 'active' : '' }}">
+            <a href="/courses?page={{ p }}{% if selectedCategory %}&category_id={{ selectedCategory }}{% endif %}{% if q %}&q={{ q|url_encode }}{% endif %}">
+              {{ p }}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </nav>
+  {% endif %}
 {% endblock %}

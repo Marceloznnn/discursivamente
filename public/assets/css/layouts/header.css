@@ -35,6 +35,10 @@
   margin: 0;
   padding: 0;
 }
+.btn {
+  text-transform: uppercase;
+}
+
 
 html {
   scroll-behavior: smooth;
@@ -279,48 +283,41 @@ main {
   color: #F8F8F8;
 }
 
-/* Botões de Autenticação */
-.auth-buttons {
+/* Navegação de Autenticação do Header */
+#header-auth-nav {
   display: flex;
   align-items: center;
-  gap: 8px; /* Reduzido espaço */
-  margin-left: 10px; /* Reduzido margem */
+  gap: 8px;
+  margin-left: 10px;
 }
 
-.btn {
-  padding: 7px 15px; /* Reduzido padding */
+.header-btn {
+  padding: 7px 15px;
   border-radius: var(--border-radius-md);
   font-weight: 500;
   font-size: 0.9rem;
-  transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+  transition: all var(--transition-speed) ease;
   border: 1px solid transparent;
   display: inline-flex;
   align-items: center;
-  gap: 6px; /* Reduzido espaço */
+  gap: 6px;
+  text-decoration: none;
 }
 
-.btn-primary {
-  background-color: #F5EBDD;
-  color: var(--primary-color);
-  border-color: #F5EBDD;
-}
-
-.btn-primary:hover {
-  background-color: #E8DCCC;
-  border-color: #E8DCCC;
-  color: var(--primary-color-dark);
-}
-
-.btn-secondary {
+#header-login-btn.header-btn-secondary {
   background-color: transparent;
   color: #F8F8F8;
   border: 1px solid #F8F8F8;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
-.btn-secondary:hover {
+#header-login-btn.header-btn-secondary:hover {
   background-color: rgba(245, 235, 221, 0.2);
   color: #F5EBDD;
   border-color: #F5EBDD;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 /*--------------------------------------------------------------

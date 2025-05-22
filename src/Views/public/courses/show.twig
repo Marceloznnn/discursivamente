@@ -23,9 +23,8 @@
                 Sair do curso
               </button>
             </form>
-            <!-- Atualizado: botão agora leva aos módulos -->
             <a href="/courses/{{ course.id }}/modules" class="button-materials">
-              Ver Módulos ({{ materials|length }})
+              Ver Módulos ({{ materialsCount }})
             </a>
           {% else %}
             <form action="/courses/{{ course.id }}/join" method="post" class="action-form">
@@ -54,22 +53,24 @@
     <!-- Materiais do Curso -->
     {% if isParticipating %}
       <section class="materials-section">
-        <h2>Materiais do Curso</h2>
+        <h2>Materiais do Curso ({{ materialsCount }})</h2>
         <div class="materials-list">
-          {% for m in materials %}
-            <div class="material-item">
-              <span class="material-icon">📄</span>
-              <div class="material-info">
-                <h3>{{ m.title }}</h3>
-                <p class="material-type">{{ m.type|default('Documento') }}</p>
+          {% if materialsCount > 0 %}
+            {% for m in materials %}
+              <div class="material-item">
+                <span class="material-icon">📄</span>
+                <div class="material-info">
+                  <h3>{{ m.title }}</h3>
+                  <p class="material-type">{{ m.type|default('Documento') }}</p>
+                </div>
+                {% if m.id in completedMaterials %}
+                  <span class="material-status">Concluído</span>
+                {% endif %}
               </div>
-              {% if m.id in completedMaterials %}
-                <span class="material-status">Concluído</span>
-              {% endif %}
-            </div>
+            {% endfor %}
           {% else %}
             <p class="no-materials">Nenhum material disponível.</p>
-          {% endfor %}
+          {% endif %}
         </div>
       </section>
     {% endif %}
