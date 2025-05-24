@@ -20,9 +20,9 @@ class MaterialEntryRepository
     {
         $stmt = $this->pdo->prepare(
             'INSERT INTO material_entries 
-                (material_id, title, content_url, content_type, public_id, created_at)
+                (material_id, title, content_url, content_type, public_id, subtitle_url, created_at)
              VALUES 
-                (:materialId, :title, :contentUrl, :contentType, :publicId, :createdAt)'
+                (:materialId, :title, :contentUrl, :contentType, :publicId, :subtitleUrl, :createdAt)'
         );
 
         $stmt->execute([
@@ -31,15 +31,33 @@ class MaterialEntryRepository
             ':contentUrl'  => $entry->getContentUrl(),
             ':contentType' => $entry->getContentType(),
             ':publicId'    => $entry->getPublicId(),
+            ':subtitleUrl' => $entry->getSubtitleUrl(),
             ':createdAt'   => $entry->getCreatedAt()->format('Y-m-d H:i:s')
         ]);
 
         // seta ID gerado
-        $entry->setId((int)$this->pdo->lastInsertId());
+        $entry->setId((int) $this->pdo->lastInsertId());
+    }
+
+    /**
+     * Atualiza apenas o subtitle_url de uma entrada existente
+     */
+    public function updateSubtitle(int $entryId, string $subtitleUrl): void
+    {
+        $stmt = $this->pdo->prepare(
+            'UPDATE material_entries 
+             SET subtitle_url = :subtitleUrl 
+             WHERE id = :id'
+        );
+        $stmt->execute([
+            ':subtitleUrl' => $subtitleUrl,
+            ':id'          => $entryId,
+        ]);
     }
 
     /**
      * Busca todas as entradas de um material
+     * Inclui subtitle_url
      */
     public function findByMaterialId(int $materialId): array
     {
@@ -66,12 +84,14 @@ class MaterialEntryRepository
         $stmt->execute([':id' => $id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$row) {
+        if (! $row) {
             return null;
         }
 
         return $this->hydrate($row);
-    }    /**
+    }
+
+    /**
      * Conta o número total de entradas de um material
      */
     public function countByMaterialId(int $materialId): int
@@ -98,14 +118,14 @@ class MaterialEntryRepository
     private function hydrate(array $row): MaterialEntry
     {
         $entry = new MaterialEntry(
-            (int)$row['material_id'],      
+            (int) $row['material_id'],      
             $row['title'],
             $row['content_url'],
             $row['content_type'],
-            $row['public_id']
+            $row['public_id'],
+            $row['subtitle_url'] ?? null     // novo parâmetro opcional
         );
-        $entry->setId((int)$row['id']);
-        // created_at já é criado no construtor, mas se quiser manter original, pode adicionar setter
+        $entry->setId((int) $row['id']);
         return $entry;
     }
 }

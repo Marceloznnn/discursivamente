@@ -45,12 +45,16 @@
 
     <div id="material-content" class="skeleton" data-entry-id="{{ entry.getId() }}">
       {% set url = entry.getContentUrl() %}
-      {% set type = entry.getContentType() %}
-
-      {% if type == 'image' %}
+      {% set type = entry.getContentType() %}      {% if type == 'image' %}
         <img src="{{ url }}" alt="{{ entry.getTitle() }}" id="material-image" />
       {% elseif type == 'video' %}
-        <video controls src="{{ url }}" id="material-video"></video>
+        <video controls id="material-video">
+          <source src="{{ url }}" type="video/mp4">
+          {% if entry.getSubtitleUrl() %}
+            <track label="Português" kind="subtitles" srclang="pt" src="{{ entry.getSubtitleUrl() }}" default>
+          {% endif %}
+          Seu navegador não suporta vídeos HTML5.
+        </video>
       {% else %}
         <a href="{{ url }}" download id="material-download">⬇️ Baixar Arquivo</a>
       {% endif %}

@@ -1,17 +1,19 @@
 <?php
-// filepath: c:\xampp\htdocs\Discursivamente2.1\src\Services\CloudinaryService.php
+// filepath: c:/xampp/htdocs/Discursivamente2.1/src/Services/CloudinaryService.php
 
 namespace Services;
 
 use Cloudinary\Cloudinary;
 use Cloudinary\Configuration\Configuration;
 
-class CloudinaryService {
+class CloudinaryService
+{
     private Cloudinary $cloudinaryImages;
     private Cloudinary $cloudinaryVideos;
 
-    public function __construct() {
-        // Configuração para a primeira conta (imagens e raw)
+    public function __construct()
+    {
+        // Conta para imagens e raw
         $this->cloudinaryImages = new Cloudinary(
             Configuration::instance([
                 'cloud' => [
@@ -23,7 +25,7 @@ class CloudinaryService {
             ])
         );
 
-        // Configuração para a segunda conta (vídeos)
+        // Conta dedicada a vídeos
         $this->cloudinaryVideos = new Cloudinary(
             Configuration::instance([
                 'cloud' => [
@@ -37,19 +39,52 @@ class CloudinaryService {
     }
 
     /**
+     * Retorna o nome da nuvem (cloud_name) para vídeos.
+     *
+     * @return string
+     * @throws \Exception se não definido
+     */
+    public function getCloudName(): string
+    {
+        $cloudName = $_ENV['CLOUDINARY2_CLOUD_NAME'] ?? null;
+        if (!$cloudName) {
+            throw new \Exception("Variável de ambiente CLOUDINARY2_CLOUD_NAME não definida.");
+        }
+        return $cloudName;
+    }
+
+    /**
+     * Detecta o tipo de arquivo pelo MIME
+     *
+     * @param string $filePath
+     * @return string 'image', 'video' ou 'raw'
+     */
+    public function determineFileType(string $filePath): string
+    {
+        $mimeType = mime_content_type($filePath);
+        if (str_starts_with($mimeType, 'image/')) {
+            return 'image';
+        }
+        if (str_starts_with($mimeType, 'video/')) {
+            return 'video';
+        }
+        return 'raw';
+    }
+
+    /**
      * Faz upload de um arquivo para o Cloudinary
      *
-     * @param string $filePath Caminho do arquivo
-     * @param string $fileType Tipo do arquivo ('image', 'video' ou 'raw')
-     * @param string|null $folder Pasta onde o arquivo será armazenado
-     * @return array Resposta do Cloudinary contendo URL, etc.
-     * @throws \Exception em caso de erro
+     * @param string      $filePath caminho local do arquivo
+     * @param string      $fileType 'image', 'video' ou 'raw'
+     * @param string|null $folder    pasta no Cloudinary
+     * @return array
+     * @throws \Exception em falha de upload
      */
-    public function uploadFile(string $filePath, string $fileType, ?string $folder = null): array {
-        $cloudinary = match($fileType) {
-            'video' => $this->cloudinaryVideos,
-            default => $this->cloudinaryImages,
-        };
+    public function uploadFile(string $filePath, string $fileType, ?string $folder = null): array
+    {
+        $cloudinary = $fileType === 'video'
+            ? $this->cloudinaryVideos
+            : $this->cloudinaryImages;
 
         $options = ['resource_type' => $fileType];
         if ($folder) {
@@ -58,58 +93,36 @@ class CloudinaryService {
 
         $result = $cloudinary->uploadApi()->upload($filePath, $options);
 
-        // Sempre usa a secure_url para download
-        $url = $result['secure_url'];
-
-        // LOG para depuração
-        $logDir = __DIR__ . '/../../../logs';
-        if (!is_dir($logDir)) { mkdir($logDir, 0777, true); }
-        $logFile = $logDir . '/cloudinary_upload.log';
-        $logMsg = date('Y-m-d H:i:s') . "\n" .
-            "Tipo: $fileType\n" .
-            "Public ID: " . ($result['public_id'] ?? 'N/A') . "\n" .
-            "Format: " . ($result['format'] ?? 'N/A') . "\n" .
-            "Secure URL: " . ($result['secure_url'] ?? 'N/A') . "\n" .
-            "URL Inline: (não usada)\n" .
-            str_repeat('-', 40) . "\n";
-        file_put_contents($logFile, $logMsg, FILE_APPEND);
+        // Log básico
+        $logDir  = __DIR__ . '/../../../logs';
+        if (!is_dir($logDir)) {
+            mkdir($logDir, 0777, true);
+        }
+        file_put_contents(
+            "$logDir/cloudinary_upload.log",
+            sprintf("[%s] Uploaded %s public_id=%s\n", date('Y-m-d H:i:s'), $fileType, $result['public_id'] ?? 'N/A'),
+            FILE_APPEND
+        );
 
         return [
-            'url'           => $url,
+            'url'           => $result['secure_url'],
             'public_id'     => $result['public_id'],
             'resource_type' => $result['resource_type'],
-            'format'        => $result['format'] ?? 'pdf',
+            'format'        => $result['format'] ?? '',
             'created_at'    => $result['created_at'],
         ];
     }
 
     /**
-     * Determina o tipo de arquivo baseado no MIME
+     * Faz upload detectando tipo automaticamente
      *
-     * @param string $filePath Caminho do arquivo temporário
-     * @return string 'image', 'video' ou 'raw'
-     */
-    public function determineFileType(string $filePath): string {
-        $mimeType = mime_content_type($filePath);
-
-        if (str_starts_with($mimeType, 'image/')) {
-            return 'image';
-        }
-        if (str_starts_with($mimeType, 'video/')) {
-            return 'video';
-        }
-        return 'raw'; // PDFs e outros tipos
-    }
-
-    /**
-     * Faz upload detectando tipo automaticamente se não informado
-     *
-     * @param string $filePath Caminho do arquivo temporário
-     * @param string|null $folder Pasta de destino
-     * @param string|null $fileType Se já souber ('image', 'video' ou 'raw')
+     * @param string      $filePath
+     * @param string|null $folder
+     * @param string|null $fileType
      * @return array
      */
-    public function upload(string $filePath, ?string $folder = null, ?string $fileType = null): array {
+    public function upload(string $filePath, ?string $folder = null, ?string $fileType = null): array
+    {
         if (!$fileType) {
             $fileType = $this->determineFileType($filePath);
         }
@@ -117,19 +130,18 @@ class CloudinaryService {
     }
 
     /**
-     * Deleta um arquivo do Cloudinary
+     * Exclui um arquivo do Cloudinary
      *
-     * @param string $publicId ID público
-     * @param string $resourceType ('image', 'video' ou 'raw')
-     * @return array Resultado da operação
+     * @param string $publicId
+     * @param string $resourceType
+     * @return bool
      */
-    public function deleteFile(string $publicId, string $resourceType = 'image'): array {
-        $api = $this->cloudinaryImages->uploadApi();
-        if ($resourceType === 'video') {
-            $api = $this->cloudinaryVideos->uploadApi();
-        }
-
+    public function deleteFile(string $publicId, string $resourceType = 'image'): bool
+    {
+        $api    = $resourceType === 'video'
+            ? $this->cloudinaryVideos->uploadApi()
+            : $this->cloudinaryImages->uploadApi();
         $result = $api->destroy($publicId, ['resource_type' => $resourceType]);
-        return ['result' => $result['result']];
+        return isset($result['result']) && $result['result'] === 'ok';
     }
 }

@@ -56,15 +56,21 @@ Discursivamente é uma aplicação web desenvolvida em PHP com o objetivo de [in
 
 ---
 
-## ▶️ Como iniciar o servidor
+## ▶️ Como iniciar o sistema
 
-Se estiver usando o **servidor embutido do PHP**, inicie o servidor apontando para a pasta `public`:
+Para iniciar tanto o servidor web quanto o servidor de chat em tempo real, use um dos seguintes comandos:
 
-```bash
-php -S localhost:8000 -t public
-```
+1. **Windows (PowerShell ou CMD)**:
+   - Dê duplo clique no arquivo `start.bat`, ou
+   - Execute `.\start.ps1` no PowerShell
 
-> Isso garante que o roteamento funcione corretamente com o `index.php` localizado em `public/`.
+Isso vai:
+- Iniciar o servidor PHP na porta 8000
+- Iniciar o servidor WebSocket na porta 8080
+- Verificar e instalar dependências do Composer
+- Mostrar URLs de acesso
+
+> Para parar os servidores, pressione Ctrl+C no terminal.
 
 ---
 

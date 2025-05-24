@@ -495,3 +495,16 @@ $r->addRoute('GET', '/teacher/courses/{id}', function($twig, $pdo, $id) {
 
 // Rota para inscrição na newsletter
 $r->addRoute('POST', '/newsletter/subscribe', [\Controller\pages\NewsletterController::class, 'subscribe']);
+
+// Rotas do fórum
+$r->addRoute('GET', '/courses/{courseId}/forum', function($twig, $pdo, $courseId) {
+    (new \Controller\pages\ForumController($twig, $pdo))->index((int)$courseId);
+});
+
+$r->addRoute('GET', '/courses/{courseId}/forum/topic/{topicId}', function($twig, $pdo, $courseId, $topicId) {
+    (new \Controller\pages\ForumController($twig, $pdo))->viewTopic((int)$courseId, (int)$topicId);
+});
+
+$r->addRoute('POST', '/courses/{courseId}/forum', function($twig, $pdo, $courseId) {
+    (new \Controller\pages\ForumController($twig, $pdo))->post((int)$courseId);
+});

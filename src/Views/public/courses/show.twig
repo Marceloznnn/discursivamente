@@ -22,10 +22,14 @@
               <button type="submit" class="button-exit">
                 Sair do curso
               </button>
-            </form>
-            <a href="/courses/{{ course.id }}/modules" class="button-materials">
-              Ver Módulos ({{ materialsCount }})
-            </a>
+            </form>            <div class="button-group">
+              <a href="/courses/{{ course.id }}/modules" class="button-materials">
+                Ver Módulos ({{ materialsCount }})
+              </a>
+              <a href="/courses/{{ course.id }}/forum" class="button-forum">
+                <i class="fas fa-comments"></i> Fórum de Discussão
+              </a>
+            </div>
           {% else %}
             <form action="/courses/{{ course.id }}/join" method="post" class="action-form">
               <button type="submit" class="button-join">
@@ -161,8 +165,8 @@
     </div>
 
   </div>
-{% endblock %}
-
+{% endblock %} 
+ 
 {% block scripts %}
   <script>
     // Atualiza barra de progresso na página do curso

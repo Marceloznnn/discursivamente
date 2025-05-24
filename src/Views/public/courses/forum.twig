@@ -1,0 +1,63 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Fórum - {{ course.getTitle() }}{% endblock %}
+
+{% block styles %}
+  <link rel="stylesheet" href="/assets/css/pages/curso/aluno/forum.css">
+{% endblock %}
+
+{% block content %}
+  <div class="forum-container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="/courses">Cursos</a></li>
+        <li><a href="/courses/{{ course.getId() }}">{{ course.getTitle() }}</a></li>
+        <li class="current">Fórum</li>
+      </ol>
+    </nav>
+
+    <div class="forum-header">
+      <h1>Fórum do Curso</h1>
+      <p class="course-title">{{ course.getTitle() }}</p>
+    </div>
+
+    <div id="messages" class="messages-container">
+      {% for message in messages %}
+        <div class="message">          <div class="message-header">
+            <img src="{{ message.user_avatar|default('/assets/default-avatar.png') }}" alt="Avatar" class="avatar">
+            <div class="message-info">
+              <strong>{{ message.user_name }}</strong>
+              <time datetime="{{ message.created_at|date('c') }}">{{ message.created_at|date('d/m/Y H:i') }}</time>
+            </div>
+          </div>
+          <div class="message-content">
+            {{ message.message|nl2br }}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <form id="messageForm" class="message-form" data-course-id="{{ course.getId() }}">
+      <textarea 
+        id="messageInput" 
+        name="message" 
+        placeholder="Digite sua mensagem..." 
+        required
+      ></textarea>
+      <button type="submit" class="btn-primary">
+        <i class="fas fa-paper-plane"></i> Enviar
+      </button>
+    </form>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    window.FORUM_CONFIG = {
+      userId: {{ app.session.get('user').id|default('null') }},
+      courseId: {{ course.getId() }},
+      wsUrl: 'ws://{{ app.request.host }}:8080'
+    };
+  </script>
+  <script src="/assets/js/pages/curso/aluno/forum-chat.js"></script>
+{% endblock %}
