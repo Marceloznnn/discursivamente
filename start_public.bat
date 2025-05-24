@@ -9,4 +9,4 @@ SET DOC_ROOT=%~dp0public
 echo Iniciando servidor PHP em http://%HOST%:%PORT% a partir de %DOC_ROOT% ...
 "%PHP_EXE%" -S %HOST%:%PORT% -t "%DOC_ROOT%"
 pause
-  
+   

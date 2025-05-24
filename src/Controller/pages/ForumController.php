@@ -16,7 +16,6 @@ class ForumController
     private Environment $twig;
     private PDO $pdo;
     private ForumMessageService $forumMessageService;
-
     private CourseRepository $courseRepo;
     private UserRepository $userRepo;
     private ForumTopicRepository $forumTopicRepo;
@@ -42,12 +41,13 @@ class ForumController
         AuthMiddleware::handle();
 
         $course = $this->courseRepo->findById($courseId);
-        if (!$course) {
-            http_response_code(404);
-            echo $this->twig->render('errors/404.twig');
-            return;
-        }        $messages = $this->forumMessageService->getMessages($courseId, 100);
 
+        if (!$course) {
+            $this->renderNotFound();
+            return;
+        }
+
+        $messages = $this->forumMessageService->getMessages($courseId, 100);
         $teacher = $this->userRepo->findById($course->getCreatorId());
 
         echo $this->twig->render('public/courses/forum.twig', [
@@ -56,56 +56,72 @@ class ForumController
             'currentUser' => $_SESSION['user'] ?? null,
             'teacher' => $teacher
         ]);
-    }    public function viewTopic(int $courseId, int $topicId): void
+    }
+
+    /**
+     * Visualiza um tópico específico no fórum.
+     */
+    public function viewTopic(int $courseId, int $topicId): void
     {
         AuthMiddleware::handle();
 
-        // Buscar o curso
         $course = $this->courseRepo->findById($courseId);
         if (!$course) {
-            http_response_code(404);
-            echo $this->twig->render('errors/404.twig');
+            $this->renderNotFound();
             return;
         }
 
-        // Buscar o tópico
         $topic = $this->forumTopicRepo->findByIdAndCourse($topicId, $courseId);
         if (!$topic) {
-            http_response_code(404);
-            echo $this->twig->render('errors/404.twig');
+            $this->renderNotFound();
             return;
         }
 
-        // Buscar as respostas do tópico
         $replies = $this->forumReplyRepo->getByTopicId($topicId);
 
-        // Renderizar a view
         echo $this->twig->render('public/courses/forum/view-topic.twig', [
             'course' => $course,
             'topic' => $topic,
-            'replies' => $replies
-    ]);
-}
-
+            'replies' => $replies,
+            'currentUser' => $_SESSION['user'] ?? null,
+        ]);
+    }
 
     /**
-     * Salva uma nova mensagem no fórum.
+     * Salva uma nova mensagem no fórum do curso.
      */
     public function post(int $courseId): void
     {
         AuthMiddleware::handle();
 
-        $userId = (int) $_SESSION['user']['id'];
+        $userId = (int) ($_SESSION['user']['id'] ?? 0);
         $message = trim($_POST['message'] ?? '');
 
         if ($message === '') {
             $_SESSION['flash']['error'][] = "A mensagem não pode estar vazia.";
-            header("Location: /courses/{$courseId}/forum");
-            exit;
+            $this->redirectToForum($courseId);
+            return;
         }
 
         $this->forumMessageService->saveMessage($userId, $courseId, $message);
         $_SESSION['flash']['success'][] = "Mensagem enviada!";
+        $this->redirectToForum($courseId);
+    }
+
+    /**
+     * Renderiza a página de erro 404.
+     */
+    private function renderNotFound(): void
+    {
+        http_response_code(404);
+        echo $this->twig->render('errors/404.twig');
+    }
+
+    /**
+     * Redireciona para o fórum do curso.
+     */
+    private function redirectToForum(int $courseId): void
+    {
         header("Location: /courses/{$courseId}/forum");
         exit;
     }

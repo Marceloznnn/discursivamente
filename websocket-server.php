@@ -26,7 +26,7 @@ try {
                 new ChatServer($pdo)
             )
         ),
-        8080
+        8080 
     );
 
     echo "Servidor WebSocket iniciado na porta 8080\n";

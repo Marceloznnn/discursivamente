@@ -28,7 +28,7 @@ function Start-Servers {
                 throw "Um dos servidores parou inesperadamente"
             }
         }
-    }
+    } 
     catch {
         Write-Host "`nParando servidores..." -ForegroundColor Yellow
     }

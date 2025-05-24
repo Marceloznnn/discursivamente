@@ -14,34 +14,33 @@ class ForumMessageRepository
         $this->pdo = $pdo;
     }
 
-    public function findById(int $id): ?ForumMessage
+    public function findById(int $id): ?array
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM forum_messages WHERE id = ?");
+        $stmt = $this->pdo->prepare(
+            "SELECT m.*, u.name AS user_name, u.avatar AS user_avatar
+             FROM forum_messages m
+             JOIN users u ON u.id = m.user_id
+             WHERE m.id = ?"
+        );
         $stmt->execute([$id]);
         
-        if ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            return new ForumMessage($data);
-        }
-        
-        return null;
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $data ?: null;
     }
 
     public function findByCourse(int $courseId, int $limit = 100): array
     {
         $stmt = $this->pdo->prepare(
-            "SELECT * FROM forum_messages 
-             WHERE course_id = ? 
-             ORDER BY created_at DESC 
+            "SELECT m.*, u.name AS user_name, u.avatar AS user_avatar
+             FROM forum_messages m
+             JOIN users u ON u.id = m.user_id
+             WHERE m.course_id = ?
+             ORDER BY m.created_at ASC
              LIMIT ?"
         );
         $stmt->execute([$courseId, $limit]);
-        
-        $messages = [];
-        while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $messages[] = new ForumMessage($data);
-        }
-        
-        return $messages;
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function create(ForumMessage $message): int

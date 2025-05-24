@@ -14,7 +14,7 @@ Discursivamente é uma aplicação web desenvolvida em PHP com o objetivo de [in
 ## 🔧 Tecnologias Utilizadas
 
 - PHP 7.4+
-- MySQL/MariaDB
+- MySQL
 - HTML5
 - CSS3
 - JavaScript
@@ -36,7 +36,7 @@ Discursivamente é uma aplicação web desenvolvida em PHP com o objetivo de [in
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/seu-usuario/discursivamente.git
+   git clone https://github.com/marcelozzz/discursivamente.git
    cd discursivamente
    ```
 

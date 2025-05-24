@@ -8,6 +8,8 @@
 
 {% block content %}
   <div class="forum-container">
+    
+    {# Breadcrumb / Navegação #}
     <nav class="breadcrumb" aria-label="Breadcrumb">
       <ol>
         <li><a href="/courses">Cursos</a></li>
@@ -16,25 +18,29 @@
       </ol>
     </nav>
 
+    {# Cabeçalho do Fórum #}
     <header class="forum-header">
       <h1>Fórum do Curso</h1>
       <p class="course-title">{{ course.getTitle() }}</p>
     </header>
 
+    {# Container das Mensagens #}
     <div id="messages" class="messages-container">
       {% if messages is empty %}
         <p class="no-messages">Nenhuma mensagem ainda. Seja o primeiro a falar!</p>
       {% endif %}
 
       {% for message in messages %}
-        {# Determina se é mensagem do próprio usuário #}
+        {# Verifica se é mensagem do próprio usuário #}
         {% set isOwn = currentUser and currentUser.id == message.user_id %}
         <div class="
             message
             {{ isOwn ? 'sent' : 'received' }}
-            {{ message.user_id == teacher.getId() ? ' teacher-message' : '' }}
+            {{ message.user_id == teacher.getId() ? 'teacher-message' : '' }}
           ">
           <div class="message-bubble">
+            
+            {# Cabeçalho da mensagem com avatar e informações do usuário #}
             <div class="message-header">
               <img
                 src="{{ message.user_avatar|default('/assets/default-avatar.png') }}"
@@ -48,14 +54,18 @@
                 </time>
               </div>
             </div>
+
+            {# Conteúdo da mensagem #}
             <div class="message-content">
               {{ message.message|nl2br }}
             </div>
+
           </div>
         </div>
       {% endfor %}
     </div>
 
+    {# Formulário para envio de mensagens #}
     <form id="messageForm" class="message-form" data-course-id="{{ course.getId() }}">
       <textarea
         id="messageInput"
@@ -67,6 +77,7 @@
         <i class="fas fa-paper-plane"></i> Enviar
       </button>
     </form>
+
   </div>
 {% endblock %}
 
@@ -75,7 +86,7 @@
     window.FORUM_CONFIG = {
       userId: {{ currentUser.id|default('null') }},
       courseId: {{ course.getId() }},
-      wsUrl: 'ws://{{ app.request.host }}:8080'
+      wsUrl: 'ws://{{ app.request.host }}:8080' // WebSocket para chat em tempo real
     };
   </script>
   <script src="/assets/js/pages/curso/aluno/forum-chat.js" defer></script>
