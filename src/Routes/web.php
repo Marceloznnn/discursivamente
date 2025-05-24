@@ -508,3 +508,8 @@ $r->addRoute('GET', '/courses/{courseId}/forum/topic/{topicId}', function($twig,
 $r->addRoute('POST', '/courses/{courseId}/forum', function($twig, $pdo, $courseId) {
     (new \Controller\pages\ForumController($twig, $pdo))->post((int)$courseId);
 });
+
+// Fórum do professor
+$r->addRoute('GET', '/teacher/courses/{id}/forum', function($twig, $pdo, $id) {
+    (new \Controller\pages\ForumController($twig, $pdo))->index((int)$id);
+});

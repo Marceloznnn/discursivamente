@@ -48,10 +48,13 @@ class ForumController
             return;
         }        $messages = $this->forumMessageService->getMessages($courseId, 100);
 
+        $teacher = $this->userRepo->findById($course->getCreatorId());
+
         echo $this->twig->render('public/courses/forum.twig', [
             'course' => $course,
             'messages' => $messages,
-            'currentUser' => $_SESSION['user'] ?? null
+            'currentUser' => $_SESSION['user'] ?? null,
+            'teacher' => $teacher
         ]);
     }    public function viewTopic(int $courseId, int $topicId): void
     {

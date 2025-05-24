@@ -1,112 +1,147 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const messagesContainer = document.getElementById('messages');
-    const form = document.getElementById('messageForm');
-    const input = document.getElementById('messageInput');
-    const { userId, courseId, wsUrl } = window.FORUM_CONFIG;
+  const messagesContainer = document.getElementById('messages');
+  const form = document.getElementById('messageForm');
+  const input = document.getElementById('messageInput');
+  const { userId, courseId, wsUrl } = window.FORUM_CONFIG;
 
-    let ws = null;
-    let reconnectAttempts = 0;
-    const maxReconnectAttempts = 5;
+  console.log('Meu userId:', userId, typeof userId);
 
-    function connect() {
-        ws = new WebSocket(wsUrl);
+  let ws = null;
+  let reconnectAttempts = 0;
+  const maxReconnectAttempts = 5;
 
-        ws.onopen = () => {
-            console.log('Conectado ao WebSocket');
-            reconnectAttempts = 0;
-            ws.send(JSON.stringify({ 
-                type: 'join', 
-                courseId: courseId 
-            }));
-        };
+  function connect() {
+    ws = new WebSocket(wsUrl);
 
-        ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            appendMessage(data);
-        };
+    ws.onopen = () => {
+      console.log('Conectado ao WebSocket');
+      reconnectAttempts = 0;
+      ws.send(JSON.stringify({
+        type: 'join',
+        courseId: courseId
+      }));
+    };
 
-        ws.onclose = () => {
-            console.log('Conexão WebSocket fechada');
-            if (reconnectAttempts < maxReconnectAttempts) {
-                reconnectAttempts++;
-                setTimeout(connect, 3000 * reconnectAttempts);
-            }
-        };
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log('Mensagem recebida de:', data.userId);
+      appendMessage(data);
+    };
 
-        ws.onerror = (error) => {
-            console.error('Erro WebSocket:', error);
-        };
-    }
+    ws.onclose = () => {
+      console.log('Conexão WebSocket fechada');
+      if (reconnectAttempts < maxReconnectAttempts) {
+        reconnectAttempts++;
+        setTimeout(connect, 3000 * reconnectAttempts);
+      }
+    };
 
-    function appendMessage(data) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'message';
+    ws.onerror = (error) => {
+      console.error('Erro WebSocket:', error);
+    };
+  }
 
-        const now = new Date();
-        const formattedDate = now.toLocaleDateString('pt-BR') + ' ' + 
-                            now.toLocaleTimeString('pt-BR');
+  function appendMessage(data) {
+    const messageDiv = document.createElement('div');
+    // comparação flexível para alinhar corretamente
+    const isSentByCurrentUser = data.userId == userId;
+    console.log('É mensagem minha?', isSentByCurrentUser);
 
-        messageDiv.innerHTML = `
-            <div class="message-header">
-                <img src="${data.avatar || '/assets/default-avatar.png'}" alt="Avatar" class="avatar">
-                <div class="message-info">
-                    <strong>${data.userName}</strong>
-                    <time datetime="${now.toISOString()}">${formattedDate}</time>
-                </div>
-            </div>
-            <div class="message-content">
-                ${data.message.replace(/\\n/g, '<br>')}
-            </div>
-        `;
+    const isTeacher = data.isTeacher || false;
 
-        messagesContainer.appendChild(messageDiv);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
+    // aplica classes de alinhamento e estilo
+    messageDiv.className =
+      'message ' +
+      (isSentByCurrentUser ? 'sent' : 'received') +
+      (isTeacher ? ' teacher-message' : '');
 
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const message = input.value.trim();
-        if (message === '') return;
+    const now = new Date();
+    const formattedDate = `${now.toLocaleDateString('pt-BR')} ${now.toLocaleTimeString('pt-BR')}`;
 
-        // Envia para o WebSocket
-        if (ws && ws.readyState === WebSocket.OPEN) {
-            ws.send(JSON.stringify({
-                type: 'message',
-                userId: userId,
-                courseId: courseId,
-                message: message
-            }));
-        }
+    messageDiv.innerHTML = `
+      <div class="message-bubble">
+        <div class="message-header">
+          <img src="${data.avatar || '/assets/default-avatar.png'}" alt="Avatar" class="avatar">
+          <div class="message-info">
+            <strong>${data.userName}</strong>
+            <time datetime="${now.toISOString()}">${formattedDate}</time>
+          </div>
+        </div>
+        <div class="message-content">
+          ${data.message.replace(/\n/g, '<br>')}
+        </div>
+      </div>
+    `;
 
-        // Envia para o backend via HTTP (fallback)
-        try {
-            const response = await fetch(`/courses/${courseId}/forum`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `message=${encodeURIComponent(message)}`
-            });
+    messagesContainer.appendChild(messageDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
-            if (!response.ok) {
-                throw new Error('Falha ao enviar mensagem');
-            }
-        } catch (error) {
-            console.error('Erro ao enviar mensagem:', error);
-            alert('Não foi possível enviar a mensagem. Por favor, tente novamente.');
-            return;
-        }
+    // Clear float
+    const clearDiv = document.createElement('div');
+    clearDiv.style.clear = 'both';
+    messagesContainer.appendChild(clearDiv);
+  }
 
-        input.value = '';
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const messageText = input.value.trim();
+    if (!messageText) return;
+
+    // Otimistic update local
+    appendMessage({
+      userId: userId,
+      userName: 'Você',
+      avatar: '/assets/default-avatar.png',
+      message: messageText,
+      isTeacher: false
     });
 
-    // Auto-resize do textarea
-    input.addEventListener('input', () => {
-        input.style.height = 'auto';
-        input.style.height = (input.scrollHeight) + 'px';
-    });
+    // Envia via WebSocket
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({
+        type: 'message',
+        userId: userId,
+        courseId: courseId,
+        message: messageText
+      }));
+    }
 
-    // Inicia a conexão WebSocket
-    connect();
+    // Envia para o backend HTTP (persistência)
+    try {
+      const response = await fetch(`/courses/${courseId}/forum`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ message: messageText })
+      });
+      if (!response.ok) {
+        console.error('Erro ao salvar mensagem no backend:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Erro ao enviar mensagem:', error);
+    }
+
+    // Recarrega toda a página para refletir estado completo
+    location.reload();
+  });
+
+  // Ajusta altura do textarea ao digitar
+  function autoResize() {
+    input.style.height = 'auto';
+    input.style.height = `${input.scrollHeight}px`;
+  }
+  input.addEventListener('input', autoResize);
+
+  // Inicia conexão WebSocket
+  connect();
+
+  // Garante wrapper em mensagens estáticas
+  function fixExistingMessages() {
+    document.querySelectorAll('#messages .message').forEach(msg => {
+      if (!msg.querySelector('.message-bubble')) {
+        const content = msg.innerHTML;
+        msg.innerHTML = `<div class="message-bubble">${content}</div>`;
+      }
+    });
+  }
+  fixExistingMessages();
 });
