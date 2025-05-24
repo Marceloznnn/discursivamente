@@ -123,7 +123,7 @@ class UserProgressRepository
     public function countMaterialsInModule(int $moduleId): int
     {
         $stmt = $this->pdo->prepare(
-            'SELECT COUNT(*) FROM material_entries WHERE material_id = :moduleId'
+            'SELECT COUNT(*) FROM material_entries WHERE module_id = :moduleId'
         );
         $stmt->execute([':moduleId' => $moduleId]);
         return (int)$stmt->fetchColumn();
@@ -143,7 +143,7 @@ class UserProgressRepository
                FROM user_progress p
          INNER JOIN material_entries e ON e.id = p.material_id
               WHERE p.user_id   = :userId
-                AND e.material_id = :moduleId'
+                AND e.module_id = :moduleId'
         );
         $stmt->execute([
             ':userId'   => $userId,
@@ -158,8 +158,8 @@ class UserProgressRepository
     private function hydrate(array $row): UserProgress
     {
         return new UserProgress(
-            (int) $row['user_id'],
-            (int) $row['material_id'],
+            (int) $row['user_id'], 
+            (int) $row['material_id'], 
             $row['completed_at']
         );
     }

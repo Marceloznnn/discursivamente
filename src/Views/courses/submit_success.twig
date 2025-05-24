@@ -1,0 +1,23 @@
+
+{# templates/courses/submit_success.twig #}
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Curso Enviado – Discursivamente{% endblock %}
+
+{% block styles %}
+  <link rel="stylesheet" href="/assets/css/pages/curso/submit_success.css">
+{% endblock %}
+
+{% block content %}
+  <div class="notification success animate-entry">
+    <div class="icon-wrapper">
+      <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+        <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+        <path class="checkmark-check" fill="none" d="M14 27 l10 10 l15 -15" />
+      </svg>
+    </div>
+    <h2>Curso enviado com sucesso!</h2>
+    <p>Obrigado por submeter seu curso. Nossa equipe analisará o material e entrará em contato.</p>
+    <a href="/" class="btn btn-primary">Voltar para a Home</a>
+  </div>
+{% endblock %}

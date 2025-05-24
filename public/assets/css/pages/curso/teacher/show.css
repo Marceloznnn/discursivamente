@@ -1,25 +1,21 @@
-/* 
- * File: assets/css/pages/curso/teacher/show.css
- * Estilização profissional para a página de detalhes do curso
- */
-
 :root {
-  --primary-color: #3f51b5;
-  --primary-dark: #303f9f;
-  --primary-light: #c5cae9;
-  --accent-color: #ff4081;
-  --text-primary: #212121;
-  --text-secondary: #757575;
-  --divider-color: #bdbdbd;
-  --background-light: #f5f7fa;
+  --primary-color: #8B1E3F; /* vinho */
+  --primary-dark: #5e1029;
+  --primary-light: #f2e6ec;
+  --accent-color: #ff6f61;
+  --text-primary: #2c2c2c;
+  --text-secondary: #6f6f6f;
+  --divider-color: #e0e0e0;
+  --background-light: #f9f9fb;
   --background-white: #ffffff;
   --success-color: #4caf50;
-  --danger-color: #f44336;
-  --shadow-light: 0 2px 5px rgba(0, 0, 0, 0.1);
-  --shadow-medium: 0 4px 10px rgba(0, 0, 0, 0.12);
-  --radius-small: 4px;
-  --radius-medium: 8px;
+  --danger-color: #e53935;
+  --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-medium: 0 4px 14px rgba(0, 0, 0, 0.08);
+  --radius-small: 6px;
+  --radius-medium: 12px;
   --transition-default: all 0.3s ease;
+  --font-base: 'Segoe UI', 'Roboto', sans-serif;
 }
 
 /* Container principal */
@@ -27,6 +23,7 @@
   max-width: 1200px;
   margin: 2rem auto;
   padding: 0 1.5rem;
+  font-family: var(--font-base);
 }
 
 /* Box principal */
@@ -35,31 +32,32 @@
   border-radius: var(--radius-medium);
   box-shadow: var(--shadow-medium);
   overflow: hidden;
+  animation: fadeIn 0.5s ease;
 }
 
-/* Cabeçalho do curso */
+/* Cabeçalho */
 .course-detail-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem 2rem;
-  background: linear-gradient(120deg, var(--primary-color), var(--primary-dark));
+  padding: 1.75rem 2rem;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
   color: white;
+  border-bottom: 4px solid var(--primary-dark);
   position: relative;
 }
 
 .course-detail-heading {
-  margin: 0;
-  font-size: 1.75rem;
-  font-weight: 600;
+  font-size: 2rem;
+  font-weight: 700;
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  color: white;
 }
 
 .course-detail-heading i {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
+  opacity: 0.85;
 }
 
 /* Menu dropdown */
@@ -68,10 +66,10 @@
 }
 
 .course-detail-menu-button {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
   border: none;
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   color: white;
   cursor: pointer;
@@ -82,7 +80,7 @@
 }
 
 .course-detail-menu-button:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .course-detail-menu-options {
@@ -95,7 +93,6 @@
   box-shadow: var(--shadow-medium);
   min-width: 200px;
   z-index: 100;
-  overflow: hidden;
   display: none;
   opacity: 0;
   visibility: hidden;
@@ -114,14 +111,9 @@
   gap: 0.75rem;
   padding: 0.875rem 1.25rem;
   color: var(--text-primary);
-  text-decoration: none;
+  font-size: 0.95rem;
   transition: var(--transition-default);
   cursor: pointer;
-  border: none;
-  background: none;
-  width: 100%;
-  text-align: left;
-  font-size: 0.9375rem;
 }
 
 .course-detail-menu-item:hover {
@@ -132,7 +124,7 @@
   color: var(--danger-color);
 }
 
-/* Seção de tags */
+/* Tags */
 .course-detail-tags {
   display: flex;
   flex-wrap: wrap;
@@ -143,19 +135,15 @@
 }
 
 .course-detail-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.375rem 0.875rem;
   background-color: var(--primary-light);
   color: var(--primary-dark);
-  border-radius: 2rem;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
   font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.course-detail-tag i {
-  font-size: 0.8125rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 /* Seções de conteúdo */
@@ -165,29 +153,28 @@
 }
 
 .course-detail-section-title {
-  font-size: 1.375rem;
-  font-weight: 600;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
   color: var(--text-primary);
-  margin-top: 0;
-  margin-bottom: 1.25rem;
   position: relative;
 }
 
 .course-detail-section-title::after {
   content: '';
   position: absolute;
-  bottom: -0.5rem;
+  bottom: -0.4rem;
   left: 0;
-  width: 50px;
-  height: 3px;
+  width: 60px;
+  height: 4px;
   background-color: var(--primary-color);
-  border-radius: 3px;
+  border-radius: 2px;
 }
 
 .course-detail-text {
-  line-height: 1.6;
+  font-size: 1rem;
+  line-height: 1.8;
   color: var(--text-secondary);
-  margin: 0;
 }
 
 /* Botões de ação */
@@ -197,27 +184,31 @@
   gap: 1rem;
   padding: 1.5rem 2rem;
   background-color: var(--background-light);
+  justify-content: flex-start;
 }
 
-.course-detail-action-button {
+.course-detail-action-button,
+.btn.btn-forum {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.625rem;
+  gap: 0.6rem;
   padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: none;
   background-color: var(--primary-color);
-  color: white;
+  color: white !important;
   border-radius: var(--radius-small);
   text-decoration: none;
-  font-weight: 500;
   transition: var(--transition-default);
   box-shadow: var(--shadow-light);
 }
 
-.course-detail-action-button:hover {
+.course-detail-action-button:hover,
+.btn.btn-forum:hover {
   background-color: var(--primary-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* Responsividade */
@@ -226,26 +217,32 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
-    padding: 1.25rem;
+    padding: 1.5rem;
   }
-  
+
   .course-detail-menu-wrapper {
     position: absolute;
-    top: 1.25rem;
-    right: 1.25rem;
+    top: 1rem;
+    right: 1rem;
   }
-  
+
   .course-detail-tags,
   .course-detail-section,
   .course-detail-actions {
     padding: 1.25rem;
   }
-  
+
   .course-detail-actions {
     flex-direction: column;
   }
-  
+
   .course-detail-action-button {
     width: 100%;
   }
+}
+
+/* Animação suave */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }

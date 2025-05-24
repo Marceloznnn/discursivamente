@@ -1,56 +1,28 @@
 <?php
 
-$projectRoot = 'C:/xampp/htdocs/Discursivamente2.1';
-
-$possiblePaths = [
-    $projectRoot . '/vendor/autoload.php',
-    $projectRoot . '/autoload.php',
-    dirname(__DIR__, 3) . '/vendor/autoload.php',
-    dirname(__DIR__, 2) . '/vendor/autoload.php',
-    dirname(__DIR__) . '/vendor/autoload.php',
-    __DIR__ . '/vendor/autoload.php',
-    __DIR__ . '/../vendor/autoload.php',
-    __DIR__ . '/../../vendor/autoload.php',
-    __DIR__ . '/../../../vendor/autoload.php',
-];
-
-$autoloadFound = false;
-foreach ($possiblePaths as $path) {
-    if (file_exists($path)) {
-        require_once $path;
-        $autoloadFound = true;
-        echo "Autoload carregado de: $path\n";
-        break;
-    }
-}
-
-if (!$autoloadFound) {
-    die("Erro: Não foi possível localizar o arquivo autoload.php.\n");
-}
-
-if (!class_exists('Infrastructure\\Database\\Connection') && file_exists($projectRoot . '/src/Infrastructure/Database/Connection.php')) {
-    require_once $projectRoot . '/src/Infrastructure/Database/Connection.php';
-}
-if (!class_exists('Repositories\\UserRepository') && file_exists($projectRoot . '/src/Repositories/UserRepository.php')) {
-    require_once $projectRoot . '/src/Repositories/UserRepository.php';
-}
-if (!class_exists('App\\Models\\User') && file_exists($projectRoot . '/src/App/Models/User.php')) {
-    require_once $projectRoot . '/src/App/Models/User.php';
-}
-
-if (!class_exists('Infrastructure\\Database\\Connection') || 
-    !class_exists('Repositories\\UserRepository') || 
-    !class_exists('App\\Models\\User')) {
-    
-    die("Erro: Não foi possível carregar todas as classes necessárias.\n");
-}
-
-use Infrastructure\Database\Connection;
-use Repositories\UserRepository;
-use App\Models\User;
-
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+
+// --- CREDENCIAIS DIRETAS DO BANCO ---
+$host = '127.0.0.1';
+$port = '3306';
+$db   = 'discursivamente_db';
+$user = 'root';
+$pass = ''; // coloque sua senha se houver
+
+try {
+    $pdo = new PDO(
+        "mysql:host=$host;port=$port;dbname=$db;charset=utf8mb4",
+        $user,
+        $pass,
+        [
+            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ]
+    );
+} catch (PDOException $e) {
+    die("Erro na conexão com o banco: " . $e->getMessage());
+}
 
 $validTypes = ['admin', 'instituicao', 'teacher', 'student'];
 
@@ -134,42 +106,36 @@ if (php_sapi_name() === 'cli') {
 }
 
 if (empty($name) || empty($email) || empty($password) || empty($type)) {
-    $error = "Todos os campos são obrigatórios.";
-    die("Erro: $error\n");
+    die("Erro: Todos os campos são obrigatórios.\n");
 }
 
 if (!in_array($type, $validTypes)) {
-    die("Erro: Tipo de usuário inválido. Escolha entre: " . implode(', ', $validTypes) . "\n");
+    die("Erro: Tipo de usuário inválido.\n");
 }
 
-try {
-    $pdo = Connection::getInstance();
-    $userRepository = new UserRepository($pdo);
-
-    if ($userRepository->findByEmail($email)) {
-        die("Erro: Email '$email' já está em uso.\n");
-    }
-
-    $hash = password_hash($password, PASSWORD_BCRYPT);
-    $user = new User($name, $email, $hash, $type);
-    $userRepository->save($user);
-
-    if (php_sapi_name() === 'cli') {
-        echo "Usuário criado com sucesso!\n";
-        echo "Nome: $name\n";
-        echo "Email: $email\n";
-        echo "Tipo: $type\n";
-    } else {
-        echo "<div style='padding: 20px; font-family: Arial;'>
-                <h2>Usuário criado com sucesso!</h2>
-                <p><strong>Nome:</strong> $name</p>
-                <p><strong>Email:</strong> $email</p>
-                <p><strong>Tipo:</strong> $type</p>
-                <p><a href='login.php'>Ir para login</a></p>
-              </div>";
-    }
-} catch (Exception $e) {
-    die("Erro ao criar usuário: " . $e->getMessage() . "\n");
+// Verifica se o e-mail já existe
+$stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+$stmt->execute([$email]);
+if ($stmt->fetch()) {
+    die("Erro: Email já está em uso.\n");
 }
 
-// deve conter no script: marcelo
+// Cria novo usuário
+$hash = password_hash($password, PASSWORD_BCRYPT);
+$stmt = $pdo->prepare("INSERT INTO users (name, email, password, type) VALUES (?, ?, ?, ?)");
+$stmt->execute([$name, $email, $hash, $type]);
+
+if (php_sapi_name() === 'cli') {
+    echo "Usuário criado com sucesso!\n";
+    echo "Nome: $name\n";
+    echo "Email: $email\n";
+    echo "Tipo: $type\n";
+} else {
+    echo "<div style='padding: 20px; font-family: Arial;'>
+            <h2>Usuário criado com sucesso!</h2>
+            <p><strong>Nome:</strong> $name</p>
+            <p><strong>Email:</strong> $email</p>
+            <p><strong>Tipo:</strong> $type</p>
+            <p><a href='login.php'>Ir para login</a></p>
+          </div>";
+}

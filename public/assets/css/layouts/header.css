@@ -49,7 +49,7 @@ body {
   font-family: var(--font-family-base);
   color: var(--text-color);
   background-color: var(--bg-color);
-  line-height: 1.6;
+  line-height: 1.3;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden; /* Previne scrollbars horizontais */
@@ -71,7 +71,7 @@ div:not(.hero-slider) {
 }
 
 main {
-  padding-top: calc(var(--header-height) + 1px);
+  padding-top: calc(var(--header-height) + 0px);
 }
 
 /*--------------------------------------------------------------

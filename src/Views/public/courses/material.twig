@@ -20,32 +20,14 @@
       </ol>
     </nav>
 
-    <div class="header-with-progress">
+    <div class="header">
       <h1 id="material-title">{{ entry.getTitle() ?: 'Material #' ~ entry.getId() }}</h1>
-      <div class="progress-circle" aria-label="Progresso do módulo">
-        <svg viewBox="0 0 36 36">
-          <path class="circle-bg" d="M18 2.0845a 15.9155 15.9155 0 0 1 0 31.831a 15.9155 15.9155 0 0 1 0 -31.831"/>
-          <path class="circle" stroke-dasharray="{{ moduleProgress }},100" d="M18 2.0845a 15.9155 15.9155 0 0 1 0 31.831a 15.9155 15.9155 0 0 1 0 -31.831"/>
-          <text x="18" y="20.35" class="circle-text">{{ moduleProgress }}%</text>
-        </svg>
-      </div>
     </div>
-
-    {# Toggle conclusão #}
-    {% set isDone = entry.getId() in completedMaterials %}
-    <button
-      id="toggle-complete"
-      class="toggle-switch {{ isDone ? 'on' : '' }}"
-      data-entry-id="{{ entry.getId() }}"
-      aria-pressed="{{ isDone ? 'true' : 'false' }}"
-      aria-label="{{ isDone ? 'Desmarcar concluído' : 'Marcar como concluído' }}"
-    >
-      <span class="switch-handle"></span>
-    </button>
 
     <div id="material-content" class="skeleton" data-entry-id="{{ entry.getId() }}">
       {% set url = entry.getContentUrl() %}
-      {% set type = entry.getContentType() %}      {% if type == 'image' %}
+      {% set type = entry.getContentType() %}
+      {% if type == 'image' %}
         <img src="{{ url }}" alt="{{ entry.getTitle() }}" id="material-image" />
       {% elseif type == 'video' %}
         <video controls id="material-video">
@@ -66,13 +48,9 @@
           Próximo &rarr;
         </a>
       {% endif %}
-      <a href="/courses/{{ course.getId() }}/modules/{{ module.getId() }}" id="material-back" class="btn-secondary">
+      <a href="/courses/{{ course.getId() }}/modules" id="material-back" class="btn-secondary">
         &larr; Voltar para Módulos
       </a>
     </div>
   </div>
-{% endblock %}
-
-{% block scripts %}
-  <script src="/assets/js/pages/curso/aluno/material.js"></script>
 {% endblock %}

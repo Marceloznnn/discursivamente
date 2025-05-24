@@ -1,0 +1,19 @@
+
+
+{# templates/courses/submit_error.twig #}
+{% extends 'layouts/base.twig' %}
+
+{% block styles %}
+  <link rel="stylesheet" href="/assets/css/pages/curso/submit_error.css">
+{% endblock %}
+
+
+{% block title %}Erro ao Enviar – Discursivamente{% endblock %}
+
+{% block content %}
+  <div class="notification error">
+    <h2>Ocorreu um erro ao enviar seu curso.</h2>
+    <p>Por favor, tente novamente mais tarde.</p>
+    <a href="/courses/submit" class="btn btn-primary">Tentar Novamente</a>
+  </div>
+{% endblock %}

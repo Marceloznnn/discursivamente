@@ -24,6 +24,11 @@ body {
     color: var(--gray);
 }
 
+/* Adicionei um espaçamento entre o conteúdo da página e o footer */
+.page-content {
+    margin-bottom: 50px; /* Espaço entre o conteúdo e o footer */
+}
+
 /* Estilização do Footer */
 .site-footer {
     background: linear-gradient(to right, var(--gray-dark), var(--wine-dark), var(--gray-dark));

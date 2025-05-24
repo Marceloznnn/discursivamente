@@ -170,4 +170,24 @@ class CourseParticipationRepository
             return [];
         }
     }
+
+    /**
+     * Retorna todos os cursos que o usuário está participando ativamente.
+     *
+     * @param int $userId
+     * @return array
+     */
+    public function findCoursesByUser(int $userId): array
+    {
+        $stmt = $this->pdo->prepare('
+            SELECT c.*
+              FROM courses c
+              JOIN course_participations cp ON c.id = cp.course_id
+             WHERE cp.user_id = :user_id
+               AND cp.left_at IS NULL
+          ORDER BY cp.joined_at DESC
+        ');
+        $stmt->execute([':user_id' => $userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

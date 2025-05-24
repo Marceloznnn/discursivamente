@@ -1,153 +1,96 @@
-/* create.css - Estilos para página de criação de materiais do professor */
+/* public/assets/css/pages/curso/teacher/create.css */
 
-/* Variáveis de tema */
-:root {
-  --primary-color: #3498db;
-  --primary-hover: #2980b9;
-  --danger-color: #e74c3c;
-  --success-color: #2ecc71;
-  --bg-light: #f9f9f9;
-  --bg-white: #ffffff;
-  --text-color: #2c3e50;
-  --border-radius: 8px;
-  --spacing: 16px;
-  --font-family: 'Helvetica Neue', Arial, sans-serif;
+body {
+  background-color: #f9f9fb;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-.material-create-container {
-  max-width: 800px;
-  margin: 40px auto;
-  padding: var(--spacing);
-  background: var(--bg-white);
-  border-radius: var(--border-radius);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  font-family: var(--font-family);
+.create-course {
+  padding: 40px 20px;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
-.material-create-title {
-  font-size: 1.75rem;
-  color: var(--text-color);
-  margin-bottom: calc(var(--spacing) * 1.5);
-  text-align: center;
+.form-container {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 30px 40px;
 }
 
-/* Alertas de feedback */
-.material-alert {
-  padding: calc(var(--spacing) * 0.75) var(--spacing);
-  border-radius: var(--border-radius);
-  margin-bottom: var(--spacing);
-  font-size: 0.95rem;
+.form-header h1 {
+  font-size: 28px;
+  color: #831843; /* tom de vinho escuro */
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
-}
-.material-alert-success {
-  background: var(--success-color);
-  color: #fff;
-}
-.material-alert-error,
-.material-alert-danger {
-  background: var(--danger-color);
-  color: #fff;
-}
-.material-alert-info {
-  background: var(--primary-color);
-  color: #fff;
-}
-.material-alert p {
-  margin: 0;
+  gap: 10px;
 }
 
-/* Formulário */
-.material-form-group {
-  margin-bottom: var(--spacing);
-  display: flex;
-  flex-direction: column;
+.course-form .form-group {
+  margin-bottom: 20px;
 }
 
-.material-form-label {
-  font-weight: 600;
-  margin-bottom: calc(var(--spacing) / 4);
-  color: var(--text-color);
+.course-form label {
+  display: block;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 6px;
 }
 
-.material-form-input,
-.material-form-file {
-  padding: calc(var(--spacing) / 2) var(--spacing);
-  border: 1px solid #d1d5db;
-  border-radius: var(--border-radius);
-  font-size: 1rem;
-  color: var(--text-color);
-  transition: border-color 0.2s ease;
+.course-form input[type="text"],
+.course-form textarea,
+.course-form select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #fdfdfd;
+  transition: border 0.3s;
 }
 
-.material-form-input:focus,
-.material-form-file:focus {
+.course-form input:focus,
+.course-form textarea:focus,
+.course-form select:focus {
+  border-color: #831843;
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
 }
 
-.material-form-error {
-  color: var(--danger-color);
-  font-size: 0.875rem;
-  margin-top: calc(var(--spacing) / 8);
-}
-
-/* Ações do formulário */
-.material-form-actions {
+.form-footer {
   display: flex;
-  justify-content: flex-end;
-  gap: var(--spacing);
-  margin-top: calc(var(--spacing) * 1.5);
+  justify-content: space-between;
+  margin-top: 30px;
 }
 
-.material-btn {
-  padding: calc(var(--spacing) / 2) var(--spacing);
-  font-size: 1rem;
-  font-weight: 600;
-  color: #fff;
-  background: var(--primary-color);
+.btn-save-course,
+.btn-cancel-create {
+  padding: 10px 20px;
   border: none;
-  border-radius: var(--border-radius);
+  border-radius: 8px;
+  font-size: 15px;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.1s ease;
   text-decoration: none;
-  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.3s;
 }
 
-.material-btn:hover {
-  background: var(--primary-hover);
-  transform: translateY(-1px);
+.btn-save-course {
+  background-color: #831843;
+  color: white;
 }
 
-.material-btn:active {
-  transform: translateY(0);
+.btn-save-course:hover {
+  background-color: #9d174d;
 }
 
-.material-btn:disabled {
-  background: #bdc3c7;
-  cursor: not-allowed;
+.btn-cancel-create {
+  background-color: #e5e7eb;
+  color: #333;
 }
 
-.material-btn-cancel {
-  background: #7f8c8d;
-}
-
-.material-btn-cancel:hover {
-  background: #606c70;
-}
-
-/* Responsividade */
-@media (max-width: 600px) {
-  .material-create-container {
-    padding: calc(var(--spacing) * 0.75);
-    margin: 20px;
-  }
-  .material-form-actions {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .material-btn {
-    width: 100%;
-  }
+.btn-cancel-create:hover {
+  background-color: #d1d5db;
 }

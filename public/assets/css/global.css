@@ -47,3 +47,13 @@ body, main {
   font-weight: bold;
   color: #4a161f; /* vinho profundo para destaque */
 }
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.site-footer {
+    margin-top: 60px; /* ou padding-top se preferir distância interna */
+}

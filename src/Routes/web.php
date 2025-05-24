@@ -513,3 +513,40 @@ $r->addRoute('POST', '/courses/{courseId}/forum', function($twig, $pdo, $courseI
 $r->addRoute('GET', '/teacher/courses/{id}/forum', function($twig, $pdo, $id) {
     (new \Controller\pages\ForumController($twig, $pdo))->index((int)$id);
 });
+
+// Rota para listar os cursos do usuário
+$r->addRoute('GET', '/my-courses', [PublicCourseController::class, 'myCourses']);
+
+// Formulário para envio de curso pelos usuários
+$r->addRoute('GET', '/courses/submit', function($twig) {
+    // Página Twig com o formulário de envio
+    echo $twig->render('courses/submit.twig');
+});
+
+// Processa o envio do curso (salva no banco e manda por e-mail)
+$r->addRoute('POST', '/courses/submit', function($twig, $pdo) {
+    AuthMiddleware::handle();    // opcional, se quiser só usuários logados
+    // 1) coleta dados do POST e arquivo
+    $data = [
+      'nome'      => $_POST['nome'] ?? '',
+      'email'     => $_POST['email'] ?? '',
+      'titulo'    => $_POST['titulo'] ?? '',
+      'descricao' => $_POST['descricao'] ?? '',
+    ];
+    $file = $_FILES['arquivo'] ?? null;
+
+    // 2) salva no banco
+    $model = new \App\Models\CourseSubmission($pdo);
+    $data['arquivo_nome'] = $file['name'] ?? null;
+    $model->create($data);
+
+    // 3) envia por e-mail
+    $sent = \Infrastructure\Mail\CourseSubmissionMailer::send($data, $file);
+
+    // 4) resposta ao usuário
+    if ($sent) {
+        echo $twig->render('courses/submit_success.twig');
+    } else {
+        echo $twig->render('courses/submit_error.twig');
+    }
+});

@@ -206,7 +206,7 @@ section:nth-child(odd) {
    BANNER PRINCIPAL
    ====================================== */
 #banner-principal {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1627556704314-1f7aee38ec57?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1584697964156-deca98e4439d?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -1039,5 +1039,98 @@ section:nth-child(odd) {
   .recurso-icone {
     width: 60px;
     height: 60px;
+  }
+}
+
+/* Estilos para seção "Como Funciona o Envio de Cursos" */
+.aviso-sistema {
+  padding: 60px 0;
+  background-color: var(--bg-color-alt); /* Bege claro */
+}
+.aviso-sistema .section-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.aviso-sistema .section-header h2 {
+  color: var(--primary-color); /* Vinho escuro */
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+.aviso-sistema .section-header .divider {
+  width: 60px;
+  height: 3px;
+  background-color: var(--accent-color); /* Dourado escuro */
+  margin: 0 auto;
+  border-radius: var(--border-radius-sm);
+}
+.aviso-sistema .aviso-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.aviso-sistema .aviso-content .step {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 30px;
+}
+.aviso-sistema .aviso-content .step-number {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  background-color: var(--primary-color);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-right: 20px;
+}
+.aviso-sistema .aviso-content .step-info h3 {
+  color: var(--primary-color-dark);
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+}
+.aviso-sistema .aviso-content .step-info p {
+  color: var(--text-color);
+  line-height: 1.5;
+}
+.aviso-sistema .nota-final {
+  max-width: 800px;
+  margin: 40px auto 0;
+  font-size: 0.95rem;
+  color: var(--text-color-light);
+  text-align: center;
+}
+.aviso-sistema .nota-final a {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+.aviso-sistema .aviso-cta {
+  text-align: center;
+  margin-top: 30px;
+}
+.aviso-sistema .aviso-cta .btn {
+  display: inline-block;
+  padding: 12px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  background-color: var(--primary-color);
+  color: #fff;
+  border-radius: var(--border-radius-md);
+  transition: background-color var(--transition-speed) ease;
+}
+.aviso-sistema .aviso-cta .btn:hover {
+  background-color: var(--primary-color-dark);
+}
+
+/* Responsividade */
+@media (max-width: 767px) {
+  .aviso-sistema .aviso-content .step {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .aviso-sistema .aviso-content .step-number {
+    margin-bottom: 10px;
   }
 }
