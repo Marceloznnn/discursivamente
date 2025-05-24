@@ -550,3 +550,7 @@ $r->addRoute('POST', '/courses/submit', function($twig, $pdo) {
         echo $twig->render('courses/submit_error.twig');
     }
 });
+
+$r->addRoute('GET', '/sitemap', function($twig, $pdo) {
+    (new \Controller\pages\SitemapController($twig, $pdo))->index();
+});

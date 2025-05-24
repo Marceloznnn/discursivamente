@@ -1,0 +1,114 @@
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #ffffff;
+  color: #333333;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.7;
+}
+
+/* Container da página */
+.cookies-policy .container {
+  max-width: 1000px;
+  margin: 60px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Título principal */
+.cookies-policy h1 {
+  color: #800020;
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  border-bottom: 3px solid #800020;
+  padding-bottom: 10px;
+}
+
+/* Subtítulos */
+.cookies-policy h2 {
+  color: #800020;
+  font-size: 1.8rem;
+  margin-top: 40px;
+  margin-bottom: 15px;
+  border-left: 5px solid #800020;
+  padding-left: 10px;
+}
+
+.cookies-policy h3 {
+  color: #800020;
+  font-size: 1.5rem;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+/* Parágrafos */
+.cookies-policy p {
+  margin-bottom: 15px;
+  color: #444444;
+  font-size: 1.05rem;
+}
+
+/* Listas */
+.cookies-policy ul {
+  margin: 10px 0 20px 25px;
+}
+
+.cookies-policy ul li {
+  margin-bottom: 10px;
+  color: #555555;
+  position: relative;
+}
+
+.cookies-policy ul li::before {
+  content: "•";
+  color: #800020;
+  font-weight: bold;
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
+}
+
+/* Links */
+.cookies-policy a {
+  color: #800020;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.cookies-policy a:hover {
+  color: #a8324b;
+  text-decoration: underline;
+}
+
+/* Destaques */
+.cookies-policy strong {
+  color: #800020;
+  font-weight: 600;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .cookies-policy .container {
+    margin: 30px 20px;
+    padding: 20px;
+  }
+
+  .cookies-policy h1 {
+    font-size: 2rem;
+  }
+
+  .cookies-policy h2 {
+    font-size: 1.5rem;
+  }
+
+  .cookies-policy h3 {
+    font-size: 1.3rem;
+  }
+}
