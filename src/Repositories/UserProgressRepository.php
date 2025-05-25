@@ -153,6 +153,29 @@ class UserProgressRepository
     }
 
     /**
+     * Busca um progresso específico por usuário e material
+     */
+    public function findByUserAndMaterial(int $userId, int $materialId): ?UserProgress
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT * FROM user_progress 
+            WHERE user_id = ? AND material_id = ?
+        ");
+        $stmt->execute([$userId, $materialId]);
+        
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$row) {
+            return null;
+        }
+
+        return new UserProgress(
+            $row['user_id'],
+            $row['material_id'],
+            $row['completed_at']
+        );
+    }
+
+    /**
      * Mapeia array de dados para instância de UserProgress
      */
     private function hydrate(array $row): UserProgress

@@ -68,6 +68,7 @@ class CloudinaryService
         if (str_starts_with($mimeType, 'video/')) {
             return 'video';
         }
+        // PDFs e outros arquivos devem usar resource_type 'raw'
         return 'raw';
     }
 
@@ -91,26 +92,59 @@ class CloudinaryService
             $options['folder'] = $folder;
         }
 
-        $result = $cloudinary->uploadApi()->upload($filePath, $options);
-
-        // Log básico
-        $logDir  = __DIR__ . '/../../../logs';
+        // Log da tentativa de upload
+        $logDir = __DIR__ . '/../../../logs';
         if (!is_dir($logDir)) {
             mkdir($logDir, 0777, true);
         }
+
         file_put_contents(
             "$logDir/cloudinary_upload.log",
-            sprintf("[%s] Uploaded %s public_id=%s\n", date('Y-m-d H:i:s'), $fileType, $result['public_id'] ?? 'N/A'),
+            sprintf(
+                "[%s] Tentando upload - Tipo: %s, Arquivo: %s, Opções: %s\n",
+                date('Y-m-d H:i:s'),
+                $fileType,
+                $filePath,
+                json_encode($options)
+            ),
             FILE_APPEND
         );
 
-        return [
-            'url'           => $result['secure_url'],
-            'public_id'     => $result['public_id'],
-            'resource_type' => $result['resource_type'],
-            'format'        => $result['format'] ?? '',
-            'created_at'    => $result['created_at'],
-        ];
+        try {
+            $result = $cloudinary->uploadApi()->upload($filePath, $options);
+
+            // Log do resultado do upload
+            file_put_contents(
+                "$logDir/cloudinary_upload.log",
+                sprintf(
+                    "[%s] Sucesso no upload - public_id: %s, url: %s\n",
+                    date('Y-m-d H:i:s'),
+                    $result['public_id'] ?? 'N/A',
+                    $result['secure_url'] ?? 'N/A'
+                ),
+                FILE_APPEND
+            );
+
+            return [
+                'url' => $result['secure_url'],
+                'public_id' => $result['public_id'],
+                'resource_type' => $result['resource_type'],
+                'format' => $result['format'] ?? '',
+                'created_at' => $result['created_at'],
+            ];
+        } catch (\Exception $e) {
+            // Log do erro
+            file_put_contents(
+                "$logDir/cloudinary_upload.log",
+                sprintf(
+                    "[%s] Erro no upload: %s\n",
+                    date('Y-m-d H:i:s'),
+                    $e->getMessage()
+                ),
+                FILE_APPEND
+            );
+            throw $e;
+        }
     }
 
     /**

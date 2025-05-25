@@ -44,4 +44,30 @@ class MaterialEntry
     // setters...
     public function setId(int $id): void               { $this->id = $id; }
     public function setSubtitleUrl(string $url): void   { $this->subtitleUrl = $url; }  // setter
+
+    /**
+     * Retorna o tipo de conteúdo real do material.
+     * Se o tipo for 'raw', tenta detectar via MIME remoto.
+     */
+    public function getContentTypeRobusto(): string
+    {
+        // Se já for um tipo conhecido, retorna direto
+        if (in_array($this->contentType, ['image', 'video', 'pdf'])) {
+            return $this->contentType;
+        }
+        // Se for raw, tenta detectar via URL remota
+        $url = $this->contentUrl;
+        // Só tenta se for raw e URL remota
+        if ($this->contentType === 'raw' && $url) {
+            // Tenta obter o header Content-Type
+            $headers = @get_headers($url, 1);
+            if ($headers && isset($headers['Content-Type'])) {
+                $mime = is_array($headers['Content-Type']) ? $headers['Content-Type'][0] : $headers['Content-Type'];
+                if (stripos($mime, 'application/pdf') !== false) {
+                    return 'pdf';
+                }
+            }
+        }
+        return $this->contentType;
+    }
 }

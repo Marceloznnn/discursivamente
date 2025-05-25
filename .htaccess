@@ -1,0 +1,24 @@
+# Configurações para servir PDFs adequadamente
+<IfModule mod_mime.c>
+    AddType application/pdf .pdf
+</IfModule>
+
+<IfModule mod_headers.c>
+    # Permitir PDF em iframes da mesma origem
+    <FilesMatch "\.pdf$">
+        Header set X-Frame-Options "SAMEORIGIN"
+        Header set Content-Type "application/pdf"
+        Header set Content-Disposition "inline"
+    </FilesMatch>
+</IfModule>
+
+# Permitir acesso direto a PDFs na pasta de uploads
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Não redirecionar arquivos PDF
+    RewriteCond %{REQUEST_URI} \.(pdf)$ [NC]
+    RewriteRule .* - [L]
+    
+    # Continuar com suas regras existentes...
+</IfModule>

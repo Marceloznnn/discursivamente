@@ -199,7 +199,7 @@ img {
 /* Common Section Styling */
 [class$="-section"],
 .eventos-container {
-  padding: 5rem 0;
+  padding: 1rem 0;
 }
 
 [class$="-section"] h2,
@@ -416,7 +416,15 @@ img {
 
 .courses-ver-todos {
   text-align: center;
-  margin-top: 3rem;
+  margin-top: 0%px;     /* Aproxime da seção acima */
+  margin-bottom: 3rem;    /* Afaste da seção abaixo */
+}
+
+.eventos-empty{
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 1.2rem;
+  color: var(--gray-dark);
 }
 
 /* ---------- Eventos em Destaque: CSS Completo ---------- */
@@ -1424,7 +1432,7 @@ input[type="email"]:focus {
 
 /* Eventos Mobile */
 .eventos-container {
-  padding: 3rem 0;
+  padding: 0.5rem 0 1rem 0; /* topo, direita, baixo, esquerda */
 }
 
 .eventos-header {

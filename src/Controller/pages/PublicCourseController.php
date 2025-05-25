@@ -115,7 +115,7 @@ class PublicCourseController
             $user = $this->userRepo->findById($comment->getUserId());
             $comments[] = [
                 'id' => $comment->getId(),
-                'text' => $comment->getComment(), // Corrigir para usar o método correto
+                'text' => $comment->getComment(),
                 'rating' => $comment->getRating(),
                 'createdAt' => $comment->getCreatedAt(),
                 'user' => $user ? ['id' => $user->getId(), 'name' => $user->getName()] : null,
@@ -141,7 +141,7 @@ class PublicCourseController
     {
         AuthMiddleware::handle();
         $userId = (int) $_SESSION['user']['id'];
-        $courseId = (int) $id; // Garantir que $id seja um inteiro
+        $courseId = (int) $id;
         $this->participationRepo->joinCourse($userId, $courseId);
         header("Location: /courses/{$courseId}");
         exit;
@@ -151,7 +151,7 @@ class PublicCourseController
     {
         AuthMiddleware::handle();
         $userId = (int) $_SESSION['user']['id'];
-        $courseId = (int) $id; // Garantir que $id seja um inteiro
+        $courseId = (int) $id;
         $this->participationRepo->leaveCourse($userId, $courseId);
         header("Location: /courses/{$courseId}");
         exit;
@@ -165,7 +165,7 @@ class PublicCourseController
             exit;
         }
 
-        $courseId = (int) $id; // Garantir que $id seja um inteiro
+        $courseId = (int) $id;
         $commentText = trim($_POST['comment'] ?? '');
         $rating      = (int) ($_POST['rating'] ?? 0);
 
@@ -235,32 +235,222 @@ class PublicCourseController
 
     public function viewMaterial(int $courseId, int $moduleId, int $entryId): void
     {
-        // ... código de geração de legenda permanece ...
+        // Verificar se o curso existe
+        $course = $this->courseRepo->findById($courseId);
+        if (!$course) {
+            http_response_code(404);
+            echo $this->twig->render('errors/404.twig');
+            return;
+        }
+
+        // Verificar se o módulo existe e pertence ao curso
+        $module = $this->moduleRepo->findById($moduleId);
+        if (!$module || $module->getCourseId() !== $courseId) {
+            http_response_code(404);
+            echo $this->twig->render('errors/404.twig');
+            return;
+        }
+
+        // Verificar se a entrada existe e pertence ao módulo
+        $entry = $this->entryRepo->findById($entryId);
+        if (!$entry || $entry->getMaterialId() !== $moduleId) {
+            http_response_code(404);
+            echo $this->twig->render('errors/404.twig');
+            return;
+        }
+
+        // Buscar todas as entradas do módulo para navegação
         $allEntries = $this->entryRepo->findByMaterialId($moduleId);
-        $nextEntry  = null;
-        foreach ($allEntries as $e) {
-            if ($e->getId() > $entryId) {
-                $nextEntry = $e;
+        $nextEntry = null;
+        $previousEntry = null;
+        
+        for ($i = 0; $i < count($allEntries); $i++) {
+            if ($allEntries[$i]->getId() === $entryId) {
+                if (isset($allEntries[$i + 1])) {
+                    $nextEntry = $allEntries[$i + 1];
+                }
+                if (isset($allEntries[$i - 1])) {
+                    $previousEntry = $allEntries[$i - 1];
+                }
                 break;
             }
         }
 
-        $userId   = $_SESSION['user']['id'] ?? null;
-        $completed = $userId
-            ? array_map(fn(UserProgress $p) => $p->getMaterialId(), $this->progressRepo->findByUserId((int)$userId))
-            : [];
-        $total    = count($allEntries);
-        $done     = count(array_intersect($completed, array_map(fn($e) => $e->getId(), $allEntries)));
-        $progress = $total ? (int)round($done / $total * 100) : 0;
+        // Calcular progresso do usuário
+        $userId = $_SESSION['user']['id'] ?? null;
+        $completed = [];
+        $progress = 0;
+        
+        if ($userId) {
+            $userProgress = $this->progressRepo->findByUserId((int)$userId);
+            $completed = array_map(fn(UserProgress $p) => $p->getMaterialId(), $userProgress);
+            $total = count($allEntries);
+            $done = count(array_intersect($completed, array_map(fn($e) => $e->getId(), $allEntries)));
+            $progress = $total ? (int)round($done / $total * 100) : 0;
+        }
 
-        echo $this->twig->render('public/courses/material.twig', [
-            'course'             => $this->courseRepo->findById($courseId),
-            'module'             => $this->moduleRepo->findById($moduleId),
-            'entry'              => $this->entryRepo->findById($entryId),
-            'nextEntry'          => $nextEntry,
+        // Preparar dados do material para o template
+        $materialData = [
+            'course' => $course,
+            'module' => $module,
+            'entry' => $entry,
+            'nextEntry' => $nextEntry,
+            'previousEntry' => $previousEntry,
             'completedMaterials' => $completed,
-            'moduleProgress'     => $progress,
-        ]);
+            'moduleProgress' => $progress,
+            'totalMaterials' => count($allEntries),
+            'currentPosition' => array_search($entry, $allEntries) + 1,
+        ];
+
+        // Adicionar headers específicos para PDFs
+        if ($entry->getContentType() === 'pdf') {
+            // Headers para melhor suporte a PDFs
+            header('X-Frame-Options: SAMEORIGIN');
+            header('Content-Security-Policy: frame-src \'self\' data:');
+            
+            // Verificar se o arquivo PDF existe e é acessível
+            $pdfUrl = $entry->getContentUrl();
+            if ($this->isPdfAccessible($pdfUrl)) {
+                $materialData['pdfAccessible'] = true;
+            } else {
+                $materialData['pdfAccessible'] = false;
+                $_SESSION['flash']['warning'][] = "O arquivo PDF pode não estar disponível no momento.";
+            }
+        }
+
+        echo $this->twig->render('public/courses/material.twig', $materialData);
+    }
+
+    /**
+     * Verifica se um PDF é acessível
+     */
+    private function isPdfAccessible(string $url): bool {
+        try {
+            error_log("[PDF-CHECK] Verificando acessibilidade do PDF: " . $url);
+            
+            if (strpos($url, '/') === 0) {
+                $filePath = $_SERVER['DOCUMENT_ROOT'] . $url;
+                error_log("[PDF-CHECK] Caminho local do arquivo: " . $filePath);
+                
+                if (!file_exists($filePath)) {
+                    error_log("[PDF-ERROR] Arquivo não existe: " . $filePath);
+                    return false;
+                }
+                
+                if (!is_readable($filePath)) {
+                    error_log("[PDF-ERROR] Arquivo não pode ser lido: " . $filePath);
+                    return false;
+                }
+                
+                $fileSize = filesize($filePath);
+                error_log("[PDF-INFO] Tamanho do arquivo: " . ($fileSize / 1024 / 1024) . "MB");
+                
+                // Verifica se é realmente um PDF
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                $mimeType = finfo_file($finfo, $filePath);
+                finfo_close($finfo);
+                
+                error_log("[PDF-INFO] Mime Type: " . $mimeType);
+                
+                if ($mimeType !== 'application/pdf') {
+                    error_log("[PDF-ERROR] Arquivo não é um PDF válido");
+                    return false;
+                }
+                
+                return true;
+            }
+            
+            // Para URLs externas
+            $headers = get_headers($url, 1);
+            error_log("[PDF-CHECK] Headers da URL externa: " . json_encode($headers));
+            
+            if ($headers === false) {
+                error_log("[PDF-ERROR] Não foi possível obter headers da URL");
+                return false;
+            }
+            
+            $statusCode = substr($headers[0], 9, 3);
+            error_log("[PDF-INFO] Status code: " . $statusCode);
+            
+            if (isset($headers['Content-Type'])) {
+                error_log("[PDF-INFO] Content-Type: " . $headers['Content-Type']);
+            }
+            
+            return $statusCode >= 200 && $statusCode < 400;
+            
+        } catch (\Exception $e) {
+            error_log("[PDF-ERROR] Exceção ao verificar PDF: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Endpoint para servir PDFs com headers apropriados
+     */
+    public function servePdf(int $courseId, int $moduleId, int $entryId): void {
+        try {
+            // Registrar informações detalhadas de debug sobre o caminho
+            error_log("[PDF-DEBUG] Request URI: " . $_SERVER['REQUEST_URI']);
+            error_log("[PDF-DEBUG] servePdf chamado com: courseId=$courseId, moduleId=$moduleId, entryId=$entryId");
+            
+            $entry = $this->entryRepo->findById($entryId);
+            
+            if (!$entry) {
+                error_log("[PDF-ERROR] Entry não encontrada: " . $entryId);
+                http_response_code(404);
+                echo json_encode(['error' => 'PDF não encontrado']);
+                exit;
+            }
+            
+            if ($entry->getContentType() !== 'pdf') {
+                error_log("[PDF-ERROR] Tipo de conteúdo inválido: " . $entry->getContentType());
+                http_response_code(400);
+                echo json_encode(['error' => 'Tipo de arquivo inválido']);
+                exit;
+            }
+            
+            $pdfPath = $entry->getContentUrl();
+            error_log("[PDF-INFO] URL do PDF: " . $pdfPath);
+            
+            // Caminho local no servidor
+            if (strpos($pdfPath, '/') === 0) {
+                $fullPath = $_SERVER['DOCUMENT_ROOT'] . $pdfPath;
+                error_log("[PDF-INFO] Caminho completo: " . $fullPath);
+                
+                if (!file_exists($fullPath)) {
+                    error_log("[PDF-ERROR] Arquivo não encontrado: " . $fullPath);
+                    http_response_code(404);
+                    echo json_encode(['error' => 'Arquivo não encontrado no servidor']);
+                    exit;
+                }
+                
+                $fileSize = filesize($fullPath);
+                error_log("[PDF-INFO] Tamanho do arquivo: " . ($fileSize / 1024 / 1024) . "MB");
+                
+                // Headers simplificados para máxima compatibilidade
+                header('Content-Type: application/pdf');
+                header('Content-Disposition: inline; filename="' . basename($fullPath) . '"');
+                header('Content-Length: ' . $fileSize);
+                header('Cache-Control: public, max-age=86400');
+                header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 86400) . ' GMT');
+                header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($fullPath)) . ' GMT');
+                
+                if (ob_get_level()) ob_end_clean(); // Limpa output buffers
+                readfile($fullPath); // Mais simples e confiável
+                exit;
+            }
+            
+            // URL externa - redirecionar diretamente
+            error_log("[PDF-INFO] Redirecionando para URL externa: " . $pdfPath);
+            header("Location: $pdfPath");
+            exit;
+            
+        } catch (\Exception $e) {
+            error_log("[PDF-ERROR] Erro fatal ao servir PDF: " . $e->getMessage() . "\n" . $e->getTraceAsString());
+            http_response_code(500);
+            echo json_encode(['error' => 'Erro interno ao tentar exibir o PDF']);
+            exit;
+        }
     }
 
     public function complete(int $courseId): void
@@ -269,14 +459,21 @@ class PublicCourseController
         $userId = (int)($_SESSION['user']['id'] ?? 0);
         $data = json_decode(file_get_contents('php://input'), true);
         $entryId = $data['entryId'] ?? null;
+        
         if ($userId && $entryId) {
-            $progress = new UserProgress($userId, (int)$entryId, date('Y-m-d H:i:s'));
-            $this->progressRepo->save($progress);
+            // Verificar se o progresso já existe para evitar duplicatas
+            $existingProgress = $this->progressRepo->findByUserAndMaterial($userId, (int)$entryId);
+            
+            if (!$existingProgress) {
+                $progress = new UserProgress($userId, (int)$entryId, date('Y-m-d H:i:s'));
+                $this->progressRepo->save($progress);
+            }
+            
             http_response_code(200);
-            echo json_encode(['status' => 'ok']);
+            echo json_encode(['status' => 'ok', 'message' => 'Material marcado como concluído']);
         } else {
             http_response_code(400);
-            echo json_encode(['status' => 'error']);
+            echo json_encode(['status' => 'error', 'message' => 'Dados inválidos']);
         }
         exit;
     }
@@ -287,13 +484,14 @@ class PublicCourseController
         $userId = (int)($_SESSION['user']['id'] ?? 0);
         $data = json_decode(file_get_contents('php://input'), true);
         $entryId = $data['entryId'] ?? null;
+        
         if ($userId && $entryId) {
             $this->progressRepo->delete($userId, (int)$entryId);
             http_response_code(200);
-            echo json_encode(['status' => 'ok']);
+            echo json_encode(['status' => 'ok', 'message' => 'Material desmarcado como concluído']);
         } else {
             http_response_code(400);
-            echo json_encode(['status' => 'error']);
+            echo json_encode(['status' => 'error', 'message' => 'Dados inválidos']);
         }
         exit;
     }

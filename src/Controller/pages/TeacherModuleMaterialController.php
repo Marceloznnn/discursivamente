@@ -77,6 +77,11 @@ class TeacherModuleMaterialController
      */
     public function store(int $courseId, int $moduleId): void
     {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        error_log('DEBUG: Entrou no método store do upload de material');
+
         $course = $this->courseRepo->findById($courseId);
         $this->authorize($course);
 
@@ -89,30 +94,36 @@ class TeacherModuleMaterialController
 
         if (empty($_FILES['file']['tmp_name']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
             $_SESSION['flash']['error'][] = "Selecione um arquivo válido.";
+            error_log('DEBUG: Falha no upload - arquivo não selecionado ou erro no upload.');
             header("Location: /teacher/courses/{$courseId}/modules/{$moduleId}/materials/create");
             exit;
         }
-
-        $tmpPath = $_FILES['file']['tmp_name'];
-        $type    = $this->cloudinary->determineFileType($tmpPath);
 
         try {
-            $result = $this->cloudinary->upload($tmpPath, "courses/{$courseId}/modules/{$moduleId}", $type);
+            $uploadResult = $this->handleFileUpload($_FILES['file'], $courseId, $moduleId);
         } catch (\Exception $e) {
             $_SESSION['flash']['error'][] = "Falha no upload: " . $e->getMessage();
+            error_log('DEBUG: Exceção no upload Cloudinary: ' . $e->getMessage());
             header("Location: /teacher/courses/{$courseId}/modules/{$moduleId}/materials/create");
             exit;
         }
 
-        // Agora passamos 5 argumentos, incluindo o public_id
+        // Criação do MaterialEntry só deve acontecer se o upload foi bem-sucedido
         $entry = new MaterialEntry(
             $moduleId,
-            $_POST['title'] ?? pathinfo($result['public_id'], PATHINFO_BASENAME),
-            $result['url'],
-            $type, // Corrigido: salva o tipo correto (image, video, raw)
-            $result['public_id']
+            $_POST['title'] ?? pathinfo($uploadResult['public_id'], PATHINFO_BASENAME),
+            $uploadResult['url'],
+            $uploadResult['resource_type'],
+            $uploadResult['public_id']
         );
-        $this->entryRepo->save($entry);
+        try {
+            $this->entryRepo->save($entry);
+        } catch (\Exception $e) {
+            $_SESSION['flash']['error'][] = "Erro ao salvar material no banco: " . $e->getMessage();
+            error_log('DEBUG: Exceção ao salvar no banco: ' . $e->getMessage());
+            header("Location: /teacher/courses/{$courseId}/modules/{$moduleId}/materials/create");
+            exit;
+        }
 
         $_SESSION['flash']['success'][] = "Material enviado com sucesso.";
         header("Location: /teacher/courses/{$courseId}/modules/{$moduleId}/materials");
@@ -160,4 +171,22 @@ class TeacherModuleMaterialController
             exit;
         }
     }
+
+    private function handleFileUpload($file, $courseId, $moduleId): array
+    {
+        $tmpPath = $file['tmp_name'];
+        if (!file_exists($tmpPath)) {
+            throw new \RuntimeException('Arquivo temporário não encontrado');
+        }
+
+        $type = $this->cloudinary->determineFileType($tmpPath);
+        $folder = "courses/{$courseId}/modules/{$moduleId}";
+
+        try {
+            return $this->cloudinary->uploadFile($tmpPath, $type, $folder);
+        } catch (\Exception $e) {
+            error_log("Falha no upload para Cloudinary: " . $e->getMessage());
+            error_log("Stack trace: " . $e->getTraceAsString());
+            throw $e;
+        }    }
 }

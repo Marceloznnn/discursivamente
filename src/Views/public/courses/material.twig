@@ -6,11 +6,155 @@
 
 {% block styles %}
   <link rel="stylesheet" href="/assets/css/pages/curso/aluno/material.css">
+  <style>
+    /* Container principal do PDF */
+    #pdf-viewer-container {
+      width: 100%;
+      height: 85vh;
+      margin-bottom: 1.5rem;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #f8f9fa;
+      position: relative;
+    }
+
+    /* Iframe do PDF */
+    #pdf-viewer {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: white;
+    }
+
+    /* Fallback para navegadores que não suportam PDFs inline */
+    .pdf-fallback {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+      background: #f8f9fa;
+      border: 2px dashed #dee2e6;
+      border-radius: 8px;
+      margin: 1rem 0;
+    }
+
+    .pdf-fallback.show {
+      display: block;
+    }
+
+    .pdf-fallback h3 {
+      color: #6c757d;
+      margin-bottom: 1rem;
+    }
+
+    .pdf-fallback p {
+      color: #868e96;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Botões de ação */
+    .pdf-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .pdf-action-btn {
+      padding: 0.5rem 1rem;
+      border: 1px solid #dee2e6;
+      background: white;
+      color: #495057;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+
+    .pdf-action-btn:hover {
+      background: #f8f9fa;
+      border-color: #adb5bd;
+    }
+
+    /* Loading spinner */
+    .pdf-loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #007bff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .pdf-loading p {
+      margin-top: 1rem;
+      color: #6c757d;
+      font-size: 0.875rem;
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      #pdf-viewer-container {
+        height: 70vh;
+      }
+      
+      .pdf-actions {
+        justify-content: center;
+      }
+    }
+
+    /* Estilo para materiais não-PDF */
+    #material-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    #material-video {
+      width: 100%;
+      max-height: 70vh;
+      border-radius: 8px;
+    }
+
+    #material-download {
+      display: inline-block;
+      padding: 1rem 2rem;
+      background: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+
+    #material-download:hover {
+      background: #0056b3;
+    }
+  </style>
 {% endblock %}
 
 {% block content %}
-  <div id="material-container">
-
+  <div id="material-container"
+       data-course-id="{{ course.getId() }}"
+       data-module-id="{{ module.getId() }}">
+    
     <nav class="breadcrumb" aria-label="Breadcrumb">
       <ol>
         <li><a href="/courses">Cursos</a></li>
@@ -26,25 +170,42 @@
 
     <div id="material-content" class="skeleton" data-entry-id="{{ entry.getId() }}">
       {% set url = entry.getContentUrl() %}
-      {% set type = entry.getContentType() %}
+      {% set type = entry.getContentTypeRobusto() %}
+
       {% if type == 'image' %}
         <img src="{{ url }}" alt="{{ entry.getTitle() }}" id="material-image" />
+
       {% elseif type == 'video' %}
         <video controls id="material-video">
-          <source src="{{ url }}" type="video/mp4">
-          {% if entry.getSubtitleUrl() %}
-            <track label="Português" kind="subtitles" srclang="pt" src="{{ entry.getSubtitleUrl() }}" default>
-          {% endif %}
-          Seu navegador não suporta vídeos HTML5.
         </video>
+
+      {% elseif type == 'pdf' or ((type == 'raw' or type == '' or type is null) and (url|lower ends with '.pdf' or 'cloudinary.com/raw/' in url or 'cloudinary.com' in url)) %}
+        <div id="pdf-viewer-container">
+          <iframe id="pdf-viewer" src="{{ url }}#toolbar=0&navpanes=0&scrollbar=1" allowfullscreen></iframe>
+          <div id="pdf-loading" class="pdf-loading">
+            <div class="spinner"></div>
+            <p>Carregando PDF...</p>
+          </div>
+          <div id="pdf-fallback" class="pdf-fallback">
+            <h3>Não foi possível exibir o PDF</h3>
+            <p>Seu navegador não suporta visualização inline. <a href="{{ url }}" target="_blank">Clique aqui para abrir em nova aba</a>.</p>
+          </div>
+        </div>
+        <div class="pdf-actions">
+          <a href="{{ url }}" target="_blank" class="pdf-action-btn">Abrir em nova aba</a>
+          <a href="{{ url }}" download class="pdf-action-btn">Baixar PDF</a>
+          <button type="button" class="pdf-action-btn" onclick="toggleFullscreen()">Tela cheia</button>
+        </div>
+
       {% else %}
-        <a href="{{ url }}" download id="material-download">⬇️ Baixar Arquivo</a>
+        <a href="{{ url }}" id="material-download" download>⬇️ Baixar Arquivo</a>
       {% endif %}
     </div>
 
     <div class="actions">
       {% if nextEntry %}
-        <a href="/courses/{{ course.getId() }}/modules/{{ module.getId() }}/material/{{ nextEntry.getId() }}" id="material-next" class="btn-outline">
+        <a href="/courses/{{ course.getId() }}/modules/{{ module.getId() }}/material/{{ nextEntry.getId() }}" 
+           id="material-next" class="btn-outline">
           Próximo &rarr;
         </a>
       {% endif %}
@@ -53,4 +214,177 @@
       </a>
     </div>
   </div>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    /**
+     * PDFLogger: logger local apenas para debug em console.
+     * Nunca envia dados para servidor ou endpoint externo.
+     */
+    const PDFLogger = {
+      info: function(msg, data = null) {
+        console.log(`[PDF-INFO] ${msg}`, data ? JSON.stringify(data) : '');
+      },
+      error: function(msg, error = null) {
+        console.error(`[PDF-ERROR] ${msg}`, error ? JSON.stringify(error) : '');
+      },
+      warn: function(msg, data = null) {
+        console.warn(`[PDF-WARN] ${msg}`, data ? JSON.stringify(data) : '');
+      }
+    };
+
+    // Funções globais para manipulação do PDF
+    function hidePdfLoading() {
+      const loading = document.getElementById('pdf-loading');
+      if (loading) {
+        loading.style.display = 'none';
+        PDFLogger.info('Loading spinner ocultado');
+      }
+    }
+
+    function showPdfFallback() {
+      const loading = document.getElementById('pdf-loading');
+      const fallback = document.getElementById('pdf-fallback');
+      const iframe = document.getElementById('pdf-viewer');
+      PDFLogger.warn('Exibindo fallback do PDF');
+      if (loading) loading.style.display = 'none';
+      if (iframe) iframe.style.display = 'none';
+      if (fallback) {
+        fallback.classList.add('show');
+        // Evita múltiplos botões Google Viewer
+        if (!document.getElementById('google-pdf-viewer-btn')) {
+          const googlePdfUrl = document.createElement('a');
+          googlePdfUrl.href = 'https://docs.google.com/viewer?url=' + encodeURIComponent(iframe ? iframe.src.split('#')[0] : '') + '&embedded=true';
+          googlePdfUrl.target = '_blank';
+          googlePdfUrl.className = 'pdf-action-btn';
+          googlePdfUrl.id = 'google-pdf-viewer-btn';
+          googlePdfUrl.style = 'background: #ff6b00; color: white; margin-top: 1rem; display: block; width: fit-content; margin: 1rem auto;';
+          googlePdfUrl.innerHTML = '🔎 Abrir no Google PDF Viewer';
+          fallback.appendChild(googlePdfUrl);
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      PDFLogger.info('Página carregada');
+      try {
+        // Verificar se é um PDF
+        const pdfViewer = document.querySelector('#pdf-viewer');
+        if (!pdfViewer) return;
+        const pdfUrl = pdfViewer.getAttribute('src');
+        PDFLogger.info('URL do PDF', { url: pdfUrl });
+        // Teste de suporte a PDF
+        const isPdfSupported = () => {
+          try {
+            return (
+              navigator.mimeTypes && 
+              navigator.mimeTypes['application/pdf'] && 
+              navigator.mimeTypes['application/pdf'].enabledPlugin
+            ) || (
+              'ActiveXObject' in window && 
+              new ActiveXObject('AcroPDF.PDF')
+            );
+          } catch(e) {
+            return false;
+          }
+        };
+        const pdfSupported = isPdfSupported();
+        PDFLogger.info(`Suporte nativo a PDF detectado: ${pdfSupported}`);
+        // Diagnóstico visual se não suportado
+        if (!pdfSupported) {
+          showPdfFallback();
+          return;
+        }
+        // Adicionar evento de erro para o iframe
+        pdfViewer.onerror = function(e) {
+          PDFLogger.error('Erro no carregamento do PDF', { error: e.type });
+          showPdfFallback();
+        };
+        // Verificar se o PDF carregou após um tempo
+        setTimeout(() => {
+          try {
+            if (pdfViewer.contentDocument && 
+                pdfViewer.contentDocument.documentElement && 
+                pdfViewer.contentDocument.documentElement.textContent.indexOf('PDF') !== -1) {
+              PDFLogger.info('PDF carregado com sucesso');
+              hidePdfLoading();
+              markPdfAsComplete();
+            } else {
+              PDFLogger.warn('Possível problema no carregamento do PDF');
+              showPdfFallback();
+            }
+          } catch (e) {
+            PDFLogger.warn('Erro ao verificar PDF (possível problema CORS)', { error: e.message });
+            showPdfFallback();
+          }
+        }, 3000);
+        // Função para marcar o PDF como concluído
+        function markPdfAsComplete() {
+          try {
+            const container = document.querySelector('#material-container');
+            const contentDiv = document.querySelector('#material-content');
+            if (container && contentDiv) {
+              const courseId = container.dataset.courseId;
+              const moduleId = container.dataset.moduleId;
+              const entryId = contentDiv.dataset.entryId;
+              if (courseId && moduleId && entryId) {
+                PDFLogger.info('Marcando PDF como concluído');
+                fetch(`/courses/${courseId}/modules/${moduleId}/complete`, {
+                  method: 'POST',
+                  headers: {'Content-Type': 'application/json'},
+                  body: JSON.stringify({ entryId: parseInt(entryId, 10) })
+                })
+                .then(response => {
+                  if (response.ok) {
+                    PDFLogger.info('PDF marcado como concluído com sucesso');
+                  } else {
+                    PDFLogger.error('Falha ao marcar PDF como concluído');
+                  }
+                })
+                .catch(e => PDFLogger.error('Erro ao marcar PDF como concluído', { error: e.message }));
+              }
+            }
+          } catch (e) {
+            PDFLogger.error('Erro ao processar conclusão do PDF', { error: e.message });
+          }
+        }
+      } catch (e) {
+        PDFLogger.error('Erro geral ao manipular PDF', { error: e.message });
+        showPdfFallback();
+      }
+    });
+
+    // Função melhorada para tela cheia
+    function toggleFullscreen() {
+      const container = document.getElementById('pdf-viewer-container');
+      if (!container) {
+        PDFLogger.error('Container do PDF não encontrado');
+        return;
+      }
+      try {
+        if (!document.fullscreenElement) {
+          PDFLogger.info('Entrando em tela cheia');
+          container.requestFullscreen();
+        } else {
+          PDFLogger.info('Saindo da tela cheia');
+          document.exitFullscreen();
+        }
+      } catch (err) {
+        PDFLogger.error('Erro ao alternar tela cheia', err);
+      }
+    }
+
+    // Detectar mudanças no fullscreen
+    document.addEventListener('fullscreenchange', () => {
+      const container = document.getElementById('pdf-viewer-container');
+      if (container) {
+        if (document.fullscreenElement) {
+          container.style.height = '100vh';
+        } else {
+          container.style.height = '85vh';
+        }
+      }
+    });
+  </script>
 {% endblock %}

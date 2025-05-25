@@ -12,14 +12,16 @@ use Infrastructure\Database\Connection;
 use Infrastructure\Twig\TwigFunctions;
 
 // Carrega o autoloader do Composer
-require __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
+
+// Carregar variáveis do .env
+if (file_exists(__DIR__ . '/../.env')) {
+    $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+    $dotenv->load();
+}
 
 // Start session
 session_start();
-
-// Carrega as variáveis de ambiente (.env)
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
-$dotenv->load();
 
 // Setup Twig templating
 $loader = new FilesystemLoader(__DIR__ . '/../src/Views');
