@@ -85,7 +85,11 @@
                     ? course.description|slice(0, 100) ~ '…'
                     : course.description }}
               </p>
-              <a href="/courses/{{ course.getId() }}" class="course-link">Saiba mais</a>
+              {% if session.user is defined and course.creatorId == session.user.id %}
+                <a href="/teacher/courses/{{ course.id }}" class="course-link">Saiba mais</a>
+              {% else %}
+                <a href="/courses/{{ course.id }}" class="course-link">Saiba mais</a>
+              {% endif %}
             </div>
           </div>
         {% endfor %}

@@ -114,24 +114,6 @@ $r->addRoute('POST', '/profile/update', function($twig) {
     (new \Controller\pages\ProfileController($twig))->update();
 });
 
-// Mensagens
-$r->addRoute('POST', '/messages/store', function($twig) {
-    AuthMiddleware::handle();
-    (new MessageController($twig))->store();
-});
-$r->addRoute('GET', '/messages/{id}', function($twig, $_, $id) {
-    AuthMiddleware::handle();
-    (new MessageController($twig))->view($id);
-});
-$r->addRoute('GET', '/messages/{id}/delete', function($twig, $_, $id) {
-    AuthMiddleware::handle();
-    (new MessageController($twig))->delete($id);
-});
-$r->addRoute('POST', '/conversations/{conversationId}/messages/create', function($twig, $_, $conversationId) {
-    AuthMiddleware::handle();
-    (new MessageController($twig))->create($conversationId);
-});
-
 // Feedback (usuário)
 $r->addRoute('GET', '/feedback', function($twig) {
     AuthMiddleware::handle();
@@ -223,22 +205,24 @@ $r->addRoute('GET', '/admin/conversations/{id}', function($twig, $_, $id) {
     (new AdminController($twig))->conversationView($id);
 });
 
-// Gerenciamento de feedbacks (admin)
-$r->addRoute('GET', '/admin/feedbacks', function($twig) {
-    AuthMiddleware::handle();
-    AdminMiddleware::handle();
-    (new AdminController($twig))->feedbacksList();
-});
-$r->addRoute('GET', '/admin/feedbacks/pending', function($twig) {
-    AuthMiddleware::handle();
-    AdminMiddleware::handle();
-    (new AdminController($twig))->feedbackPending();
-});
-$r->addRoute('GET', '/admin/feedbacks/{id}/process', function($twig, $_, $id) {
-    AuthMiddleware::handle();
-    AdminMiddleware::handle();
-    (new AdminController($twig))->feedbackProcess($id);
-});
+// Removendo rotas que chamam métodos indefinidos no AdminController
+// $r->addRoute('GET', '/admin/feedbacks', function($twig) {
+//     AuthMiddleware::handle();
+//     AdminMiddleware::handle();
+//     (new AdminController($twig))->feedbacksList();
+// });
+
+// $r->addRoute('GET', '/admin/feedbacks/pending', function($twig) {
+//     AuthMiddleware::handle();
+//     AdminMiddleware::handle();
+//     (new AdminController($twig))->feedbackPending();
+// });
+
+// $r->addRoute('GET', '/admin/feedbacks/{id}/process', function($twig, $_, $id) {
+//     AuthMiddleware::handle();
+//     AdminMiddleware::handle();
+//     (new AdminController($twig))->feedbackProcess($id);
+// });
 
 // ==========================================
 // Rotas de Eventos
@@ -549,8 +533,4 @@ $r->addRoute('POST', '/courses/submit', function($twig, $pdo) {
     } else {
         echo $twig->render('courses/submit_error.twig');
     }
-});
-
-$r->addRoute('GET', '/sitemap', function($twig, $pdo) {
-    (new \Controller\pages\SitemapController($twig, $pdo))->index();
 });

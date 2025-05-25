@@ -6,21 +6,13 @@ namespace Controller;
 use Infrastructure\Database\Connection;
 use Repositories\UserRepository;
 use Repositories\ConversationRepository;
-use Repositories\MessageRepository;
-use Repositories\FeedbackRepository;
 use Repositories\EventRepository;
-use Repositories\AuditLogRepository;
-use App\Models\AuditLog;
 
 class AdminController {
     private $twig;
     private $userRepository;
     private $conversationRepository;
-    private $messageRepository;
-    private $feedbackRepository;
     private $eventRepository;
-
-    private $auditLogRepository;
 
     public function __construct($twig)
     {
@@ -29,20 +21,8 @@ class AdminController {
 
         $this->userRepository         = new UserRepository($connection);
         $this->conversationRepository = new ConversationRepository($connection);
-        $this->messageRepository      = new MessageRepository($connection);
-        $this->feedbackRepository     = new FeedbackRepository($connection);
         $this->eventRepository        = new EventRepository($connection);
     }
-
-    /**
-     * Registra ação no arquivo de log e, opcionalmente, no banco via AuditLogRepository.
-     *
-     * @param string $action      Ação realizada (ex: 'visualizou', 'criou', 'atualizou')
-     * @param string $resource    Recurso afetado (ex: 'user', 'event')
-     * @param int|null $resourceId ID do recurso, se houver
-     * @param string|null $meta   Informação extra
-     */
-
 
     private function checkAdminAccess()
     {
@@ -61,17 +41,7 @@ class AdminController {
     {
         $this->checkAdminAccess();
 
-        $userCount         = count($this->userRepository->findAll());
-        $conversationCount = count($this->conversationRepository->findAll());
-        $pendingFeedbacks  = count($this->feedbackRepository->findByStatus('pending'));
-        $upcomingEvents    = count($this->eventRepository->findAll());
-
-        echo $this->twig->render('admin/index.twig', compact(
-            'userCount',
-            'conversationCount',
-            'pendingFeedbacks',
-            'upcomingEvents'
-        ));
+        echo $this->twig->render('admin/index.twig');
     }
 
     // === USUÁRIOS ===
@@ -128,10 +98,10 @@ class AdminController {
             $email,
             $hash,
             $type,
-            null, // id
-            null, // recovery_code
-            null, // recovery_exp
-            null, // avatar
+            null,
+            null,
+            null,
+            null,
             date('Y-m-d H:i:s'),
             date('Y-m-d H:i:s'),
             $bio
@@ -186,7 +156,6 @@ class AdminController {
         $user->setType($type);
         $user->setBio($bio);
 
-        // upload de avatar
         if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
             $uploadDir = __DIR__ . '/../../public/uploads/avatars/';
             if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
@@ -226,51 +195,9 @@ class AdminController {
             exit;
         }
 
-        $messages = $this->messageRepository->findByConversation($id);
-        echo $this->twig->render('admin/conversations/view.twig', compact('conversation','messages'));
+        echo $this->twig->render('admin/conversations/view.twig', compact('conversation'));
     }
 
-    // === FEEDBACKS ===
-    public function feedbacksList()
-    {
-        $this->checkAdminAccess();
-
-        $feedbacks = $this->feedbackRepository->findAll();
-        echo $this->twig->render('admin/feedbacks/index.twig', ['feedbacks' => $feedbacks]);
-    }
-
-    public function feedbackPending()
-    {
-        $this->checkAdminAccess();
-
-        $feedbacks = $this->feedbackRepository->findByStatus('pending');
-        echo $this->twig->render('admin/feedbacks/pending.twig', ['feedbacks' => $feedbacks]);
-    }
-
-    public function feedbackProcess(int $id)
-    {
-        $this->checkAdminAccess();
-
-        $feedback = $this->feedbackRepository->findById($id);
-        if (!$feedback) {
-            $_SESSION['flash_message'] = ['type'=>'error','message'=>'Feedback não encontrado.'];
-            header('Location: /admin/feedbacks');
-            exit;
-        }
-
-        $status = $_POST['status'] ?? '';
-        if (!in_array($status, ['resolved','rejected'])) {
-            $_SESSION['flash_message'] = ['type'=>'error','message'=>'Status inválido.'];
-            header('Location: /admin/feedbacks');
-            exit;
-        }
-
-        $feedback->setStatus($status);
-        $this->feedbackRepository->save($feedback);
-        $_SESSION['flash_message'] = ['type'=>'success','message'=>'Feedback processado com sucesso.'];
-        header('Location: /admin/feedbacks');
-        exit;
-    }
     // === EVENTOS ===
     public function eventsList()
     {
@@ -304,7 +231,6 @@ class AdminController {
             return;
         }
 
-        // upload de imagem
         $imageUrl = null;
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
             $uploadDir = __DIR__ . '/../../public/uploads/events/';
@@ -363,7 +289,6 @@ class AdminController {
             return;
         }
 
-        // upload de imagem
         $imageUrl = null;
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
             $uploadDir = __DIR__ . '/../../public/uploads/events/';

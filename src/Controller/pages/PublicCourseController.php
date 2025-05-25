@@ -112,9 +112,13 @@ class PublicCourseController
         $rawComments   = $this->commentRepo->findByCourseId($courseId);
         $comments      = [];
         foreach ($rawComments as $comment) {
+            $user = $this->userRepo->findById($comment->getUserId());
             $comments[] = [
-                'comment' => $comment,
-                'user'    => $this->userRepo->findById($comment->getUserId()),
+                'id' => $comment->getId(),
+                'text' => $comment->getComment(), // Corrigir para usar o método correto
+                'rating' => $comment->getRating(),
+                'createdAt' => $comment->getCreatedAt(),
+                'user' => $user ? ['id' => $user->getId(), 'name' => $user->getName()] : null,
             ];
         }
         $isParticipating = $userId
@@ -133,25 +137,27 @@ class PublicCourseController
         ]);
     }
 
-    public function join(int $id): void
+    public function join($id): void
     {
         AuthMiddleware::handle();
         $userId = (int) $_SESSION['user']['id'];
-        $this->participationRepo->joinCourse($userId, $id);
-        header("Location: /courses/{$id}");
+        $courseId = (int) $id; // Garantir que $id seja um inteiro
+        $this->participationRepo->joinCourse($userId, $courseId);
+        header("Location: /courses/{$courseId}");
         exit;
     }
 
-    public function leave(int $id): void
+    public function leave($id): void
     {
         AuthMiddleware::handle();
         $userId = (int) $_SESSION['user']['id'];
-        $this->participationRepo->leaveCourse($userId, $id);
-        header("Location: /courses/{$id}");
+        $courseId = (int) $id; // Garantir que $id seja um inteiro
+        $this->participationRepo->leaveCourse($userId, $courseId);
+        header("Location: /courses/{$courseId}");
         exit;
     }
 
-    public function storeComment(int $id): void
+    public function storeComment($id): void
     {
         if (empty($_SESSION['user']['id'])) {
             http_response_code(403);
@@ -159,19 +165,20 @@ class PublicCourseController
             exit;
         }
 
+        $courseId = (int) $id; // Garantir que $id seja um inteiro
         $commentText = trim($_POST['comment'] ?? '');
         $rating      = (int) ($_POST['rating'] ?? 0);
 
         if ($commentText === '' || $rating < 1 || $rating > 5) {
             $_SESSION['flash']['error'][] = "Comentário e avaliação (1–5) são obrigatórios.";
-            header("Location: /courses/{$id}");
+            header("Location: /courses/{$courseId}");
             exit;
         }
 
-        $comment = new CourseComment($id, (int) $_SESSION['user']['id'], $commentText, $rating);
+        $comment = new CourseComment($courseId, (int) $_SESSION['user']['id'], $commentText, $rating);
         $this->commentRepo->save($comment);
         $_SESSION['flash']['success'][] = "Comentário adicionado!";
-        header("Location: /courses/{$id}#comments");
+        header("Location: /courses/{$courseId}#comments");
         exit;
     }
 

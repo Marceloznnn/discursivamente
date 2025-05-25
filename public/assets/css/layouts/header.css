@@ -7,20 +7,20 @@
   /* Esquema de cores atualizado */
   --primary-color: #410f0b; /* Vinho como cor primária */
   --primary-color-dark: #380505; /* Vinho escuro */
-  --secondary-color: #D6AD60; /* Dourado/areia escuro para ações secundárias */
-  --accent-color: #B68D40; /* Dourado mais escuro para destaque */
-  --text-color: #1C1C1C; /* Preto carvão para texto principal */
-  --text-color-light: #6D6D6D; /* Cinza para texto secundário */
-  --bg-color: #F8F8F8; /* Branco gelo para fundo */
-  --bg-color-alt: #F5EBDD; /* Bege claro/Areia para fundo alternativo */
-  --border-color: #D3D3D3; /* Cinza claro para bordas */
-  --border-color-light: #E8E8E8; /* Cinza mais claro */
+  --secondary-color: #d6ad60; /* Dourado/areia escuro para ações secundárias */
+  --accent-color: #b68d40; /* Dourado mais escuro para destaque */
+  --text-color: #1c1c1c; /* Preto carvão para texto principal */
+  --text-color-light: #6d6d6d; /* Cinza para texto secundário */
+  --bg-color: #f8f8f8; /* Branco gelo para fundo */
+  --bg-color-alt: #f5ebdd; /* Bege claro/Areia para fundo alternativo */
+  --border-color: #d3d3d3; /* Cinza claro para bordas */
+  --border-color-light: #e8e8e8; /* Cinza mais claro */
   --hover-bg: rgba(140, 28, 19, 0.05); /* Vinho com transparência para hover */
-  
+
   /* Configurações de layout */
   --header-height: 70px;
   --header-height-scrolled: 60px;
-  --font-family-base: 'Poppins', sans-serif;
+  --font-family-base: "Poppins", sans-serif;
   --border-radius-sm: 4px;
   --border-radius-md: 6px;
   --box-shadow-light: 0 2px 5px rgba(0, 0, 0, 0.08);
@@ -38,7 +38,6 @@
 .btn {
   text-transform: uppercase;
 }
-
 
 html {
   scroll-behavior: smooth;
@@ -86,7 +85,8 @@ main {
   width: 100%;
   z-index: 1000;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  transition: height var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+  transition: height var(--transition-speed) ease,
+    box-shadow var(--transition-speed) ease;
   height: var(--header-height);
 }
 
@@ -112,6 +112,7 @@ main {
   align-items: center;
   gap: 10px; /* Reduzido o espaço entre logo e título */
   flex-shrink: 0; /* Previne que o logo seja comprimido */
+  padding-top: 17px; /* Ajuste para descer um pouco a logo e título */
 }
 
 .site-logo {
@@ -153,11 +154,12 @@ main {
   display: flex;
   align-items: center;
   padding: 8px 12px; /* Reduzido para melhor ajuste em telas menores */
-  color: #F8F8F8;
+  color: #f8f8f8;
   font-weight: 500;
   font-size: 0.9rem; /* Tamanho ligeiramente reduzido */
   border-radius: var(--border-radius-sm);
-  transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+  transition: background-color var(--transition-speed) ease,
+    color var(--transition-speed) ease;
   position: relative;
   white-space: nowrap; /* Previne quebra de linha */
 }
@@ -165,25 +167,25 @@ main {
 .nav-link:hover,
 .dropdown-toggle:hover {
   background-color: rgba(245, 235, 221, 0.1);
-  color: #F5EBDD;
+  color: #f5ebdd;
 }
 
 .nav-link.active,
 .dropdown-toggle.active {
-  color: #F5EBDD;
+  color: #f5ebdd;
   font-weight: 600;
 }
 
 .nav-link.active::after,
 .dropdown-toggle.active::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -2px;
   left: 50%;
   transform: translateX(-50%);
   width: 60%;
   height: 3px;
-  background-color: #F5EBDD;
+  background-color: #f5ebdd;
   border-radius: 2px;
 }
 
@@ -239,7 +241,9 @@ main {
   opacity: 0;
   visibility: hidden;
   transform: translateY(10px);
-  transition: opacity var(--transition-speed) ease, visibility var(--transition-speed) ease, transform var(--transition-speed) ease;
+  transition: opacity var(--transition-speed) ease,
+    visibility var(--transition-speed) ease,
+    transform var(--transition-speed) ease;
 }
 
 .nav-dropdown:hover .dropdown-menu,
@@ -275,12 +279,12 @@ main {
   height: 32px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #F5EBDD;
+  border: 2px solid #f5ebdd;
 }
 
 .user-avatar-icon {
   font-size: 1.8em; /* Reduzido tamanho */
-  color: #F8F8F8;
+  color: #f8f8f8;
 }
 
 /* Navegação de Autenticação do Header */
@@ -306,16 +310,16 @@ main {
 
 #header-login-btn.header-btn-secondary {
   background-color: transparent;
-  color: #F8F8F8;
-  border: 1px solid #F8F8F8;
+  color: #f8f8f8;
+  border: 1px solid #f8f8f8;
   font-weight: 600;
   letter-spacing: 0.5px;
 }
 
 #header-login-btn.header-btn-secondary:hover {
   background-color: rgba(245, 235, 221, 0.2);
-  color: #F5EBDD;
-  border-color: #F5EBDD;
+  color: #f5ebdd;
+  border-color: #f5ebdd;
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
@@ -328,7 +332,7 @@ main {
   background-color: transparent;
   border: none;
   font-size: 1.6rem; /* Reduzido tamanho */
-  color: #F8F8F8;
+  color: #f8f8f8;
   padding: 5px;
   z-index: 1002;
   cursor: pointer;
@@ -341,7 +345,7 @@ main {
   width: 280px; /* Padrão menor para melhor experiência */
   max-width: 85%;
   height: 100vh;
-  background-color: #F8F8F8;
+  background-color: #f8f8f8;
   box-shadow: -5px 0 15px rgba(0, 0, 0, 0.15);
   z-index: 1010;
   transition: right var(--transition-speed) ease-in-out;
@@ -362,26 +366,26 @@ main {
   padding: 15px 20px;
   border-bottom: 1px solid var(--border-color-light);
   background-color: var(--primary-color);
-  color: #F8F8F8;
+  color: #f8f8f8;
 }
 
 .mobile-menu-title {
   font-size: 1.1rem; /* Reduzido tamanho */
   font-weight: 600;
-  color: #F8F8F8;
+  color: #f8f8f8;
 }
 
 .mobile-menu-close {
   background-color: transparent;
   border: none;
   font-size: 1.4rem; /* Reduzido tamanho */
-  color: #F8F8F8;
+  color: #f8f8f8;
   padding: 5px;
   cursor: pointer;
 }
 
 .mobile-menu-close:hover {
-  color: #F5EBDD;
+  color: #f5ebdd;
 }
 
 .mobile-nav-links {
@@ -421,11 +425,11 @@ main {
 
 .mobile-link.active {
   background-color: var(--primary-color);
-  color: #F8F8F8 !important;
+  color: #f8f8f8 !important;
 }
 
 .mobile-link.active i {
-  color: #F8F8F8 !important;
+  color: #f8f8f8 !important;
 }
 
 .mobile-menu-section-toggle .arrow {
@@ -480,7 +484,8 @@ main {
   z-index: 1005;
   opacity: 0;
   visibility: hidden;
-  transition: opacity var(--transition-speed) ease-in-out, visibility var(--transition-speed) ease-in-out;
+  transition: opacity var(--transition-speed) ease-in-out,
+    visibility var(--transition-speed) ease-in-out;
 }
 
 .mobile-menu-overlay.open,
@@ -497,7 +502,7 @@ main {
   .site-nav {
     padding: 0 2rem; /* Mais espaço nas laterais para telas grandes */
   }
-  
+
   .nav-links-desktop {
     gap: 10px; /* Mais espaço entre itens para telas grandes */
   }
@@ -505,16 +510,16 @@ main {
 
 /* Telas Grandes e Médias */
 @media (max-width: 1199.98px) {
-  .nav-link, 
+  .nav-link,
   .dropdown-toggle {
     padding: 8px 10px; /* Reduz padding */
     font-size: 0.85rem; /* Reduz tamanho de fonte */
   }
-  
+
   .nav-icon {
     margin-right: 5px; /* Menos espaço */
   }
-  
+
   .user-avatar {
     width: 30px; /* Menor avatar */
     height: 30px;
@@ -534,17 +539,33 @@ main {
   .site-logo {
     height: 28px; /* Menor logo */
   }
-  
+
   .site-title {
     height: 20px; /* Menor título */
   }
-  
+
   .site-header {
     height: 60px; /* Header menor em tablets */
   }
-  
+
   .site-header.scrolled {
     height: 55px; /* Header scrolled ainda menor */
+  }
+
+  /* Centralizar logos em tablets */
+  .site-nav {
+    position: relative;
+  }
+
+  .logo-container {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    gap: 8px;
+  }
+
+  .mobile-menu-toggle {
+    margin-left: auto;
   }
 }
 
@@ -562,63 +583,154 @@ main {
     padding: 6px 12px;
     font-size: 0.85rem;
   }
-  
+
   .site-header {
     height: 55px; /* Header ainda menor */
   }
-  
+
   .site-header.scrolled {
     height: 50px;
+  }
+
+  /* Ajustar tamanho das logos para tablets pequenos */
+  .site-logo {
+    height: 26px;
+  }
+
+  .site-title {
+    height: 19px;
   }
 }
 
 /* Smartphones */
 @media (max-width: 575.98px) {
   .site-logo {
-    height: 26px;
+    height: 28px;
   }
-  
+
   .site-title {
-    height: 18px;
+    height: 20px;
   }
-  
+
   .site-header {
     height: 50px; /* Header mais compacto para celulares */
   }
-  
+
   .site-header.scrolled {
     height: 45px;
   }
-  
+
   .mobile-menu {
     width: 240px;
+  }
+
+  /* Manter logos centralizadas em smartphones */
+  .logo-container {
+    gap: 6px;
   }
 }
 
 /* Smartphones Pequenos */
 @media (max-width: 480px) {
-  .site-title {
-    display: none; /* Esconde o título textual para ganhar espaço */
-  }
-  
-  .logo-container {
-    gap: 0;
-  }
-  
+  /* Manter ambas as logos visíveis, mas com tamanhos reduzidos */
   .site-logo {
-    height: 24px;
+    height: 26px;
   }
-  
+
+  .site-title {
+    height: 18px;
+  }
+
+  .logo-container {
+    gap: 5px;
+  }
+
   .mobile-menu-toggle {
     font-size: 1.4rem; /* Botão menu menor */
   }
-  
+
   .mobile-menu {
     max-width: 90%; /* Quase full width */
   }
-  
-  .mobile-link, 
+
+  .mobile-link,
   .mobile-menu-section-toggle {
     padding: 10px 15px; /* Menor padding, áreas de toque maiores */
+  }
+}
+
+/* Smartphones Extra Pequenos */
+@media (max-width: 380px) {
+  .site-logo {
+    height: 24px;
+  }
+
+  .site-title {
+    height: 17px;
+  }
+
+  .logo-container {
+    gap: 4px;
+  }
+
+  .site-header {
+    height: 48px;
+  }
+
+  .site-header.scrolled {
+    height: 43px;
+  }
+}
+
+/* Smartphones Ultra Pequenos - 320px ou menos */
+@media (max-width: 320px) {
+  .site-nav {
+    justify-content: center;
+    padding: 0 8px;
+  }
+
+  .logo-container {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: auto;
+    padding: 17px 0 0 0;
+  }
+
+  .site-logo {
+    height: 22px;
+    margin: 0;
+    display: block;
+  }
+
+  .site-title {
+    height: 15px;
+    margin: 0;
+    display: block;
+  }
+
+  .mobile-menu-toggle {
+    position: absolute;
+    right: 8px;
+    font-size: 1.2rem;
+    padding: 4px;
+  }
+
+  .site-header {
+    height: 45px;
+  }
+
+  .site-header.scrolled {
+    height: 40px;
+  }
+
+  /* Ajuste no menu mobile para telas muito pequenas */
+  .mobile-menu {
+    width: 100%;
+    max-width: 100%;
   }
 }
