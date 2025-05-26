@@ -1,157 +1,219 @@
 :root {
-  /* Cores Principais */
-  --primary-50: #fdf2f8;
-  --primary-100: #fce7f3;
-  --primary-500: #a61b4d;
-  --primary-600: #8e1843;
-  --primary-700: #751338;
-
-  /* Cores Complementares */
-  --accent-500: #c62860;
-
-  /* Espaçamentos e Estética */
-  --space-1: 0.25rem;
+  /* Paleta de Cores Limpa */
+  --wine-primary: #722F37;
+  --wine-secondary: #8B3A3A;
+  --wine-light: #F8F4F4;
+  
+  --white: #FFFFFF;
+  --gray-50: #F9FAFB;
+  --gray-100: #F3F4F6;
+  --gray-200: #E5E7EB;
+  --gray-300: #D1D5DB;
+  --gray-600: #4B5563;
+  --gray-900: #111827;
+  
+  /* Espaçamentos */
   --space-2: 0.5rem;
+  --space-3: 0.75rem;
   --space-4: 1rem;
+  --space-5: 1.25rem;
   --space-6: 1.5rem;
   --space-8: 2rem;
   --space-12: 3rem;
+  
+  /* Bordas e Sombras */
   --radius: 0.5rem;
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --radius-lg: 0.75rem;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;
-  color: #333;
-  background-color: #fff;
+  color: var(--gray-900);
+  background-color: var(--gray-50);
+  margin: 0;
 }
 
 .container {
-  max-width: 1440px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: var(--space-8) var(--space-6);
 }
 
-h1.page-heading {
-  font-size: 2.25rem;
-  color: var(--primary-700);
+/* Breadcrumb */
+.breadcrumb {
   margin-bottom: var(--space-6);
 }
 
-/* Breadcrumb */
-.breadcrumb {
+.breadcrumb ol {
   display: flex;
   align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
   font-size: 0.875rem;
-  color: var(--primary-600);
-  margin-bottom: var(--space-4);
+  color: var(--gray-600);
+}
+
+.breadcrumb li:not(:last-child)::after {
+  content: '/';
+  margin: 0 var(--space-2);
+  color: var(--gray-300);
 }
 
 .breadcrumb a {
+  color: var(--wine-primary);
   text-decoration: none;
-  color: var(--primary-600);
-  background-color: var(--primary-50);
-  padding: var(--space-1) var(--space-2);
-  border-radius: var(--radius);
-  transition: background-color 0.3s;
+  transition: color 0.2s;
 }
 
 .breadcrumb a:hover {
-  background-color: var(--primary-100);
-  color: var(--primary-700);
+  color: var(--wine-secondary);
 }
 
-.breadcrumb span {
-  margin: 0 var(--space-2);
-  color: #999;
+.breadcrumb .current {
+  color: var(--gray-600);
+  font-weight: 500;
 }
 
-/* Módulos */
+/* Título da Página */
+.page-heading {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin: 0 0 var(--space-8) 0;
+  border-bottom: 2px solid var(--wine-primary);
+  padding-bottom: var(--space-3);
+}
+
+/* Grid de Módulos - Layout Vertical Limpo */
 .modules-grid {
-  display: grid;
-  gap: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
 }
 
+/* Cards de Módulos */
 .module-card {
-  background-color: #fff;
-  border: 1px solid var(--primary-100);
-  border-radius: var(--radius);
-  padding: var(--space-6);
-  box-shadow: var(--shadow);
-  transition: transform 0.2s ease;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: all 0.2s ease;
 }
 
 .module-card:hover {
-  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+  border-color: var(--gray-300);
 }
 
-/* Cabeçalho do módulo */
+/* Cabeçalho do Módulo */
 .module-header {
-  border-bottom: 2px solid var(--primary-100);
-  margin-bottom: var(--space-4);
-  padding-bottom: var(--space-2);
+  padding: var(--space-6);
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-100);
 }
 
 .module-title {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--primary-700);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--wine-primary);
   margin: 0;
 }
 
-/* Lista de materiais */
+/* Corpo do Módulo */
+.module-body {
+  padding: 0;
+}
+
+/* Lista de Materiais - Design Limpo e Vertical */
 .materials-list {
   list-style: none;
-  padding: 0;
   margin: 0;
+  padding: 0;
 }
 
 .material-item {
-  display: flex;
-  align-items: center;
-  padding: var(--space-2) var(--space-2);
-  border-bottom: 1px solid var(--primary-100);
-  transition: background-color 0.3s;
-  position: relative;
+  border-bottom: 1px solid var(--gray-100);
+  transition: background-color 0.2s;
 }
 
-.material-item a {
-  text-decoration: none;
-  color: var(--primary-600);
-  font-size: 0.95rem;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  padding-left: var(--space-2);
-  position: relative;
+.material-item:last-child {
+  border-bottom: none;
 }
 
 .material-item:hover {
-  background-color: var(--primary-100);
+  background-color: var(--gray-50);
+}
+
+.material-item a {
+  display: block;
+  padding: var(--space-4) var(--space-6);
+  text-decoration: none;
+  color: var(--gray-900);
+  font-weight: 500;
+  transition: all 0.2s;
+  position: relative;
 }
 
 .material-item:hover a {
-  color: var(--primary-700);
+  color: var(--wine-primary);
+  padding-left: calc(var(--space-6) + var(--space-3));
 }
 
-.material-item:hover::before {
-  content: '';
+.material-item:hover a::before {
+  content: '→';
   position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  background-color: var(--primary-600);
-  border-top-left-radius: var(--radius);
-  border-bottom-left-radius: var(--radius);
+  left: var(--space-6);
+  color: var(--wine-primary);
+  font-weight: bold;
 }
 
-/* Mensagem vazia */
+/* Mensagem Vazia */
 .empty-message {
-  color: #888;
-  font-size: 0.95rem;
-  padding: var(--space-2) 0;
+  color: var(--gray-600);
   font-style: italic;
+  text-align: center;
+  padding: var(--space-8) var(--space-6);
+  background: var(--gray-50);
+  border-radius: var(--radius);
+  margin: var(--space-4) var(--space-6);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .container {
+    padding: var(--space-6) var(--space-4);
+  }
+  
+  .page-heading {
+    font-size: 1.75rem;
+  }
+  
+  .module-header {
+    padding: var(--space-5);
+  }
+  
+  .material-item a {
+    padding: var(--space-3) var(--space-5);
+  }
+  
+  .material-item:hover a {
+    padding-left: calc(var(--space-5) + var(--space-3));
+  }
+  
+  .material-item:hover a::before {
+    left: var(--space-5);
+  }
+}
+
+/* Estados de foco para acessibilidade */
+.breadcrumb a:focus,
+.material-item a:focus {
+  outline: 2px solid var(--wine-primary);
+  outline-offset: 2px;
 }
