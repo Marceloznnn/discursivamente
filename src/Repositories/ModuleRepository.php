@@ -43,6 +43,22 @@ class ModuleRepository
         
         return $modules;
     }
+
+    /**
+     * Retorna a próxima posição disponível para um novo módulo no curso.
+     */
+    public function getNextPosition(int $courseId): int
+    {
+        $stmt = $this->pdo->prepare('
+            SELECT MAX(position) AS max_position 
+            FROM modules 
+            WHERE course_id = :courseId
+        ');
+        $stmt->execute([':courseId' => $courseId]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return ((int)$result['max_position']) + 1;
+    }
     
     public function save(Module $module): void
     {
