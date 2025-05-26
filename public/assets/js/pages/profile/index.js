@@ -1,5 +1,5 @@
 // JavaScript para a página de perfil
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function () {
   // Inicializar componentes
   initializeProfilePage();
 });
@@ -14,58 +14,59 @@ function initializeProfilePage() {
  * Configura o upload de avatar com preview
  */
 function setupAvatarUpload() {
-  const avatarUpload = document.getElementById('avatar-upload');
-  const profileAvatar = document.getElementById('profile-avatar');
-  const avatarForm = document.getElementById('avatar-form');
-  
+  const avatarUpload = document.getElementById("avatar-upload");
+  const profileAvatar = document.getElementById("profile-avatar");
+  const avatarForm = document.getElementById("avatar-form");
+
   if (!avatarUpload || !profileAvatar) return;
 
   // Adicionar feedback visual ao passar o mouse sobre o botão de upload
-  const avatarLabel = document.getElementById('avatar-label');
+  const avatarLabel = document.getElementById("avatar-label");
   if (avatarLabel) {
-    avatarLabel.addEventListener('mouseover', function() {
-      profileAvatar.style.filter = 'brightness(0.9)';
+    avatarLabel.addEventListener("mouseover", function () {
+      profileAvatar.style.filter = "brightness(0.9)";
     });
-    
-    avatarLabel.addEventListener('mouseout', function() {
-      profileAvatar.style.filter = 'brightness(1)';
+
+    avatarLabel.addEventListener("mouseout", function () {
+      profileAvatar.style.filter = "brightness(1)";
     });
   }
 
   // Mostrar preview antes do upload
-  avatarUpload.addEventListener('change', function(e) {
+  avatarUpload.addEventListener("change", function (e) {
     if (this.files && this.files[0]) {
       // Verificar se o arquivo é uma imagem
       const fileType = this.files[0].type;
-      if (!fileType.startsWith('image/')) {
-        showNotification('Por favor, selecione apenas arquivos de imagem.', 'error');
+      if (!fileType.startsWith("image/")) {
+        showNotification(
+          "Por favor, selecione apenas arquivos de imagem.",
+          "error"
+        );
+        return;
+      } // Verificar tamanho do arquivo (max 20MB)
+      const fileSize = this.files[0].size / 1024 / 1024; // em MB
+      if (fileSize > 20) {
+        showNotification("A imagem não pode ser maior que 20MB.", "error");
         return;
       }
 
-      // Verificar tamanho do arquivo (max 5MB)
-      const fileSize = this.files[0].size / 1024 / 1024; // em MB
-      if (fileSize > 5) {
-        showNotification('A imagem não pode ser maior que 5MB.', 'error');
-        return;
-      }
-      
       // Preview da imagem
       const reader = new FileReader();
-      reader.onload = function(event) {
+      reader.onload = function (event) {
         // Criar transição suave
-        profileAvatar.style.opacity = '0.5';
-        
+        profileAvatar.style.opacity = "0.5";
+
         setTimeout(() => {
           profileAvatar.src = event.target.result;
-          profileAvatar.style.opacity = '1';
+          profileAvatar.style.opacity = "1";
         }, 300);
       };
-      
+
       reader.readAsDataURL(this.files[0]);
-      
+
       // Enviar o formulário com um pequeno delay para permitir ver o preview
       setTimeout(() => {
-        showNotification('Enviando imagem...', 'info');
+        showNotification("Enviando imagem...", "info");
         avatarForm.submit();
       }, 1000);
     }
@@ -76,13 +77,13 @@ function setupAvatarUpload() {
  * Configura tooltips para melhorar a experiência do usuário
  */
 function setupTooltips() {
-  const avatarLabel = document.getElementById('avatar-label');
-  
+  const avatarLabel = document.getElementById("avatar-label");
+
   if (avatarLabel) {
     // Criar tooltip element
-    const tooltip = document.createElement('div');
-    tooltip.className = 'tooltip';
-    tooltip.innerText = 'Alterar foto';
+    const tooltip = document.createElement("div");
+    tooltip.className = "tooltip";
+    tooltip.innerText = "Alterar foto";
     tooltip.style.cssText = `
       position: absolute;
       background-color: rgba(0,0,0,0.7);
@@ -96,30 +97,32 @@ function setupTooltips() {
       white-space: nowrap;
       z-index: 100;
     `;
-    
+
     document.body.appendChild(tooltip);
-    
+
     // Mostrar/esconder tooltip
-    avatarLabel.addEventListener('mouseover', (e) => {
+    avatarLabel.addEventListener("mouseover", (e) => {
       const rect = avatarLabel.getBoundingClientRect();
       tooltip.style.top = `${rect.top - 30}px`;
-      tooltip.style.left = `${rect.left + rect.width/2 - tooltip.offsetWidth/2}px`;
-      tooltip.style.opacity = '1';
+      tooltip.style.left = `${
+        rect.left + rect.width / 2 - tooltip.offsetWidth / 2
+      }px`;
+      tooltip.style.opacity = "1";
     });
-    
-    avatarLabel.addEventListener('mouseout', () => {
-      tooltip.style.opacity = '0';
+
+    avatarLabel.addEventListener("mouseout", () => {
+      tooltip.style.opacity = "0";
     });
   }
-  
+
   // Exemplo: tooltip para status de e-mail
-  const verified = document.querySelector('.verified');
+  const verified = document.querySelector(".verified");
   if (verified) {
-    verified.title = 'E-mail verificado';
+    verified.title = "E-mail verificado";
   }
-  const notVerified = document.querySelector('.not-verified');
+  const notVerified = document.querySelector(".not-verified");
   if (notVerified) {
-    notVerified.title = 'E-mail não verificado';
+    notVerified.title = "E-mail não verificado";
   }
 }
 
@@ -128,43 +131,45 @@ function setupTooltips() {
  */
 function setupAnimations() {
   // Adicionar classes de animação aos elementos
-  const profileCard = document.getElementById('profile-card');
+  const profileCard = document.getElementById("profile-card");
   if (profileCard) {
-    profileCard.classList.add('animated-fade-in');
+    profileCard.classList.add("animated-fade-in");
   }
-  
+
   // Adicionar foco suave no campo de texto ao editar
-  const bioSection = document.getElementById('profile-bio');
+  const bioSection = document.getElementById("profile-bio");
   if (bioSection) {
-    bioSection.addEventListener('click', () => {
-      const editUrl = document.getElementById('btn-edit').getAttribute('href');
+    bioSection.addEventListener("click", () => {
+      const editUrl = document.getElementById("btn-edit").getAttribute("href");
       if (editUrl) {
         window.location.href = editUrl;
       }
     });
   }
-  
+
   // Modal de desativação com animação
-  const modal = document.getElementById('deactivate-modal');
+  const modal = document.getElementById("deactivate-modal");
   if (modal) {
-    window.confirmDeactivate = function() {
-      modal.style.display = 'flex';
-      setTimeout(() => modal.classList.add('show'), 10);
+    window.confirmDeactivate = function () {
+      modal.style.display = "flex";
+      setTimeout(() => modal.classList.add("show"), 10);
     };
-    window.closeModal = function() {
-      modal.classList.remove('show');
-      setTimeout(() => { modal.style.display = 'none'; }, 300);
+    window.closeModal = function () {
+      modal.classList.remove("show");
+      setTimeout(() => {
+        modal.style.display = "none";
+      }, 300);
     };
-    modal.addEventListener('click', function(e) {
+    modal.addEventListener("click", function (e) {
       if (e.target === modal) closeModal();
     });
   }
-  
+
   // Feedback visual ao salvar perfil
-  const successMsg = document.getElementById('success-message');
+  const successMsg = document.getElementById("success-message");
   if (successMsg) {
-    successMsg.classList.add('show');
-    setTimeout(() => successMsg.classList.remove('show'), 3500);
+    successMsg.classList.add("show");
+    setTimeout(() => successMsg.classList.remove("show"), 3500);
   }
 }
 
@@ -173,15 +178,15 @@ function setupAnimations() {
  * @param {string} message - Mensagem a ser exibida
  * @param {string} type - Tipo de notificação (success, error, info)
  */
-function showNotification(message, type = 'info') {
+function showNotification(message, type = "info") {
   // Verificar se já existe uma notificação e removê-la
-  const existingNotification = document.querySelector('.profile-notification');
+  const existingNotification = document.querySelector(".profile-notification");
   if (existingNotification) {
     existingNotification.remove();
   }
-  
+
   // Criar elemento de notificação
-  const notification = document.createElement('div');
+  const notification = document.createElement("div");
   notification.className = `profile-notification ${type}`;
   notification.innerHTML = `
     <div class="notification-content">
@@ -189,7 +194,7 @@ function showNotification(message, type = 'info') {
       <button class="notification-close">×</button>
     </div>
   `;
-  
+
   // Estilizar notificação
   notification.style.cssText = `
     position: fixed;
@@ -205,25 +210,25 @@ function showNotification(message, type = 'info') {
     opacity: 0;
     transition: all 0.4s ease;
   `;
-  
+
   // Estilizar baseado no tipo
-  let borderColor = '#3498db';
-  if (type === 'success') borderColor = '#2ecc71';
-  if (type === 'error') borderColor = '#e74c3c';
-  
+  let borderColor = "#3498db";
+  if (type === "success") borderColor = "#2ecc71";
+  if (type === "error") borderColor = "#e74c3c";
+
   notification.style.borderLeft = `4px solid ${borderColor}`;
-  
+
   // Estilizar conteúdo
-  const content = notification.querySelector('.notification-content');
+  const content = notification.querySelector(".notification-content");
   content.style.cssText = `
     padding: 15px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
   `;
-  
+
   // Estilizar botão de fechar
-  const closeBtn = notification.querySelector('.notification-close');
+  const closeBtn = notification.querySelector(".notification-close");
   closeBtn.style.cssText = `
     background: none;
     border: none;
@@ -232,21 +237,21 @@ function showNotification(message, type = 'info') {
     font-size: 20px;
     margin-left: 10px;
   `;
-  
+
   // Adicionar notificação ao DOM
   document.body.appendChild(notification);
-  
+
   // Animar entrada
   setTimeout(() => {
-    notification.style.transform = 'translateY(0)';
-    notification.style.opacity = '1';
+    notification.style.transform = "translateY(0)";
+    notification.style.opacity = "1";
   }, 10);
-  
+
   // Configurar fechamento
-  closeBtn.addEventListener('click', () => {
+  closeBtn.addEventListener("click", () => {
     closeNotification(notification);
   });
-  
+
   // Auto-fechar após 5 segundos
   setTimeout(() => {
     closeNotification(notification);
@@ -258,16 +263,16 @@ function showNotification(message, type = 'info') {
  * @param {HTMLElement} notification - Elemento de notificação
  */
 function closeNotification(notification) {
-  notification.style.transform = 'translateY(-20px)';
-  notification.style.opacity = '0';
-  
+  notification.style.transform = "translateY(-20px)";
+  notification.style.opacity = "0";
+
   setTimeout(() => {
     notification.remove();
   }, 400);
 }
 
 // Adicionar estilos globais para animações
-const style = document.createElement('style');
+const style = document.createElement("style");
 style.textContent = `
   .animated-fade-in {
     animation: fadeIn 0.5s ease-out forwards;

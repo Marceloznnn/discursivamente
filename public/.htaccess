@@ -51,6 +51,12 @@ Options -Indexes
     # Permissões de origem
     Header always set Access-Control-Allow-Origin "*"
     
+    # Permitir embedding de PDFs
+    <FilesMatch "\.pdf$">
+        Header set Content-Disposition "inline"
+        Header set X-Content-Type-Options "nosniff"
+    </FilesMatch>
+    
     # Habilitar HSTS (forçar HTTPS) - só descomente quando tiver SSL configurado
     # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
 
@@ -75,6 +81,53 @@ Options -Indexes
 # Compressão de conteúdo
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+</IfModule>
+
+# Configurações para PDFs e vídeos
+<FilesMatch "\.pdf$">
+    ForceType application/pdf
+    Header set Content-Type "application/pdf"
+    Header set Content-Disposition "inline; filename=\"document.pdf\""
+    Header set X-Content-Type-Options "nosniff"
+    Header unset "Pragma"
+    Header unset "Cache-Control"
+    # Adicionar cabeçalhos de permissão de acesso para evitar problemas de CORS
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type, Authorization"
+    # Forçar armazenamento em cache para melhorar a performance
+    Header set Cache-Control "public, max-age=86400"
+</FilesMatch>
+
+<FilesMatch "\.(mp4|webm|ogg)$">
+    ForceType video/mp4
+    Header set Content-Disposition "inline"
+    Header set Accept-Ranges "bytes"
+    Header set X-Content-Type-Options "nosniff"
+</FilesMatch>
+
+# Aumentar limites de upload
+<IfModule mod_php.c>
+    php_value upload_max_filesize 200M
+    php_value post_max_size 200M
+    php_value max_execution_time 600
+    php_value max_input_time 600
+    php_value memory_limit 512M
+    php_value max_file_uploads 20
+    php_value default_socket_timeout 600
+</IfModule>
+
+# Se estiver usando PHP via CGI/FastCGI
+<IfModule mod_fcgid.c>
+    FcgidIOTimeout 600
+    FcgidBusyTimeout 600
+    FcgidConnectTimeout 600
+    FcgidMaxRequestLen 209715200
+</IfModule>
+
+# Timeout para o Apache
+<IfModule mod_reqtimeout.c>
+    RequestReadTimeout header=60,body=600
 </IfModule>
 
 # Cache de navegador

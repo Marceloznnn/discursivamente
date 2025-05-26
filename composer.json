@@ -19,6 +19,7 @@
     "psr-4": {
       "App\\": "src/App/",
       "Core\\": "src/Core/",
+      "Config\\": "src/Config/",
       "Infrastructure\\": "src/Infrastructure/",
       "Repositories\\": "src/Repositories/",
       "Controller\\": "src/Controller/",
