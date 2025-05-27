@@ -1,20 +1,19 @@
-{# templates/teacher/courses/create.twig #}
 {% extends 'layouts/base.twig' %}
 
 {% block title %}Criar Curso{% endblock %}
 
 {% block styles %}
-  <link rel="stylesheet" href="/assets/css/pages/curso/teacher/create.css">
+  <link rel="stylesheet" href="/assets/css/global/edit.css">
 {% endblock %}
 
 {% block content %}
-  <section class="create-course">
+  <section class="form-page">
     <div class="form-container">
       <header class="form-header">
         <h1><i class="fas fa-plus-circle"></i> Criar Novo Curso</h1>
       </header>
 
-      <form action="/teacher/courses" method="post" class="course-form">
+      <form action="/teacher/courses" method="post" class="form-content">
         <div class="form-group">
           <label for="title">Título do Curso</label>
           <input type="text" name="title" id="title" placeholder="Digite o título" required>
@@ -27,7 +26,7 @@
 
         <div class="form-group">
           <label for="category_id">Categoria</label>
-          <select name="category_id" id="category_id">
+          <select name="category_id" id="category_id" required>
             <option value="">-- Selecione uma categoria --</option>
             {% for category in categories %}
               <option value="{{ category.id }}">{{ category.name }}</option>
@@ -36,10 +35,10 @@
         </div>
 
         <div class="form-footer">
-          <button type="submit" class="btn-save-course">
+          <button type="submit" class="btn-primary">
             <i class="fas fa-save"></i> Confirmar Criação
           </button>
-          <a href="/teacher/courses" class="btn-cancel-create">
+          <a href="/teacher/courses" class="btn-secondary">
             <i class="fas fa-times"></i> Retornar
           </a>
         </div>

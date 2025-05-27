@@ -44,5 +44,103 @@
         </div>
       {% endif %}
     </div>
+
+    {# Paginação - só exibe se houver mais de uma página #}
+    {% if pagination.total_pages > 1 %}
+      <div class="pagination-wrapper">
+        <div class="pagination-info">
+          Exibindo <strong>{{ ((pagination.current_page - 1) * pagination.per_page + 1) }}</strong> a 
+          <strong>{{ min(pagination.current_page * pagination.per_page, pagination.total_courses) }}</strong> 
+          de <strong>{{ pagination.total_courses }}</strong> cursos
+        </div>
+
+        {# Navegação completa (desktop/tablet) #}
+        <nav class="pagination-nav" aria-label="Navegação de páginas">
+          {# Botão Anterior #}
+          {% if pagination.has_prev %}
+            <a href="?page={{ pagination.prev_page }}" class="pagination-btn pagination-btn--nav" aria-label="Página anterior">
+              <i class="fas fa-chevron-left"></i> Anterior
+            </a>
+          {% else %}
+            <span class="pagination-btn pagination-btn--nav pagination-btn--disabled" aria-disabled="true">
+              <i class="fas fa-chevron-left"></i> Anterior
+            </span>
+          {% endif %}
+
+          {# Números das páginas #}
+          {% set start_page = max(1, pagination.current_page - 2) %}
+          {% set end_page = min(pagination.total_pages, pagination.current_page + 2) %}
+
+          {# Primeira página se não estiver no range #}
+          {% if start_page > 1 %}
+            <a href="?page=1" class="pagination-btn pagination-btn--number" aria-label="Página 1">1</a>
+            {% if start_page > 2 %}
+              <span class="pagination-separator">...</span>
+            {% endif %}
+          {% endif %}
+
+          {# Páginas do range atual #}
+          {% for page in start_page..end_page %}
+            {% if page == pagination.current_page %}
+              <span class="pagination-btn pagination-btn--number pagination-btn--current" aria-current="page" aria-label="Página atual, página {{ page }}">
+                {{ page }}
+              </span>
+            {% else %}
+              <a href="?page={{ page }}" class="pagination-btn pagination-btn--number" aria-label="Página {{ page }}">
+                {{ page }}
+              </a>
+            {% endif %}
+          {% endfor %}
+
+          {# Última página se não estiver no range #}
+          {% if end_page < pagination.total_pages %}
+            {% if end_page < pagination.total_pages - 1 %}
+              <span class="pagination-separator">...</span>
+            {% endif %}
+            <a href="?page={{ pagination.total_pages }}" class="pagination-btn pagination-btn--number" aria-label="Página {{ pagination.total_pages }}">
+              {{ pagination.total_pages }}
+            </a>
+          {% endif %}
+
+          {# Botão Próximo #}
+          {% if pagination.has_next %}
+            <a href="?page={{ pagination.next_page }}" class="pagination-btn pagination-btn--nav" aria-label="Próxima página">
+              Próximo <i class="fas fa-chevron-right"></i>
+            </a>
+          {% else %}
+            <span class="pagination-btn pagination-btn--nav pagination-btn--disabled" aria-disabled="true">
+              Próximo <i class="fas fa-chevron-right"></i>
+            </span>
+          {% endif %}
+        </nav>
+
+        {# Navegação compacta (mobile) #}
+        <nav class="pagination-nav pagination-nav--compact" aria-label="Navegação de páginas">
+          {% if pagination.has_prev %}
+            <a href="?page={{ pagination.prev_page }}" class="pagination-btn pagination-btn--nav" aria-label="Página anterior">
+              <i class="fas fa-chevron-left"></i> Anterior
+            </a>
+          {% else %}
+            <span class="pagination-btn pagination-btn--nav pagination-btn--disabled">
+              <i class="fas fa-chevron-left"></i> Anterior
+            </span>
+          {% endif %}
+
+          <div class="pagination-current-indicator">
+            {{ pagination.current_page }} / {{ pagination.total_pages }}
+          </div>
+
+          {% if pagination.has_next %}
+            <a href="?page={{ pagination.next_page }}" class="pagination-btn pagination-btn--nav" aria-label="Próxima página">
+              Próximo <i class="fas fa-chevron-right"></i>
+            </a>
+          {% else %}
+            <span class="pagination-btn pagination-btn--nav pagination-btn--disabled">
+              Próximo <i class="fas fa-chevron-right"></i>
+            </span>
+          {% endif %}
+        </nav>
+      </div>
+    {% endif %}
   </section>
 {% endblock %}

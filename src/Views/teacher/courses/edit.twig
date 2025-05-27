@@ -1,20 +1,19 @@
-{# templates/teacher/courses/edit.twig #}
 {% extends 'layouts/base.twig' %}
 
 {% block title %}Editar Curso{% endblock %}
 
 {% block styles %}
-  <link rel="stylesheet" href="/assets/css/pages/curso/teacher/edit.css">
+  <link rel="stylesheet" href="/assets/css/global/edit.css">
 {% endblock %}
 
 {% block content %}
-  <section class="edit-course">
+  <section class="form-page">
     <div class="form-container">
       <header class="form-header">
         <h1><i class="fas fa-edit"></i> Editar Curso</h1>
       </header>
 
-      <form action="/teacher/courses/{{ course.id }}/update" method="post" class="course-form">
+      <form action="/teacher/courses/{{ course.id }}/update" method="post" class="form-content">
         <div class="form-group">
           <label for="title">Título do Curso</label>
           <input type="text" name="title" id="title" value="{{ course.title }}" required>
@@ -27,7 +26,7 @@
 
         <div class="form-group">
           <label for="category_id">Categoria</label>
-          <select name="category_id" id="category_id">
+          <select name="category_id" id="category_id" required>
             <option value="">-- Selecione uma categoria --</option>
             {% for category in categories %}
               <option value="{{ category.id }}" {% if course.categoryId == category.id %}selected{% endif %}>
@@ -38,10 +37,10 @@
         </div>
 
         <div class="form-footer">
-          <button type="submit" class="btn-update-course">
+          <button type="submit" class="btn-primary">
             <i class="fas fa-save"></i> Atualizar Curso
           </button>
-          <a href="/teacher/courses" class="btn-cancel-update">
+          <a href="/teacher/courses" class="btn-secondary">
             <i class="fas fa-times"></i> Cancelar Edição
           </a>
         </div>

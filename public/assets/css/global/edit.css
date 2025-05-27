@@ -1,0 +1,290 @@
+/* public/assets/css/global/edit.css */
+
+/* ==============================
+   VARIÁVEIS GLOBAIS
+   ============================== */
+:root {
+  --primary-color: #6a1b1a;
+  --primary-hover: #821f1e;
+  --secondary-color: #e0e0e0;
+  --secondary-hover: #d0d0d0;
+  --bg-light: #f7f7f9;
+  --text-color: #333;
+  --border-radius: 16px;
+  --input-radius: 8px;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ==============================
+   RESET / BASE
+   ============================== */
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  background-color: var(--bg-light);
+  color: var(--text-color);
+}
+
+/* ==============================
+   CONTAINER DO FORMULÁRIO
+   ============================== */
+.form-page {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+  background: var(--bg-light);
+}
+
+.form-container {
+  background: #fff;
+  border-radius: var(--border-radius);
+  padding: 40px;
+  max-width: 700px;
+  width: 100%;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==============================
+   HEADER DO FORMULÁRIO
+   ============================== */
+.form-header {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.form-header h1 {
+  font-size: 28px;
+  color: var(--primary-color);
+  font-weight: 600;
+  margin: 0;
+}
+
+/* ==============================
+   GRUPOS DE CAMPOS
+   ============================== */
+.form-content .form-group {
+  margin-bottom: 25px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-color);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: var(--input-radius);
+  font-size: 15px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(106, 27, 26, 0.1);
+  outline: none;
+}
+
+.form-group img {
+  max-width: 120px;
+  border-radius: 50%;
+  margin-top: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* ==============================
+   BOTÕES PRINCIPAIS
+   ============================== */
+.btn-primary,
+.btn-secondary {
+  text-align: center;
+  padding: 12px 0;
+  border-radius: var(--input-radius);
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  display: inline-block;
+  transition: background-color 0.3s, color 0.3s;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+}
+
+.btn-secondary {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+}
+
+.btn-secondary:hover {
+  background-color: var(--secondary-hover);
+}
+
+/* ==============================
+   FOOTER GERAL (quando houver múltiplos botões)
+   ============================== */
+.form-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+/* ==============================
+   CHECKBOX + BOTÃO NA MESMA LINHA
+   ============================== */
+.termos-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.termos-box input[type="checkbox"] {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+.termos-box label {
+  flex: 1;
+  margin: 0 10px;
+}
+
+.termos-box .btn-primary {
+  flex: 0 0 auto;
+  padding: 10px 16px;
+}
+
+/* Botão desabilitado */
+#botao-enviar:disabled {
+  background-color: #ccc !important;
+  cursor: not-allowed !important;
+  opacity: 0.7;
+}
+
+/* ==============================
+   ALERTAS DE SUCESSO / ERRO
+   ============================== */
+.alert {
+  padding: 15px;
+  border-radius: var(--input-radius);
+  margin-bottom: 20px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.alert-error {
+  background-color: #ffe5e5;
+  color: #9c1c1c;
+  border-left: 5px solid #d32f2f;
+}
+
+.alert-success {
+  background-color: #e4f7ec;
+  color: #256029;
+  border-left: 5px solid #2e7d32;
+}
+
+/* ==============================
+   MODAL DE TERMOS
+   ============================== */
+.modal-termos {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+  background-color: rgba(0,0,0,0.6);
+  padding: 20px;
+}
+
+.modal-content {
+  background: #fff;
+  margin: 5% auto;
+  padding: 30px;
+  border-radius: var(--input-radius);
+  width: 90%;
+  max-width: 700px;
+  box-shadow: var(--shadow);
+  position: relative;
+}
+
+.close-modal {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  color: var(--text-color);
+}
+
+/* Link informativo dentro de form-group */
+.link-info {
+  color: var(--primary-color);
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.link-info:hover {
+  text-decoration: none;
+}
+
+/* ==============================
+   RESPONSIVIDADE
+   ============================== */
+@media (max-width: 600px) {
+  .form-container {
+    padding: 25px 20px;
+  }
+
+  .form-header h1 {
+    font-size: 22px;
+  }
+
+  .form-content .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 14px;
+  }
+
+  .termos-box {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .termos-box label {
+    margin: 8px 0;
+  }
+
+  .termos-box .btn-primary {
+    width: 100%;
+  }
+
+  .modal-content {
+    margin: 10% auto;
+    padding: 20px;
+  }
+}

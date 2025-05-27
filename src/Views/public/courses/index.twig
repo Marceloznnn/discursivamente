@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-  
+
   {# Formulário de busca #}
   <form method="get" action="/courses" class="search-form">
     <input
@@ -21,7 +21,7 @@
     {% endif %}
   </form>
 
-  {# Lista de cursos em cards #}
+  {# Lista de cursos em cards, ordenados pelos critérios definidos no controller #}
   <ul class="course-list">
     {% for course in courses %}
       <li class="course-item">
@@ -34,13 +34,29 @@
           <a href="/courses/{{ course.getId() }}">
             <strong>{{ course.getTitle() }}</strong>
           </a>
-          <p>{{ course.getDescription()|slice(0, 100) ~ '...' }}</p>
 
-          <div class="participants">
-            👥 {{ participantCounts[course.getId()] }}
-            {{ participantCounts[course.getId()] == 1
-               ? 'participante'
-               : 'participantes' }}
+          <div class="stats">
+            <div class="participants">
+              👥 {{ participantCounts[course.getId()] }}
+              {{ participantCounts[course.getId()] == 1
+                 ? 'participante'
+                 : 'participantes' }}
+            </div>
+            <div class="rating">
+              <span class="stars">
+                {% set rating = courseRatings[course.getId()].average_rating %}
+                {% for i in 1..5 %}
+                  {% if i <= rating %}
+                    ⭐
+                  {% else %}
+                    ☆
+                  {% endif %}
+                {% endfor %}
+              </span>
+              <span class="rating-text">
+                {{ courseRatings[course.getId()].average_rating }} ({{ courseRatings[course.getId()].total_ratings }})
+              </span>
+            </div>
           </div>
 
           <a href="/courses/{{ course.getId() }}" class="course-cta">
@@ -71,4 +87,5 @@
       </ul>
     </nav>
   {% endif %}
+
 {% endblock %}

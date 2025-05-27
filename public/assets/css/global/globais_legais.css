@@ -1,0 +1,268 @@
+/* public/assets/css/global/globais_legais.css */
+
+/* ==============================
+   RESET BÁSICO
+   ============================== */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ==============================
+   VARIÁVEIS GLOBAIS
+   ============================== */
+:root {
+  --color-primary: #800020;
+  --color-primary-hover: #a8324b;
+  --color-secondary: #333333;
+  --color-background: #ffffff;
+  --color-muted: #666666;
+  --border-radius: 8px;
+  --spacing: 1rem;
+  --font-base: 'Segoe UI', Roboto, sans-serif;
+  --transition-speed: 0.3s;
+}
+
+/* ==============================
+   TIPOGRAFIA
+   ============================== */
+body {
+  font-family: var(--font-base);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--color-secondary);
+  background-color: var(--color-background);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-primary);
+  margin-bottom: 0.5em;
+  line-height: 1.2;
+}
+
+h1 { font-size: 2.5rem; border-bottom: 4px solid var(--color-primary); padding-bottom: 0.3em; }
+h2 { font-size: 2rem; border-left: 6px solid var(--color-primary); padding-left: 0.5em; margin-top: 1.5em; }
+h3 { font-size: 1.5rem; margin-top: 1.2em; }
+h4 { font-size: 1.2rem; margin-top: 1em; }
+
+p {
+  margin-bottom: 1em;
+  color: var(--color-muted);
+}
+
+/* ==============================
+   LINKS
+   ============================== */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-speed);
+}
+
+a:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+}
+
+/* ==============================
+   LISTAS
+   ============================== */
+ul, ol {
+  margin: 1em 0;
+  padding-left: 1.5em;
+}
+
+ul li {
+  margin-bottom: 0.5em;
+  position: relative;
+}
+
+ul li::before {
+  content: "•";
+  color: var(--color-primary);
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
+}
+
+ol li {
+  margin-bottom: 0.5em;
+}
+
+/* ==============================
+   CONTAINERS GERAIS
+   ============================== */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing);
+}
+
+/* ==============================
+   NAVEGAÇÃO
+   ============================== */
+.navbar {
+  background-color: var(--color-background);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 0.5em var(--spacing);
+}
+
+.navbar .nav-list {
+  list-style: none;
+  display: flex;
+  gap: var(--spacing);
+}
+
+.navbar .nav-list li a {
+  padding: 0.5em 1em;
+  border-radius: var(--border-radius);
+  transition: background-color var(--transition-speed);
+}
+
+.navbar .nav-list li a:hover {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+/* ==============================
+   BOTÕES
+   ============================== */
+.btn {
+  display: inline-block;
+  padding: 0.6em 1.2em;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+  border: none;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.btn-secondary {
+  background-color: var(--color-secondary);
+  color: #fff;
+}
+
+.btn-secondary:hover {
+  opacity: 0.8;
+}
+
+/* ==============================
+   FORMULÁRIOS
+   ============================== */
+input, select, textarea, button {
+  font-family: inherit;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 0.8em;
+  border: 1px solid #ccc;
+  border-radius: var(--border-radius);
+  margin-top: 0.3em;
+  margin-bottom: 1em;
+  transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(128,0,32,0.2);
+  outline: none;
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 1.5em;
+}
+
+.form-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing);
+  margin-top: var(--spacing);
+}
+
+/* ==============================
+   TABELAS
+   ============================== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5em;
+}
+
+table th, table td {
+  padding: 0.8em;
+  border: 1px solid #ddd;
+}
+
+table th {
+  background-color: var(--color-primary);
+  color: #fff;
+  text-align: left;
+}
+
+/* ==============================
+   ALERTAS
+   ============================== */
+.alert {
+  padding: 1em;
+  border-radius: var(--border-radius);
+  margin-bottom: 1em;
+}
+
+.alert-success {
+  background-color: #e4f7ec;
+  color: #256029;
+  border-left: 5px solid #2e7d32;
+}
+
+.alert-error {
+  background-color: #ffe5e5;
+  color: #9c1c1c;
+  border-left: 5px solid #d32f2f;
+}
+
+/* ==============================
+   RODAPÉ
+   ============================== */
+.footer {
+  background-color: var(--color-secondary);
+  color: #fff;
+  text-align: center;
+  padding: 1em 0;
+  margin-top: 2em;
+}
+
+/* ==============================
+   RESPONSIVIDADE
+   ============================== */
+@media (max-width: 1024px) {
+  .navbar .nav-list {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 768px) {
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.5rem; }
+  .form-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .btn {
+    width: 100%;
+  }
+}

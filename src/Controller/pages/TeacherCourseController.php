@@ -22,6 +22,9 @@ class TeacherCourseController
     private CourseParticipationRepository $participationRepo;
     private CloudinaryService $cloudService;
 
+    // Configuração da paginação
+    private const COURSES_PER_PAGE = 16;
+
     public function __construct(Environment $twig, PDO $pdo, CloudinaryService $cloudService)
     {
         TeacherMiddleware::handle();
@@ -35,14 +38,34 @@ class TeacherCourseController
         $this->cloudService      = $cloudService;
     }
 
-    // 1) Lista todos os cursos do professor
+    // 1) Lista todos os cursos do professor com paginação
     public function index(): void
     {
-        $userId  = $_SESSION['user']['id'];
-        $courses = $this->courseRepo->findByCreatorId($userId);
+        $userId = $_SESSION['user']['id'];
+        $page = max(1, (int)($_GET['page'] ?? 1));
+        
+        // Busca o total de cursos
+        $totalCourses = $this->courseRepo->countByCreatorId($userId);
+        
+        // Calcula a paginação
+        $totalPages = ceil($totalCourses / self::COURSES_PER_PAGE);
+        $offset = ($page - 1) * self::COURSES_PER_PAGE;
+        
+        // Busca os cursos da página atual
+        $courses = $this->courseRepo->findByCreatorIdPaginated($userId, self::COURSES_PER_PAGE, $offset);
 
         echo $this->twig->render('teacher/courses/index.twig', [
-            'courses' => $courses
+            'courses' => $courses,
+            'pagination' => [
+                'current_page' => $page,
+                'total_pages' => $totalPages,
+                'total_courses' => $totalCourses,
+                'per_page' => self::COURSES_PER_PAGE,
+                'has_prev' => $page > 1,
+                'has_next' => $page < $totalPages,
+                'prev_page' => $page - 1,
+                'next_page' => $page + 1
+            ]
         ]);
     }
 
@@ -116,26 +139,26 @@ class TeacherCourseController
     }
 
     // 7) Exibe detalhes de um curso
-public function show(int $id): void
-{
-    $course = $this->courseRepo->findById($id);
-    $this->authorize($course);
+    public function show(int $id): void
+    {
+        $course = $this->courseRepo->findById($id);
+        $this->authorize($course);
 
-    $commentCount     = count($this->commentRepo->findByCourseId($id));
-    $participantCount = $this->participationRepo->countActiveByCourse($id);
+        $commentCount     = count($this->commentRepo->findByCourseId($id));
+        $participantCount = $this->participationRepo->countActiveByCourse($id);
 
-    // nova linha: busca a categoria pelo ID (pode ser null)
-    $category = $course->getCategoryId()
-        ? $this->categoryRepo->findById($course->getCategoryId())
-        : null;
+        // nova linha: busca a categoria pelo ID (pode ser null)
+        $category = $course->getCategoryId()
+            ? $this->categoryRepo->findById($course->getCategoryId())
+            : null;
 
-    echo $this->twig->render('teacher/courses/show.twig', [
-        'course'           => $course,
-        'commentCount'     => $commentCount,
-        'participantCount' => $participantCount,
-        'category'         => $category,      // <– passamos aqui
-    ]);
-}
+        echo $this->twig->render('teacher/courses/show.twig', [
+            'course'           => $course,
+            'commentCount'     => $commentCount,
+            'participantCount' => $participantCount,
+            'category'         => $category,
+        ]);
+    }
 
     // 8) Exibe a lista de comentários de um curso
     public function comments(int $id): void

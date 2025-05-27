@@ -1,45 +1,70 @@
-{# File: templates/teacher/modules/materials/create.twig #}
+{# templates/teacher/courses/modules/materials/create.twig #}
 {% extends 'layouts/base.twig' %}
-{# ou, se você usar a pasta layouts: {% extends 'layouts/base.twig' %} #}
 
 {% block title %}Enviar Material – {{ module.title }}{% endblock %}
 
-{% block content %}
-<div class="container mx-auto p-6 max-w-lg">
-  <h1 class="text-2xl font-semibold mb-4">Novo Material para {{ module.title }}</h1>
-  
-  {% if app.session.flash.error is defined and app.session.flash.error %}
-    <div class="bg-red-100 text-red-800 p-3 rounded mb-4">
-      <ul>
-        {% for msg in app.session.flash.error %}
-          <li>{{ msg }}</li>
-        {% endfor %}
-      </ul>
-    </div>
-  {% endif %}
-  {% if app.session.flash.success is defined and app.session.flash.success %}
-    <div class="bg-green-100 text-green-800 p-3 rounded mb-4">
-      <ul>
-        {% for msg in app.session.flash.success %}
-          <li>{{ msg }}</li>
-        {% endfor %}
-      </ul>
-    </div>
-  {% endif %}
+{% block styles %}
+  <link rel="stylesheet" href="/assets/css/global/edit.css">
+{% endblock %}
 
-  <form action="/teacher/courses/{{ course.id }}/modules/{{ module.id }}/materials" method="POST" enctype="multipart/form-data" class="space-y-4">
-    <div>
-      <label for="title" class="block text-sm font-medium">Título</label>
-      <input type="text" name="title" id="title" class="mt-1 block w-full border rounded p-2" placeholder="Opcional">
+{% block content %}
+  <section class="form-page">
+    <div class="form-container">
+      <header class="form-header">
+        <h1><i class="fas fa-upload"></i> Novo Material para {{ module.title }}</h1>
+      </header>
+
+      {# Flash messages #}
+      {% if app.session.flash.error is defined and app.session.flash.error %}
+        <div class="alert alert-error">
+          <ul>
+            {% for msg in app.session.flash.error %}
+              <li>{{ msg }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+      {% if app.session.flash.success is defined and app.session.flash.success %}
+        <div class="alert alert-success">
+          <ul>
+            {% for msg in app.session.flash.success %}
+              <li>{{ msg }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      <form action="/teacher/courses/{{ course.id }}/modules/{{ module.id }}/materials" method="POST" enctype="multipart/form-data" class="form-content">
+        <div class="form-group">
+          <label for="title">Título</label>
+          <input
+            type="text"
+            name="title"
+            id="title"
+            placeholder="Opcional"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="file">Arquivo <span class="required">*</span></label>
+          <input
+            type="file"
+            name="file"
+            id="file"
+            accept="*/*"
+            required
+          >
+        </div>
+
+        <div class="form-footer">
+          <a href="/teacher/courses/{{ course.id }}/modules/{{ module.id }}/materials" class="btn-secondary">
+            <i class="fas fa-arrow-left"></i> Voltar
+          </a>
+          <button type="submit" class="btn-primary">
+            <i class="fas fa-upload"></i> Enviar
+          </button>
+        </div>
+      </form>
     </div>
-    <div>
-      <label for="file" class="block text-sm font-medium">Arquivo</label>
-      <input type="file" name="file" id="file" accept="*/*" class="mt-1 block w-full">
-    </div>
-    <div class="flex justify-end">
-      <a href="/teacher/courses/{{ course.id }}/modules/{{ module.id }}/materials" class="mr-2 text-gray-600 hover:underline">Voltar</a>
-      <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Enviar</button>
-    </div>
-  </form>
-</div>
+  </section>
 {% endblock %}

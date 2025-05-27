@@ -32,6 +32,44 @@ class CourseRepository
         return array_map(fn(array $r) => $this->hydrate($r), $rows);
     }
 
+    /**
+     * Conta todos os cursos de um criador específico
+     *
+     * @param int $creatorId
+     * @return int
+     */
+    public function countByCreatorId(int $creatorId): int
+    {
+        $stmt = $this->pdo->prepare('SELECT COUNT(*) FROM courses WHERE creator_id = :creator_id');
+        $stmt->execute([':creator_id' => $creatorId]);
+        return (int) $stmt->fetchColumn();
+    }
+
+    /**
+     * Retorna cursos paginados de um criador específico
+     *
+     * @param int $creatorId
+     * @param int $limit
+     * @param int $offset
+     * @return Course[]
+     */
+    public function findByCreatorIdPaginated(int $creatorId, int $limit, int $offset): array
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT * FROM courses 
+             WHERE creator_id = :creator_id 
+             ORDER BY created_at DESC 
+             LIMIT :limit OFFSET :offset'
+        );
+        $stmt->bindValue(':creator_id', $creatorId, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(fn(array $r) => $this->hydrate($r), $rows);
+    }
+
     public function findAll(): array
     {
         $stmt = $this->pdo->query('SELECT * FROM courses ORDER BY created_at DESC');

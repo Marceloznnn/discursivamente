@@ -5,7 +5,7 @@ namespace Repositories;
 use App\Models\CourseComment;
 use PDO;
 
-class CourseCommentRepository
+class CourseCommentRepository 
 {
     private PDO $pdo;
 
@@ -45,11 +45,59 @@ class CourseCommentRepository
         return array_map(fn($r) => $this->hydrate($r), $rows);
     }
 
+    /**
+     * Busca os dados de avaliação de um curso específico
+     * @param int $courseId ID do curso
+     * @return array Array com average_rating e total_ratings
+     */
+    public function getCourseRatingData(int $courseId): array
+    {
+        $stmt = $this->pdo->prepare('
+            SELECT 
+                COALESCE(AVG(rating), 0) as average_rating,
+                COUNT(*) as total_ratings
+            FROM course_comments 
+            WHERE course_id = :courseId
+        ');
+        $stmt->execute([':courseId' => $courseId]);
+        
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        return [
+            'average_rating' => (float) $result['average_rating'],
+            'total_ratings' => (int) $result['total_ratings']
+        ];
+    }
+
+    /**
+     * Busca os cursos mais bem avaliados baseado na média de ratings
+     * @param int $limit Número de cursos a retornar (padrão: 3)
+     * @return array Array com course_id, average_rating e total_ratings
+     */
+    public function getTopRatedCourses(int $limit = 3): array
+    {
+        $stmt = $this->pdo->prepare('
+            SELECT 
+                course_id,
+                AVG(rating) as average_rating,
+                COUNT(*) as total_ratings
+            FROM course_comments 
+            GROUP BY course_id 
+            HAVING COUNT(*) >= 1
+            ORDER BY average_rating DESC, total_ratings DESC 
+            LIMIT :limit
+        ');
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function save(CourseComment $comment): void
     {
         if ($comment->getId()) {
             $stmt = $this->pdo->prepare(
-                'UPDATE course_comments
+                'UPDATE course_comments 
                  SET comment    = :comment,
                      rating     = :rating
                  WHERE id = :id'
@@ -61,8 +109,8 @@ class CourseCommentRepository
             ]);
         } else {
             $stmt = $this->pdo->prepare(
-                'INSERT INTO course_comments 
-                 (course_id, user_id, comment, rating, created_at)
+                'INSERT INTO course_comments
+                  (course_id, user_id, comment, rating, created_at)
                  VALUES (:courseId, :userId, :comment, :rating, NOW())'
             );
             $stmt->execute([

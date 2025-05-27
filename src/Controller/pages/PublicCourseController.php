@@ -73,11 +73,32 @@ class PublicCourseController
 
         $totalPages = (int) ceil($totalCourses / $perPage);
         $participantCounts = [];
+        $courseRatings = [];
 
+        // Buscar dados de participantes e avaliações para cada curso
         foreach ($courses as $c) {
-            $participantCounts[$c->getId()] =
-                $this->participationRepo->countActiveByCourse($c->getId());
+            $participantCounts[$c->getId()] = $this->participationRepo->countActiveByCourse($c->getId());
+            $courseRatings[$c->getId()] = $this->commentRepo->getCourseRatingData($c->getId());
         }
+
+        // Ordenar cursos por critérios de qualidade
+        usort($courses, function($a, $b) use ($courseRatings, $participantCounts) {
+            $ratingA = $courseRatings[$a->getId()];
+            $ratingB = $courseRatings[$b->getId()];
+            
+            // 1º critério: Média de avaliação (decrescente)
+            if ($ratingA['average_rating'] != $ratingB['average_rating']) {
+                return $ratingB['average_rating'] <=> $ratingA['average_rating'];
+            }
+            
+            // 2º critério: Número de avaliações (decrescente)
+            if ($ratingA['total_ratings'] != $ratingB['total_ratings']) {
+                return $ratingB['total_ratings'] <=> $ratingA['total_ratings'];
+            }
+            
+            // 3º critério: Número de participantes (decrescente)
+            return $participantCounts[$b->getId()] <=> $participantCounts[$a->getId()];
+        });
 
         $categories = $this->categoryRepo->findAll();
 
@@ -87,6 +108,7 @@ class PublicCourseController
             'categories'        => $categories,
             'selectedCategory'  => $categoryId,
             'participantCounts' => $participantCounts,
+            'courseRatings'     => $courseRatings,
             'currentPage'       => $page,
             'totalPages'        => $totalPages,
         ]);
