@@ -11,7 +11,7 @@ use Google\Service\Oauth2;
 
 class AuthController
 {
-    private $twig;
+    private $twig; 
     private $userRepository;
     private $googleClientId = '37968290526-8dg2egv1v4n821vj4fp4oqaele7l8cbk.apps.googleusercontent.com';
     private $googleClientSecret = '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';

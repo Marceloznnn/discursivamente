@@ -244,7 +244,7 @@
                 </p>
                 <a href="/events/{{ event.id }}" class="evento-link">Saiba mais</a>
               </div>
-            </div>
+            </div> 
           {% endfor %}
         </div>
         <button class="slider-btn next-btn">&rarr;</button>
@@ -255,33 +255,75 @@
       <a href="/events" class="btn-ver-todos">Ver todos os eventos</a>
     </div>
   </div>
+{# Chatbot de Suporte #}
+<div class="chatbot-container" role="dialog" aria-labelledby="chatbot-heading">
+  <button class="chatbot-toggle" aria-expanded="false" aria-controls="chatbot-window">
+    <i class="fas fa-comments" aria-hidden="true"></i>
+    <span class="sr-only">Abrir chat de atendimento</span>
+  </button>
 
-     <div class="chatbot-container" role="dialog" aria-labelledby="chatbot-heading">
-         <button class="chatbot-toggle" aria-expanded="false" aria-controls="chatbot-window">
-             <i class="fas fa-comments" aria-hidden="true"></i>
-             <span class="sr-only">Abrir chat de atendimento</span>
-         </button>
-         <div id="chatbot-window" class="chatbot-window" aria-hidden="true">
-             <div class="chatbot-header">
-                 <h3 id="chatbot-heading">Atendimento Discursivamente</h3>
-                 <button class="chatbot-close" aria-label="Fechar chat">
-                     <i class="fas fa-times" aria-hidden="true"></i>
-                 </button>
-             </div>
-             <div class="chatbot-messages"></div>
-             <div class="chatbot-input">
-                 <input type="text" placeholder="Digite sua mensagem..." aria-label="Digite sua mensagem">
-                 <button aria-label="Enviar mensagem"><i class="fas fa-paper-plane"></i></button>
-             </div>
-         </div>
-     </div>
- {% endblock %}
- {% block scripts %}
-     <script src="/assets/js/pages/pages-scripts/slider.js" defer></script>
-     <script src="/assets/js/pages/pages-scripts/newsletter.js" defer></script>
-     <script src="/assets/js/pages/pages-scripts/faq.js" defer></script> {# Mantido caso o FAQ fosse adicionado #}
-     <script src="/assets/js/pages/pages-scripts/chatbot.js" defer></script>
-     <script src="/assets/js/pages/home/index.js" defer></script>
+  <div id="chatbot-window" class="chatbot-window" aria-hidden="true">
+    <div class="chatbot-header">
+      <h3 id="chatbot-heading">Atendimento Discursivamente</h3>
+      <button class="chatbot-close" aria-label="Fechar chat">
+        <i class="fas fa-times" aria-hidden="true"></i>
+      </button>
+    </div>
 
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js" integrity="sha512-fzff82+8pzHnwA1mQ0dzz9/E0B+ZRizq08yZfya66INZBz86qKTCt9MLU0NCNIgaMJCgeyhujhasnFUsYMsi0Q==" crossorigin="anonymous" referrerpolicy="no-referrer" async></script>
- {% endblock %}
+    <div class="chatbot-messages" id="chatbot-messages" aria-live="polite">
+      {% for msg in messages %}
+        {% set cssClass = '' %}
+        {% if msg.sender == 'user' %}
+          {% set cssClass = msg.user_id == currentUser.id ? 'chatbot-message--self' : 'chatbot-message--user' %}
+        {% elseif msg.sender == 'bot' %}
+          {% set cssClass = 'chatbot-message--bot' %}
+        {% elseif msg.sender == 'system' %}
+          {% set cssClass = 'chatbot-message--system' %}
+        {% endif %}
+
+        <div class="chatbot-message {{ cssClass }}">
+          {% if msg.sender != 'system' %}
+            <strong>
+              {{ msg.sender == 'user' ? (msg.user_name|default('Usuário')) : 'Atendente' }}:
+            </strong>
+          {% endif %}
+          <span>{{ msg.message }}</span>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="chatbot-input">
+      <input 
+        id="chatbot-input"
+        type="text"
+        placeholder="Digite sua mensagem..."
+        aria-label="Digite sua mensagem"
+        autocomplete="off"
+      >
+      <button id="chatbot-send" aria-label="Enviar mensagem">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    const CHAT_USER = {
+      id: {{ currentUser.id|default(0) }},
+      name: "{{ currentUser.name|e('js') }}",
+      chatId: "{{ chatId }}", // Passado do backend para identificar a sala
+      isSupport: false // Mude para true se for painel de atendente
+    };
+  </script>
+
+  <script src="/assets/js/pages/pages-scripts/chatbot.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"
+    integrity="sha512-fzff82+8pzHnwA1mQ0dzz9/E0B+ZRizq08yZfya66INZBz86qKTCt9MLU0NCNIgaMJCgeyhujhasnFUsYMsi0Q=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+    async>
+  </script>
+{% endblock %}

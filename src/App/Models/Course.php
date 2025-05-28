@@ -13,6 +13,8 @@ class Course
     private ?string $updatedAt;
     // 1) Declaração da nova propriedade
     private ?int $categoryId;
+    // Propriedade para contar participantes ativos
+    private int $activeCount = 0;
 
     public function __construct(
         string $title,
@@ -44,6 +46,8 @@ class Course
     public function getUpdatedAt(): ?string { return $this->updatedAt; }
     // 3) Ajuste do tipo de retorno para nullable
     public function getCategoryId(): ?int { return $this->categoryId; }
+    // Getter e Setter para activeCount
+    public function getActiveCount(): int { return $this->activeCount; }
 
     // Setters
     public function setTitle(string $title): void         { $this->title = $title; }
@@ -52,6 +56,7 @@ class Course
     public function setPrice(float $price): void          { $this->price = $price; }
     public function setUpdatedAt(string $updatedAt): void { $this->updatedAt = $updatedAt; }
     public function setCategoryId(?int $categoryId): void { $this->categoryId = $categoryId; }
+    public function setActiveCount(int $count): void { $this->activeCount = $count; }
 
     public function toArray(): array
     {

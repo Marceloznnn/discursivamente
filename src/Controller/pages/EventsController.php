@@ -11,7 +11,7 @@ class EventsController
     private EventRepository $repo;
 
     public function __construct($twig)
-    {
+    { 
         $this->twig = $twig;
         $pdo         = Connection::getInstance();
         $this->repo  = new EventRepository($pdo);

@@ -1,115 +1,208 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Elementos do chatbot
-    const chatbotToggle = document.querySelector('.chatbot-toggle');
-    const chatbotWindow = document.getElementById('chatbot-window');
-    const chatbotClose = document.querySelector('.chatbot-close');
-    const messagesContainer = document.querySelector('.chatbot-messages');
-    const inputField = document.querySelector('.chatbot-input input');
-    const sendButton = document.querySelector('.chatbot-input button');
+const socket = new WebSocket('ws://localhost:8081');
 
-    // Mensagens automáticas do chatbot
-    const botResponses = {
-        welcome: "Olá! Bem-vindo(a) ao atendimento Discursivamente. Como posso ajudar você hoje?",
-        default: "Obrigado pelo seu contato. Um membro da nossa equipe responderá em breve. Enquanto isso, você pode explorar nossos materiais sobre leitura acadêmica.",
-        keywords: {
-            "material": "Nossos materiais didáticos digitais (MDD) são desenvolvidos com base na Análise de Discurso Crítica. Você gostaria de saber mais sobre isso?",
-            "leitura": "A leitura acadêmica é fundamental para o desenvolvimento do pensamento crítico. Nossa abordagem enfatiza a interpretação contextualizada dos textos acadêmicos.",
-            "professor": "Somos parceiros de professores de Língua Portuguesa! Oferecemos recursos para o ensino de leitura acadêmica no Ensino Médio.",
-            "aluno": "Para estudantes, disponibilizamos materiais interativos que facilitam a compreensão de gêneros acadêmicos.",
-            "ensino médio": "Nosso foco inclui a preparação de alunos do Ensino Médio para a leitura acadêmica, fundamental para o sucesso no ensino superior.",
-            "análise de discurso": "Trabalhamos com a metodologia de Análise de Discurso Crítica (Fairclough, 2003), que considera fatores sociais, culturais e políticos na interpretação textual.",
-            "pesquisa": "Nossa pesquisa mais recente 'Educação e Cyberespaço: o discurso sobre (a #) leitura no tiktok' (2023-2024) fundamenta nossos materiais didáticos.",
-            "contato": "Para mais informações, deixe seu e-mail que entraremos em contato. Você também pode agendar uma demonstração do nosso material didático digital."
+const chatbotContainer = document.querySelector('.chatbot-container');
+const toggleButton = document.querySelector('.chatbot-toggle');
+const closeButton = document.querySelector('.chatbot-close');
+const chatWindow = document.getElementById('chatbot-window');
+const messagesContainer = document.querySelector('.chatbot-messages');
+const inputField = document.getElementById('chatbot-input');
+const sendButton = document.getElementById('chatbot-send');
+
+const chatId = Date.now(); // ID único temporário da sessão
+const currentUserId = window.currentUserId || 'user'; // Configure conforme necessário
+const currentUserName = window.currentUserName || 'Você'; // Configure conforme necessário
+const isSupport = window.isSupport || false;
+
+const botFlow = {
+    welcome: "👋 Olá! Bem-vindo(a) ao Atendimento Discursivamente. Como posso te ajudar? Escolha uma opção abaixo:",
+    options: [
+        { id: 'talk-to-support', label: '🗨️ Falar com o Atendente' },
+        { id: 'common-questions', label: '❓ Dúvidas Comuns' }
+    ],
+    faqs: [
+        {
+            id: 'material',
+            question: '📚 O que são os Materiais Didáticos Digitais?',
+            answer: 'Nossos materiais são baseados na Análise de Discurso Crítica. Ajudam na leitura acadêmica no Ensino Médio.'
+        },
+        {
+            id: 'leitura',
+            question: '📖 Como funciona a leitura acadêmica?',
+            answer: 'A leitura acadêmica desenvolve o pensamento crítico, com foco na interpretação contextualizada dos textos.'
+        },
+        {
+            id: 'suporte',
+            question: '⚙️ Como falar com o suporte?',
+            answer: 'Clique em "Falar com o Atendente" e um atendente será notificado.'
         }
-    };
+    ],
+    default: "❗ Não entendi sua solicitação. Por favor, selecione uma opção."
+};
 
-    // Estado do chatbot
-    let isChatbotOpen = false;
+// ==== UI ====
 
-    // Função para exibir mensagem
-    function displayMessage(message, sender) {
-        const messageElement = document.createElement('div');
-        messageElement.classList.add('message');
-        messageElement.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
-        messageElement.textContent = message;
-        messagesContainer.appendChild(messageElement);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+function displayMessage(message, sender = 'bot', userName = '') {
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('chatbot-message');
+
+    if (sender === 'user') {
+        messageElement.classList.add('chatbot-message--self');
+        messageElement.innerHTML = `<strong>${userName}:</strong> ${message}`;
+    } else if (sender === 'bot') {
+        messageElement.classList.add('chatbot-message--bot');
+        messageElement.innerHTML = `<strong>Atendente:</strong> ${message}`;
+    } else if (sender === 'system') {
+        messageElement.classList.add('chatbot-message--system');
+        messageElement.innerHTML = `<em>${message}</em>`;
     }
 
-    // Resposta do bot com base no conteúdo da mensagem
-    function getBotResponse(message) {
-        // Converte a mensagem para minúsculas para facilitar a comparação
-        const lowerCaseMessage = message.toLowerCase();
-        
-        // Verifica palavras-chave na mensagem do usuário
-        for (const keyword in botResponses.keywords) {
-            if (lowerCaseMessage.includes(keyword.toLowerCase())) {
-                return botResponses.keywords[keyword];
-            }
-        }
-        
-        // Se nenhuma palavra-chave for encontrada, retorna a resposta padrão
-        return botResponses.default;
-    }
+    messagesContainer.appendChild(messageElement);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
 
-    // Envia mensagem
-    function sendMessage() {
-        const message = inputField.value.trim();
-        
-        if (message) {
-            // Exibe mensagem do usuário
-            displayMessage(message, 'user');
-            
-            // Limpa o campo de input
-            inputField.value = '';
-            
-            // Simula um pequeno atraso antes da resposta do bot
-            setTimeout(() => {
-                // Gera e exibe resposta do bot
-                const botMessage = getBotResponse(message);
-                displayMessage(botMessage, 'bot');
-            }, 600);
-        }
-    }
+function displayOptions(options) {
+    const wrapper = document.createElement('div');
+    wrapper.classList.add('chatbot-message', 'chatbot-message--bot');
 
-    // Abre o chatbot
-    function openChatbot() {
-        chatbotWindow.setAttribute('aria-hidden', 'false');
-        chatbotToggle.setAttribute('aria-expanded', 'true');
-        isChatbotOpen = true;
-        
-        // Se for a primeira abertura, exibe mensagem de boas-vindas
-        if (messagesContainer.children.length === 0) {
-            displayMessage(botResponses.welcome, 'bot');
-        }
-    }
+    options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.classList.add('chatbot-option');
+        btn.textContent = opt.label;
+        btn.dataset.id = opt.id;
+        btn.addEventListener('click', () => handleOption(opt.id));
+        wrapper.appendChild(btn);
+    });
 
-    // Fecha o chatbot
-    function closeChatbot() {
-        chatbotWindow.setAttribute('aria-hidden', 'true');
-        chatbotToggle.setAttribute('aria-expanded', 'false');
-        isChatbotOpen = false;
-    }
+    messagesContainer.appendChild(wrapper);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
 
-    // Event listeners
-    chatbotToggle.addEventListener('click', () => {
-        if (isChatbotOpen) {
-            closeChatbot();
+// ==== Fluxo ====
+
+function startChat() {
+    displayMessage(botFlow.welcome, 'bot');
+    displayOptions(botFlow.options);
+}
+
+function handleOption(optionId) {
+    if (optionId === 'talk-to-support') {
+        displayMessage("🔔 Você solicitou falar com o atendente. Aguarde enquanto localizamos alguém...", 'bot');
+        notifySupport();
+    } else if (optionId === 'common-questions') {
+        displayMessage("📑 Aqui estão algumas dúvidas comuns. Clique em uma delas:", 'bot');
+        const faqOptions = botFlow.faqs.map(faq => ({ id: faq.id, label: faq.question }));
+        displayOptions(faqOptions);
+    } else {
+        const faq = botFlow.faqs.find(f => f.id === optionId);
+        if (faq) {
+            displayMessage(faq.answer, 'bot');
         } else {
-            openChatbot();
+            displayMessage(botFlow.default, 'bot');
         }
-    });
+    }
+}
 
-    chatbotClose.addEventListener('click', closeChatbot);
-
-    sendButton.addEventListener('click', sendMessage);
-
-    inputField.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            sendMessage();
+function processUserMessage(message) {
+    const msgLower = message.toLowerCase();
+    if (msgLower.includes('falar com atendente')) {
+        handleOption('talk-to-support');
+    } else if (msgLower.includes('duvida') || msgLower.includes('dúvida')) {
+        handleOption('common-questions');
+    } else {
+        const matchedFaq = botFlow.faqs.find(faq => msgLower.includes(faq.id));
+        if (matchedFaq) {
+            handleOption(matchedFaq.id);
+        } else {
+            displayMessage(botFlow.default, 'bot');
         }
-    });
+    }
+}
 
-    // Inicializa o chatbot fechado
-    closeChatbot();
+// ==== WebSocket ====
+
+socket.addEventListener('open', () => {
+    console.log('Conectado ao servidor WebSocket');
+});
+
+socket.addEventListener('message', event => {
+    const data = JSON.parse(event.data);
+
+    if (data.type === 'message') {
+        displayMessage(data.message, data.sender, data.userName);
+    }
+
+    if (data.type === 'support-request') {
+        if (isSupport) {
+            displayMessage(`🔔 Novo atendimento solicitado por ${data.userName}`, 'system');
+        }
+    }
+});
+
+socket.addEventListener('close', () => {
+    console.log('Conexão WebSocket encerrada');
+});
+
+socket.addEventListener('error', error => {
+    console.error('Erro no WebSocket', error);
+});
+
+function notifySupport() {
+    if (socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({
+            type: 'support-request',
+            chatId: chatId,
+            userId: currentUserId,
+            userName: currentUserName,
+            message: 'Solicitação de atendimento ao suporte.'
+        }));
+    }
+}
+
+// ==== Enviar mensagem ====
+
+function sendMessage() {
+    const message = inputField.value.trim();
+    if (!message) return;
+
+    displayMessage(message, 'user', currentUserName);
+
+    if (socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({
+            type: 'message',
+            chatId: chatId,
+            userId: currentUserId,
+            userName: currentUserName,
+            isSupport: isSupport,
+            sender: 'user',
+            message: message
+        }));
+    }
+
+    processUserMessage(message);
+
+    inputField.value = '';
+}
+
+// ==== Eventos UI ====
+
+toggleButton.addEventListener('click', () => {
+    const expanded = toggleButton.getAttribute('aria-expanded') === 'true';
+    toggleButton.setAttribute('aria-expanded', String(!expanded));
+    chatWindow.setAttribute('aria-hidden', String(expanded));
+    chatWindow.classList.toggle('open');
+
+    if (!expanded) {
+        startChat();
+    }
+});
+
+closeButton.addEventListener('click', () => {
+    toggleButton.setAttribute('aria-expanded', 'false');
+    chatWindow.setAttribute('aria-hidden', 'true');
+    chatWindow.classList.remove('open');
+});
+
+sendButton.addEventListener('click', sendMessage);
+inputField.addEventListener('keypress', e => {
+    if (e.key === 'Enter') sendMessage();
 });

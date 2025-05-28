@@ -13,6 +13,8 @@ use Controller\PagesController;
 use Controller\pages\PublicCourseController;
 use Controller\pages\TeacherModuleController;
 use Controller\pages\TeacherModuleMaterialController;
+use Controller\pages\ChatSupportController;
+
 
 // ==========================================
 // Rotas públicas (sem autenticação)
@@ -85,6 +87,10 @@ $r->addRoute('GET', '/auth/google/callback', function($twig) {
     (new \Controller\pages\AuthController($twig))->googleCallback();
 });
 
+ $r->addRoute('POST', '/chat/redirect-human', function($twig) {
+    AuthMiddleware::handle();
+    (new ChatSupportController($twig))->redirectToHuman();
+});
 
 // ==========================================
 // Rotas para usuários autenticados
@@ -194,16 +200,16 @@ $r->addRoute('POST', '/admin/users/{id}/update', function($twig, $_, $id) {
 });
 
 // Gerenciamento de conversas (admin)
-$r->addRoute('GET', '/admin/conversations', function($twig) {
-    AuthMiddleware::handle();
-    AdminMiddleware::handle();
-    (new AdminController($twig))->conversationsList();
-});
-$r->addRoute('GET', '/admin/conversations/{id}', function($twig, $_, $id) {
-    AuthMiddleware::handle();
-    AdminMiddleware::handle();
-    (new AdminController($twig))->conversationView($id);
-});
+// $r->addRoute('GET', '/admin/conversations', function($twig) {
+//     AuthMiddleware::handle();
+//     AdminMiddleware::handle();
+//     (new AdminController($twig))->conversationsList();
+// });
+// $r->addRoute('GET', '/admin/conversations/{id}', function($twig, $_, $id) {
+//     AuthMiddleware::handle();
+//     AdminMiddleware::handle();
+//     (new AdminController($twig))->conversationView($id);
+// });
 
 // Removendo rotas que chamam métodos indefinidos no AdminController
 // $r->addRoute('GET', '/admin/feedbacks', function($twig) {

@@ -5,13 +5,11 @@ namespace Controller;
 
 use Infrastructure\Database\Connection;
 use Repositories\UserRepository;
-use Repositories\ConversationRepository;
 use Repositories\EventRepository;
 
 class AdminController {
     private $twig;
-    private $userRepository;
-    private $conversationRepository;
+    private $userRepository; 
     private $eventRepository;
 
     public function __construct($twig)
@@ -20,7 +18,6 @@ class AdminController {
         $connection = Connection::getInstance();
 
         $this->userRepository         = new UserRepository($connection);
-        $this->conversationRepository = new ConversationRepository($connection);
         $this->eventRepository        = new EventRepository($connection);
     }
 
@@ -176,10 +173,10 @@ class AdminController {
     }
 
     // === CONVERSAS ===
+    /*
     public function conversationsList()
     {
         $this->checkAdminAccess();
-
         $conversations = $this->conversationRepository->findAll();
         echo $this->twig->render('admin/conversations/index.twig', ['conversations' => $conversations]);
     }
@@ -187,16 +184,15 @@ class AdminController {
     public function conversationView(int $id)
     {
         $this->checkAdminAccess();
-
         $conversation = $this->conversationRepository->findById($id);
         if (!$conversation) {
             $_SESSION['flash_message'] = ['type'=>'error','message'=>'Conversa não encontrada.'];
             header('Location: /admin/conversations');
             exit;
         }
-
         echo $this->twig->render('admin/conversations/view.twig', compact('conversation'));
     }
+    */
 
     // === EVENTOS ===
     public function eventsList()

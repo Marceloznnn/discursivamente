@@ -13,7 +13,7 @@
         Bem-vindo, {{ session.user.name }}
       </div>
     </header>
-
+ 
     <section class="admin-stats">
       <div class="stat-card">
         <h3>Usuários</h3>
@@ -38,7 +38,8 @@
       <div class="section-card">
         <h3>Conversas</h3>
         <p>Gerenciar todas as conversas</p>
-        <a href="/admin/conversations" class="btn">Gerenciar Conversas</a>
+        <!-- <a href="/admin/conversations" class="btn">Gerenciar Conversas</a> -->
+        <span class="btn btn-disabled" style="background:#ccc;cursor:not-allowed;">Indisponível</span>
       </div>
       <div class="section-card">
         <h3>Eventos</h3>
@@ -51,7 +52,7 @@
       <h2>Navegação</h2>
       <div class="buttons">
         <a href="/" class="btn">Home</a>
-        <a href="/conversations" class="btn">Conversas</a>
+        <!-- <a href="/conversations" class="btn">Conversas</a> -->
         <a href="/logout" class="btn">Sair</a>
       </div>
     </nav>
