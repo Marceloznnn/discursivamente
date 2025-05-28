@@ -87,11 +87,6 @@ $r->addRoute('GET', '/auth/google/callback', function($twig) {
     (new \Controller\pages\AuthController($twig))->googleCallback();
 });
 
- $r->addRoute('POST', '/chat/redirect-human', function($twig) {
-    AuthMiddleware::handle();
-    (new ChatSupportController($twig))->redirectToHuman();
-});
-
 // ==========================================
 // Rotas para usuários autenticados
 // ==========================================
@@ -539,4 +534,21 @@ $r->addRoute('POST', '/courses/submit', function($twig, $pdo) {
     } else {
         echo $twig->render('courses/submit_error.twig');
     }
+});
+
+// Rotas de suporte para ADMIN
+$r->addRoute('GET', '/admin/support/chats', function($twig) {
+    AuthMiddleware::handle();
+    AdminMiddleware::handle();
+    (new AdminController($twig))->supportChatsList();
+});
+$r->addRoute('GET', '/admin/support/chats/{chatId}', function($twig, $chatId) {
+    AuthMiddleware::handle();
+    AdminMiddleware::handle();
+    (new AdminController($twig))->supportChatView($chatId);
+});
+$r->addRoute('POST', '/admin/support/chats/{chatId}/reply', function($twig, $chatId) {
+    AuthMiddleware::handle();
+    AdminMiddleware::handle();
+    (new AdminController($twig))->supportChatReply($chatId);
 });

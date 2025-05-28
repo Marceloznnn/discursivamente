@@ -1,0 +1,33 @@
+{% extends 'layouts/main.twig' %}
+
+{% block content %}
+<div class="admin-support-list">
+    <h1>Atendimentos de Suporte</h1>
+    <table class="table-support-chats">
+        <thead>
+            <tr>
+                <th>Usuário</th>
+                <th>Última Mensagem</th>
+                <th>Data/Hora</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for chat in chats %}
+            <tr>
+                <td>{{ chat.user_name }}</td>
+                <td>{{ chat.last_message|slice(0, 60) ~ (chat.last_message|length > 60 ? '...' : '') }}</td>
+                <td>{{ chat.last_time|date('d/m/Y H:i') }}</td>
+                <td>
+                    <a href="/admin/support/chats/{{ chat.chat_id }}" class="btn btn-primary">Abrir</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4">Nenhum atendimento encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -321,4 +321,62 @@ class AdminController {
         $_SESSION['flash_message'] = ['type'=>'success','message'=>'Evento excluído com sucesso.'];
         header('Location: /admin/events'); exit;
     }
+
+    // === SUPORTE ADMIN ===
+    public function supportChatsList()
+    {
+        $this->checkAdminAccess();
+        $chats = $this->getSupportChatsWithLastMessage();
+        echo $this->twig->render('admin/support/list.twig', ['chats' => $chats]);
+    }
+
+    public function supportChatView($chatId)
+    {
+        $this->checkAdminAccess();
+        $messages = $this->getSupportMessagesByChatId($chatId);
+        echo $this->twig->render('admin/support/chat.twig', [
+            'chatId'   => $chatId,
+            'messages' => $messages
+        ]);
+    }
+
+    public function supportChatReply($chatId)
+    {
+        $this->checkAdminAccess();
+        $message = trim($_POST['message'] ?? '');
+        if ($message !== '') {
+            $adminId = $_SESSION['user']['id'];
+            $this->saveSupportMessage($chatId, $adminId, $message, 'admin');
+        }
+        header("Location: /admin/support/chats/{$chatId}");
+        exit;
+    }
+
+    // Métodos auxiliares para buscar chats e mensagens
+    private function getSupportChatsWithLastMessage()
+    {
+        $pdo = \Infrastructure\Database\Connection::getInstance();
+        $sql = "SELECT chat_id, user_id, MAX(created_at) as last_time,
+                       (SELECT message FROM support_messages WHERE chat_id = sc.chat_id ORDER BY created_at DESC LIMIT 1) as last_message,
+                       (SELECT name FROM users WHERE id = sc.user_id) as user_name
+                FROM support_messages sc
+                GROUP BY chat_id, user_id
+                ORDER BY last_time DESC";
+        return $pdo->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    private function getSupportMessagesByChatId($chatId)
+    {
+        $pdo = \Infrastructure\Database\Connection::getInstance();
+        $stmt = $pdo->prepare("SELECT sm.*, u.name as user_name FROM support_messages sm LEFT JOIN users u ON sm.user_id = u.id WHERE chat_id = ? ORDER BY created_at ASC");
+        $stmt->execute([$chatId]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    private function saveSupportMessage($chatId, $userId, $message, $sender = 'admin')
+    {
+        $pdo = \Infrastructure\Database\Connection::getInstance();
+        $stmt = $pdo->prepare("INSERT INTO support_messages (chat_id, user_id, message, sender, created_at) VALUES (?, ?, ?, ?, NOW())");
+        $stmt->execute([$chatId, $userId, $message, $sender]);
+    }
 }

@@ -1,0 +1,23 @@
+{% extends 'layouts/main.twig' %}
+
+{% block content %}
+<div class="admin-support-chat">
+    <h1>Atendimento de Suporte</h1>
+    <div class="chat-messages">
+        {% for msg in messages %}
+            <div class="chat-message {{ msg.sender }}">
+                <strong>{{ msg.sender == 'admin' ? 'Admin' : msg.user_name }}:</strong>
+                <span>{{ msg.message }}</span>
+                <small>{{ msg.created_at|date('d/m/Y H:i') }}</small>
+            </div>
+        {% else %}
+            <div class="chat-message system">Nenhuma mensagem ainda.</div>
+        {% endfor %}
+    </div>
+    <form method="post" action="/admin/support/chats/{{ chatId }}/reply" class="chat-reply-form">
+        <textarea name="message" required placeholder="Digite sua resposta..."></textarea>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </form>
+    <a href="/admin/support/chats" class="btn btn-outline">Voltar</a>
+</div>
+{% endblock %}
