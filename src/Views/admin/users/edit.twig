@@ -1,68 +1,44 @@
 {% extends 'layouts/main.twig' %}
+{% block styles %}
+    <link rel="stylesheet" href="/assets/css/admin/global_edit.css">
+{% endblock %}
 {% block title %}Editar Tipo de Usuário{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-  <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-      <h1 class="h3 mb-0">Editar Tipo de Usuário</h1>
+<div class="admin-form-container">
+  <div class="admin-form-card">
+    <div class="admin-form-header">
+      <h1 class="admin-form-title">Editar Tipo de Usuário</h1>
       <a href="/admin/users" class="btn btn-secondary">Voltar</a>
     </div>
-    <div class="card-body">
-      {% if error is defined %}
+    <div class="admin-form-body">
+      {% if error is defined %} 
         <div class="alert alert-danger">{{ error }}</div>
-      {% endif %}
+      {% endif %} 
       <form action="/admin/users/{{ user.id }}/update" method="POST" enctype="multipart/form-data">
-        
-        {# Exibe o ID #}
-        <div class="mb-3">
+        <div class="admin-form-group">
           <label class="form-label"><strong>ID:</strong></label>
-          <input type="text"
-                 name="id"
-                 class="form-control"
-                 value="{{ user.id }}"
-                 readonly>
+          <input type="text" name="id" class="form-control" value="{{ user.id }}" readonly>
         </div>
-
-        {# Exibe o Nome (readonly, mas enviado no POST) #}
-        <div class="mb-3">
+        <div class="admin-form-group">
           <label class="form-label"><strong>Nome:</strong></label>
-          <input type="text"
-                 name="name"
-                 class="form-control"
-                 value="{{ user.name }}"
-                 readonly>
+          <input type="text" name="name" class="form-control" value="{{ user.name }}" readonly>
         </div>
-
-        {# Exibe o Email (readonly, mas enviado no POST) #}
-        <div class="mb-3">
+        <div class="admin-form-group">
           <label class="form-label"><strong>Email:</strong></label>
-          <input type="email"
-                 name="email"
-                 class="form-control"
-                 value="{{ user.email }}"
-                 readonly>
+          <input type="email" name="email" class="form-control" value="{{ user.email }}" readonly>
         </div>
-
-        {# Exibe Avatar, sem possibilidade de alterar #}
         {% if user.avatar %}
-          <div class="mb-3">
+          <div class="admin-form-group">
             <label class="form-label"><strong>Avatar:</strong></label>
             <div>
-              <img src="{{ user.avatar }}"
-                   class="img-thumbnail"
-                   style="max-width:150px">
+              <img src="{{ user.avatar }}" class="img-thumbnail" style="max-width:150px">
             </div>
           </div>
         {% endif %}
-
-        {# Apenas o select de Tipo permanece editável #}
-        <div class="mb-3">
+        <div class="admin-form-group">
           <label for="type" class="form-label">Tipo</label>
-          <select id="type"
-                  name="type"
-                  class="form-select"
-                  required>
+          <select id="type" name="type" class="form-select" required>
             <option value="" {% if user.type is null %}selected{% endif %}>—</option>
             <option value="admin"        {% if user.type=='admin' %}selected{% endif %}>Admin</option>
             <option value="instituicao"  {% if user.type=='instituicao' %}selected{% endif %}>Instituição</option>
@@ -70,8 +46,7 @@
             <option value="student"      {% if user.type=='student' %}selected{% endif %}>Aluno</option>
           </select>
         </div>
-
-        <div class="d-flex justify-content-end">
+        <div class="admin-form-actions">
           <button type="submit" class="btn btn-primary">Salvar Tipo</button>
         </div>
       </form>

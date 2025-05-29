@@ -1,33 +1,45 @@
 {% extends 'layouts/main.twig' %}
 
+{% block styles %}
+    <link rel="stylesheet" href="/assets/css/admin/global_edit.css">
+{% endblock %}
+
 {% block title %}Enviar Newsletter{% endblock %}
 
 {% block content %}
-<div class="admin-newsletter-send-container">
-    <h1>Enviar Nova Campanha</h1>
-    {% if error %}
-        <div class="alert alert-danger">{{ error }}</div>
-    {% endif %}
-    <form method="post" action="/admin/newsletter/send">
-        <div class="form-group">
-            <label for="subject">Assunto</label>
-            <input type="text" id="subject" name="subject" class="form-control" value="{{ subject|default('') }}" required>
+<div class="admin-form-container">
+    <div class="admin-form-card"> 
+        <div class="admin-form-header">
+            <h1 class="admin-form-title">Enviar Nova Campanha</h1>
+            <a href="/admin/newsletter" class="btn btn-secondary">Voltar</a>
         </div>
-        <div class="form-group">
-            <label for="message">Mensagem</label>
-            <textarea id="message" name="message" class="form-control" rows="8" required>{{ message|default('') }}</textarea>
+        <div class="admin-form-body">
+            {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+            {% endif %}
+            <form method="post" action="/admin/newsletter/send">
+                <div class="admin-form-group">
+                    <label for="subject">Assunto</label>
+                    <input type="text" id="subject" name="subject" class="form-control" value="{{ subject|default('') }}" required>
+                </div>
+                <div class="admin-form-group">
+                    <label for="message">Mensagem</label>
+                    <textarea id="message" name="message" class="form-control" rows="8" required>{{ message|default('') }}</textarea>
+                </div>
+                <div class="admin-form-group">
+                    <label for="send_to">Enviar para:</label>
+                    <select id="send_to" name="send_to" class="form-control">
+                        <option value="all" {{ send_to == 'all' ? 'selected' : '' }}>Todos os inscritos</option>
+                        <option value="cursos" {{ send_to == 'cursos' ? 'selected' : '' }}>Apenas interessados em Cursos</option>
+                        <option value="eventos" {{ send_to == 'eventos' ? 'selected' : '' }}>Apenas interessados em Eventos</option>
+                        <option value="conteudos" {{ send_to == 'conteudos' ? 'selected' : '' }}>Apenas interessados em Conteúdos</option>
+                    </select>
+                </div>
+                <div class="admin-form-actions">
+                    <button type="submit" class="btn btn-primary">Enviar Newsletter</button>
+                </div>
+            </form>
         </div>
-        <div class="form-group">
-            <label for="send_to">Enviar para:</label>
-            <select id="send_to" name="send_to" class="form-control">
-                <option value="all" {{ send_to == 'all' ? 'selected' : '' }}>Todos os inscritos</option>
-                <option value="cursos" {{ send_to == 'cursos' ? 'selected' : '' }}>Apenas interessados em Cursos</option>
-                <option value="eventos" {{ send_to == 'eventos' ? 'selected' : '' }}>Apenas interessados em Eventos</option>
-                <option value="conteudos" {{ send_to == 'conteudos' ? 'selected' : '' }}>Apenas interessados em Conteúdos</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Enviar Newsletter</button>
-        <a href="/admin/newsletter" class="btn btn-secondary">Voltar</a>
-    </form>
+    </div>
 </div>
 {% endblock %}

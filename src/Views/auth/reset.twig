@@ -3,9 +3,9 @@
 {% block title %}Discursivamente - Redefinir Senha{% endblock %}
 
 {% block styles %}
-    <link rel="stylesheet" href="/assets/css/pages/auth/reset.css">
+    <link rel="stylesheet" href="/assets/css/pages/auth/auth.css">
 {% endblock %}
-
+ 
 {% block content %}
   <div class="auth-container">
     <h1 class="auth-title">Redefinir Senha</h1>
@@ -20,24 +20,24 @@
         <p><a class="link" href="/login">Clique aqui para fazer login</a></p>
       </div>
     {% else %}
-      <form action="/reset-password" method="POST" class="form">
+      <form action="/reset-password" method="POST" class="auth-form">
         <div class="form-group">
           <label for="email">E-mail</label>
-          <input type="email" id="email" name="email" class="form-control" required>
+          <input type="email" id="email" name="email" class="form-control" required placeholder="Digite seu e-mail">
         </div>
 
         <div class="form-group">
           <label for="code">Código de recuperação</label>
-          <input type="text" id="code" name="code" class="form-control" required>
+          <input type="text" id="code" name="code" class="form-control" required placeholder="Código de recuperação">
         </div>
 
         <div class="form-group">
           <label for="password">Nova senha</label>
-          <input type="password" id="password" name="password" class="form-control" required>
+          <input type="password" id="password" name="password" class="form-control" required placeholder="Nova senha">
         </div>
 
         <div class="form-actions">
-          <button type="submit" class="btn btn-primary">Redefinir Senha</button>
+          <button type="submit" class="btn primary">Redefinir Senha</button>
         </div>
 
         <div class="form-links">
@@ -46,8 +46,8 @@
       </form>
     {% endif %}
 
-    <div class="navigation-menu">
-      <a href="/" class="btn btn-secondary">Voltar para Home</a>
+    <div class="form-links" style="margin-top:2rem;">
+      <a href="/" class="btn small">Voltar para Home</a>
     </div>
   </div>
 {% endblock %}

@@ -1,24 +1,48 @@
 {% extends 'layouts/main.twig' %}
 {% block title %}Detalhes do Usuário{% endblock %}
 
+{% block styles %}
+  <link rel="stylesheet" href="/assets/css/admin/global_view.css">
+{% endblock %}
+
 {% block content %}
-<div class="container py-4">
-  <h1 class="h3 mb-4">Detalhes do Usuário</h1>
-  <div class="card mb-4">
-    <div class="card-body">
-      <p><strong>ID:</strong> {{ user.id }}</p>
-      <p><strong>Nome:</strong> {{ user.name }}</p>
-      <p><strong>Email:</strong> {{ user.email }}</p>
-      <p><strong>Tipo:</strong> {{ user.type|default('—') }}</p>
-      <p><strong>Bio:</strong> {{ user.bio|default('Sem bio') }}</p>
+<div class="admin-view-container">
+  <div class="admin-view-card">
+    <div class="admin-view-header">
+      <h1 class="admin-view-title">Detalhes do Usuário</h1>
+      <div class="admin-view-actions">
+        <a href="/admin/users" class="btn btn-secondary">Voltar</a>
+        <a href="/admin/users/{{ user.id }}/edit" class="btn btn-primary">Editar Usuário</a>
+      </div>
+    </div>
+    <div class="admin-view-body">
+      <div class="admin-view-row">
+        <span class="admin-view-label">ID:</span>
+        <span class="admin-view-value">{{ user.id }}</span>
+      </div>
+      <div class="admin-view-row">
+        <span class="admin-view-label">Nome:</span>
+        <span class="admin-view-value">{{ user.name }}</span>
+      </div>
+      <div class="admin-view-row">
+        <span class="admin-view-label">Email:</span>
+        <span class="admin-view-value">{{ user.email }}</span>
+      </div>
+      <div class="admin-view-row">
+        <span class="admin-view-label">Tipo:</span>
+        <span class="admin-view-value">{{ user.type|default('—') }}</span>
+      </div>
+      <div class="admin-view-row">
+        <span class="admin-view-label">Bio:</span>
+        <span class="admin-view-value">{{ user.bio|default('Sem bio') }}</span>
+      </div>
       {% if user.avatar %}
-        <p><strong>Avatar:</strong><br>
-           <img src="{{ user.avatar }}" alt="Avatar" class="img-thumbnail" style="max-width:150px">
-        </p>
+      <div class="admin-view-row">
+        <span class="admin-view-label">Avatar:</span>
+        <span class="admin-view-value"><img src="{{ user.avatar }}" alt="Avatar" class="img-thumbnail" style="max-width:150px"></span>
+      </div>
       {% endif %}
     </div>
   </div>
-  <a href="/admin/users" class="btn btn-secondary">Voltar</a>
-  <a href="/admin/users/{{ user.id }}/edit" class="btn btn-primary">Editar Usuário</a>
 </div>
 {% endblock %}

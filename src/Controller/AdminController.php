@@ -46,7 +46,6 @@ class AdminController {
 
         // Buscar estatísticas
         $userCount = $this->getUserCount();
-        $conversationCount = $this->getConversationCount();
         $eventCount = $this->eventRepository->countAll();
         $courseCount = $this->courseRepository->countAll();
         $newsletterCount = $this->newsletterRepository->count();
@@ -54,7 +53,6 @@ class AdminController {
 
         echo $this->twig->render('admin/index.twig', [
             'userCount' => $userCount,
-            'conversationCount' => $conversationCount,
             'eventCount' => $eventCount,
             'courseCount' => $courseCount,
             'newsletterCount' => $newsletterCount,
@@ -452,17 +450,6 @@ class AdminController {
     {
         $pdo = \Infrastructure\Database\Connection::getInstance();
         return (int) $pdo->query('SELECT COUNT(*) FROM users')->fetchColumn();
-    }
-
-    private function getConversationCount(): int
-    {
-        $pdo = \Infrastructure\Database\Connection::getInstance();
-        // Assumindo que existe uma tabela conversations
-        $result = $pdo->query('SHOW TABLES LIKE "conversations"');
-        if ($result->rowCount() > 0) {
-            return (int) $pdo->query('SELECT COUNT(*) FROM conversations')->fetchColumn();
-        }
-        return 0;
     }
 
     private function getSupportCallsCount(): int

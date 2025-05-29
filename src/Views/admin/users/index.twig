@@ -1,18 +1,21 @@
 {% extends 'layouts/main.twig' %}
+{% block styles %}
+    <link rel="stylesheet" href="/assets/css/admin/global_list.css">
+{% endblock %}
 {% block title %}Usuários{% endblock %}
-
+ 
 {% block content %}
-<div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3">Usuários</h1>
+<div class="admin-list-container">
+  <div class="admin-list-header">
+    <h1 class="admin-list-title">Usuários</h1>
     <a href="/admin/users/create" class="btn btn-primary">Novo Usuário</a>
   </div>
-  <div class="table-responsive">
-    <table class="table table-striped">
+  <div class="admin-list-table-wrapper">
+    <table class="admin-list-table">
       <thead>
         <tr>
           <th>ID</th>
-          <th>Nome</th>
+          <th>Nome</th> 
           <th>Email</th>
           <th>Tipo</th>
           <th>Ações</th>

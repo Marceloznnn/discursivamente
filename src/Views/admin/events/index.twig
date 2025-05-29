@@ -1,30 +1,23 @@
-
 {# templates/admin/events/index.twig #}
 {% extends 'layouts/main.twig' %}
 {% block styles %}
-    <link rel="stylesheet" href="/assets/css/admin/events.css">
+    <link rel="stylesheet" href="/assets/css/admin/global_list.css">
 {% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3">Eventos</h1>
+<div class="admin-list-container">
+    <div class="admin-list-header">
+        <h1 class="admin-list-title">Eventos</h1>
         <a href="/admin/events/create" class="btn btn-primary">Novo Evento</a>
-    </div>
-
-    <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="card text-white bg-info mb-2">
-                <div class="card-body">
-                    <h5 class="card-title">Total de Eventos</h5>
-                    <p class="card-text display-4">{{ events|length }}</p>
-                </div>
-            </div>
+    </div> 
+    <div class="admin-list-summary">
+        <div class="admin-list-summary-card">
+            <div class="admin-list-summary-title">Total de Eventos</div>
+            <div class="admin-list-summary-value">{{ events|length }}</div>
         </div>
     </div>
-
-    <div class="table-responsive">
-        <table class="table table-striped">
+    <div class="admin-list-table-wrapper">
+        <table class="admin-list-table">
             <thead>
                 <tr>
                     <th>Destaque</th>
@@ -39,17 +32,17 @@
                     <tr class="{{ event.isFeatured ? 'table-warning' }}">
                         <td>
                             {% if event.isFeatured %}
-                                <span class="badge bg-warning text-dark">Sim ({{ event.featurePriority }})</span>
+                                <span class="badge badge-warning">Sim ({{ event.featurePriority }})</span>
                             {% else %}
-                                <span class="badge bg-secondary">Não</span>
+                                <span class="badge badge-secondary">Não</span>
                             {% endif %}
                         </td>
                         <td>{{ event.title }}</td>
                         <td>{{ event.dateTime|date('d/m/Y H:i') }}</td>
                         <td>
-                            {% if event.visibility=='public' %}<span class="badge bg-success">Público</span>
-                            {% elseif event.visibility=='members' %}<span class="badge bg-warning">Membros</span>
-                            {% else %}<span class="badge bg-secondary">Privado</span>{% endif %}
+                            {% if event.visibility=='public' %}<span class="badge badge-success">Público</span>
+                            {% elseif event.visibility=='members' %}<span class="badge badge-warning">Membros</span>
+                            {% else %}<span class="badge badge-secondary">Privado</span>{% endif %}
                         </td>
                         <td>
                             <a href="/admin/events/{{ event.id }}/edit" class="btn btn-sm btn-outline-primary">Editar</a>

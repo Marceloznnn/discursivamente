@@ -1,0 +1,117 @@
+/* CSS global para formulários administrativos (admin-form-*) */
+.admin-form-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 0 16px;
+}
+.admin-form-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+  padding: 0;
+  overflow: hidden;
+}
+.admin-form-header {
+  background: #f5f6fa;
+  border-bottom: 1px solid #e5e5e5;
+  padding: 24px 24px 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.admin-form-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+.admin-form-body {
+  padding: 24px;
+}
+.admin-form-group {
+  margin-bottom: 1.5rem;
+}
+.admin-form-group label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+.admin-form-group input[type="text"],
+.admin-form-group input[type="email"],
+.admin-form-group input[type="password"],
+.admin-form-group input[type="number"],
+.admin-form-group input[type="file"],
+.admin-form-group input[type="datetime-local"],
+.admin-form-group select,
+.admin-form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #fafbfc;
+  transition: border-color 0.2s;
+}
+.admin-form-group input:focus,
+.admin-form-group select:focus,
+.admin-form-group textarea:focus {
+  border-color: #007bff;
+  outline: none;
+  background: #fff;
+}
+.admin-form-group .form-check-input {
+  margin-right: 8px;
+}
+.admin-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+.alert {
+  padding: 12px 18px;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+}
+.alert-danger {
+  background: #ffeaea;
+  color: #b30000;
+  border: 1px solid #ffb3b3;
+}
+.btn {
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-primary {
+  background: #007bff;
+  color: #fff;
+}
+.btn-primary:hover {
+  background: #0056b3;
+}
+.btn-secondary {
+  background: #e5e5e5;
+  color: #333;
+}
+.btn-secondary:hover {
+  background: #d1d5db;
+}
+.img-thumbnail {
+  border-radius: 8px;
+  border: 1px solid #e5e5e5;
+  max-width: 100%;
+  height: auto;
+}
+@media (max-width: 600px) {
+  .admin-form-card,
+  .admin-form-body {
+    padding: 12px !important;
+  }
+  .admin-form-header {
+    padding: 16px 12px 8px 12px;
+  }
+}

@@ -4,26 +4,29 @@
 :root {
   --primary-color: #e4ec6f;
   --primary-hover: #862f1e;
-  --primary-light: #EDF0FF;
+  --primary-light: #edf0ff;
   --text-primary: #333333;
-  --text-secondary: #6B7280;
-  --surface: #FFFFFF;
-  --background: #F9FAFC;
-  --border: #E5E7EB;
-  --error: #EF4444;
-  --error-light: #FEF2F2;
-  --success: #10B981;
-  --success-light: #ECFDF5;
-  
+  --text-secondary: #6b7280;
+  --surface: #ffffff;
+  --background: #f9fafc;
+  --border: #e5e7eb;
+  --error: #ef4444;
+  --error-light: #fef2f2;
+  --success: #10b981;
+  --success-light: #ecfdf5;
+
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
-  
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    sans-serif;
   --transition: all 0.2s ease-in-out;
 }
 
@@ -72,6 +75,7 @@
 
 .form-group {
   margin-bottom: 1.5rem;
+  position: relative;
 }
 
 .form-group label {
@@ -80,6 +84,34 @@
   color: var(--text-primary);
   font-size: 0.9375rem;
   font-weight: 500;
+  position: static;
+  background: none;
+  padding: 0;
+  z-index: auto;
+  transition: color 0.2s;
+}
+
+.form-group input:focus + label,
+.form-group input:not(:placeholder-shown) + label {
+  color: var(--primary-color);
+}
+
+.form-group input.form-control {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  color: var(--text-primary);
+  background-color: var(--surface);
+  transition: var(--transition);
+  box-sizing: border-box;
+}
+
+.form-group input.form-control:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(81, 101, 255, 0.1);
 }
 
 .input-with-icon {
@@ -124,9 +156,9 @@
   opacity: 0.7;
 }
 .auth-logo {
-    filter: brightness(0) saturate(100%) sepia(100%) hue-rotate(310deg) saturate(800%) brightness(90%);
+  filter: brightness(0) saturate(100%) sepia(100%) hue-rotate(310deg)
+    saturate(800%) brightness(90%);
 }
-
 
 .toggle-password {
   position: absolute;
@@ -402,15 +434,15 @@
     box-shadow: none;
     min-height: 100vh;
   }
-  
+
   .auth-logo {
     height: 50px;
   }
-  
+
   .auth-branding h1 {
     font-size: 1.5rem;
   }
-  
+
   .form-options {
     flex-direction: column;
     align-items: flex-start;
@@ -422,8 +454,14 @@
    Animações e Transições
 ===================== */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .auth-container {
@@ -433,8 +471,13 @@
 /* =====================
    Ícones (Substituições para os originais)
 ===================== */
-.icon-user, .icon-mail, .icon-lock, .icon-warning, .icon-eye, .icon-eye-off {
-  font-family: 'Material Icons', sans-serif;
+.icon-user,
+.icon-mail,
+.icon-lock,
+.icon-warning,
+.icon-eye,
+.icon-eye-off {
+  font-family: "Material Icons", sans-serif;
   font-weight: normal;
   font-style: normal;
   display: inline-block;
@@ -447,30 +490,26 @@
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: 'liga';
+  font-feature-settings: "liga";
 }
 
-.icon-user:before { content: "person"; }
-.icon-mail:before { content: "email"; }
-.icon-lock:before { content: "lock"; }
-.icon-warning:before { content: "warning"; }
-.icon-eye:before { content: "visibility"; }
-.icon-eye-off:before { content: "visibility_off"; }
-
-/* Implementação de rótulos flutuantes */
-.form-group {
-  position: relative;
+.icon-user:before {
+  content: "person";
 }
-
-.form-group label {
-  position: absolute;
-  top: -0.5rem;
-  left: 0.5rem;
-  background-color: white;
-  padding: 0 0.5rem;
-  font-size: 0.8125rem;
-  color: var(--text-secondary);
-  z-index: 1;
+.icon-mail:before {
+  content: "email";
+}
+.icon-lock:before {
+  content: "lock";
+}
+.icon-warning:before {
+  content: "warning";
+}
+.icon-eye:before {
+  content: "visibility";
+}
+.icon-eye-off:before {
+  content: "visibility_off";
 }
 
 /* =====================

@@ -1,0 +1,57 @@
+/* CSS global para páginas de visualização de detalhes administrativas (admin-view-*) */
+.admin-view-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 0 16px;
+}
+.admin-view-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+  padding: 0;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+.admin-view-header {
+  background: #f5f6fa;
+  border-bottom: 1px solid #e5e5e5;
+  padding: 24px 24px 16px 24px;
+}
+.admin-view-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+.admin-view-body {
+  padding: 24px;
+}
+.admin-view-body p {
+  margin-bottom: 1rem;
+  font-size: 1.08rem;
+}
+.admin-view-body strong {
+  color: #2c3e50;
+}
+.admin-view-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+.img-thumbnail {
+  border-radius: 8px;
+  border: 1px solid #e5e5e5;
+  max-width: 100%;
+  height: auto;
+}
+@media (max-width: 600px) {
+  .admin-view-card,
+  .admin-view-body {
+    padding: 12px !important;
+  }
+  .admin-view-header {
+    padding: 16px 12px 8px 12px;
+  }
+  .admin-view-title {
+    font-size: 1.1rem;
+  }
+}
