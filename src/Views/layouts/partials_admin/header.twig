@@ -1,12 +1,148 @@
-<header class="admin-header">
-  <nav class="admin-nav">
-    <ul>
-      <li><a href="/admin">Dashboard</a></li>
-      <li><a href="/admin/users">Usuários</a></li>
-      <li><a href="/admin/events">Eventos</a></li>
-      <li><a href="/admin/support/chats">suporte</a></li>
-      <li><a href="/">Voltar ao Site</a></li>
-      <li><a href="/logout">Sair</a></li>
-    </ul>
-  </nav>
-</header>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard Admin</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9fafb;
+      color: #111827;
+    }
+
+    /* Layout geral */
+    .admin-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .admin-header {
+      width: 240px;
+      background-color: #1f2937; /* cinza escuro */
+      color: white;
+      padding: 20px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+    }
+
+    .admin-header .admin-nav {
+      flex: 1;
+    }
+
+    .admin-menu {
+      list-style: none;
+    }
+
+    .admin-menu li {
+      margin-bottom: 16px;
+    }
+
+    .admin-menu a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+      text-decoration: none;
+      padding: 8px;
+      border-radius: 6px;
+      transition: background-color 0.2s;
+    }
+
+    .admin-menu a:hover {
+      background-color: #374151;
+    }
+
+    .admin-menu i {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Conteúdo principal */
+    .admin-content {
+      margin-left: 240px; /* Espaço igual à sidebar */
+      padding: 24px;
+      flex: 1;
+    }
+
+    .admin-content h1 {
+      font-size: 2rem;
+      margin-bottom: 16px;
+    }
+
+    .admin-content p {
+      line-height: 1.6;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="admin-layout">
+
+    <header class="admin-header">
+      <nav class="admin-nav" aria-label="Administração">
+        <ul class="admin-menu">
+          <li>
+            <a href="/admin">
+              <i data-feather="home"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/users">
+              <i data-feather="users"></i>
+              <span>Usuários</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/events">
+              <i data-feather="calendar"></i>
+              <span>Eventos</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/support/chats">
+              <i data-feather="message-circle"></i>
+              <span>Suporte</span>
+            </a>
+          </li>
+          <li>
+            <a href="/">
+              <i data-feather="arrow-left-circle"></i>
+              <span>Voltar ao Site</span>
+            </a>
+          </li>
+          <li>
+            <a href="/logout">
+              <i data-feather="log-out"></i>
+              <span>Sair</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+  </div>
+
+  <!-- Feather Icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script>
+    feather.replace();
+  </script>
+  
+</body>
+</html>

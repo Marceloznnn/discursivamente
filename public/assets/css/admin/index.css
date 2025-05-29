@@ -1,26 +1,94 @@
-:root {
-    --header-height: 60px;
-  }
-  
-  .site-header {
-    position: fixed;
-    top: 0; left: 0; width: 100%;
-    height: var(--header-height);
-    background: #fff;
-    border-bottom: 1px solid #e2e8f0;
-    display: flex; align-items: center; z-index:1000;
-  }
-  
-  .site-header .container {
-    max-width: 1200px; margin:0 auto;
-    display:flex; align-items:center; justify-content:space-between;
-    padding:0 1rem;
-  }
-  
-  .admin-main {
-    margin-top: var(--header-height);
-    padding: 1rem;
-  }
-  
-  /* restante dos seus estilos… */
-  
+.admin-dashboard-header {
+  margin-bottom: 24px;
+}
+
+.admin-dashboard-header h1 {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.welcome-message {
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+/* Cards de estatísticas */
+.admin-stats {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  background-color: white;
+  padding: 16px;
+  border-radius: 8px;
+  flex: 1;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.stat-card h3 {
+  font-size: 1rem;
+  margin-bottom: 8px;
+  color: #374151;
+}
+
+.stat-card .count {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #111827;
+}
+
+/* Seções */
+.admin-sections {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.section-card {
+  background-color: white;
+  padding: 16px;
+  border-radius: 8px;
+  flex: 1;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.section-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.section-card p {
+  font-size: 0.95rem;
+  margin-bottom: 16px;
+  color: #4b5563;
+}
+
+.btn {
+  display: inline-block;
+  background-color: #2563eb;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.btn:hover {
+  background-color: #1d4ed8;
+}
+
+.btn-disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.navigation-menu h2 {
+  margin-bottom: 12px;
+}
+
+.navigation-menu .buttons {
+  display: flex;
+  gap: 10px;
+}

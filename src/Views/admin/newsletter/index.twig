@@ -1,0 +1,39 @@
+{% extends 'layouts/main.twig' %}
+
+{% block title %}Newsletter - Admin{% endblock %}
+
+{% block content %}
+  <div class="admin-newsletter-container">
+    <h1>Newsletter</h1>
+    <a href="/admin/newsletter/send" class="btn btn-primary" style="margin-bottom: 1.5rem;">Enviar Nova Campanha</a>
+    <div class="newsletter-summary">
+      <strong>Total de inscritos:</strong> {{ subscriberCount }}
+    </div>
+    <table class="newsletter-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Email</th>
+          <th>Cursos</th>
+          <th>Eventos</th>
+          <th>Conteúdos</th>
+          <th>Data de inscrição</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for sub in subscribers %}
+        <tr>
+          <td>{{ sub.id }}</td>
+          <td>{{ sub.email }}</td>
+          <td>{{ sub.pref_cursos ? 'Sim' : 'Não' }}</td>
+          <td>{{ sub.pref_eventos ? 'Sim' : 'Não' }}</td>
+          <td>{{ sub.pref_conteudos ? 'Sim' : 'Não' }}</td>
+          <td>{{ sub.created_at|date('d/m/Y H:i') }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6">Nenhum inscrito encontrado.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

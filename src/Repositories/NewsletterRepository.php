@@ -36,6 +36,9 @@ class NewsletterRepository
         return $stmt->fetchColumn() > 0;
     }
 
+    /**
+     * Retorna o total de inscritos na newsletter
+     */
     public function count(): int
     {
         $stmt = $this->pdo->query('SELECT COUNT(*) FROM newsletter_subscribers');

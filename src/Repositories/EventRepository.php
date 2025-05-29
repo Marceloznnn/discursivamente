@@ -81,6 +81,15 @@ class EventRepository
         $stmt->execute([':id' => $id]);
     }
 
+    /**
+     * Retorna o total de eventos cadastrados
+     */
+    public function countAll(): int
+    {
+        $stmt = $this->pdo->query('SELECT COUNT(*) FROM events');
+        return (int) $stmt->fetchColumn();
+    }
+
     private function hydrate(array $row): Event
     {
         return new Event(

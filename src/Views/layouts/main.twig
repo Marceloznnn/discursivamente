@@ -1,56 +1,143 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="{% if darkTheme %}dark-theme{% endif %}">
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Painel Administrativo{% endblock %} | Discursivamente</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Admin{% endblock %}</title>
+  
+  <link rel="stylesheet" href="/assets/css/admin/global.css">
+  {% block styles %}{% endblock %}
 
-    <link rel="shortcut icon" href="/assets/images/logo/favicon.ico" type="image/x-icon">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    {% block styles %}
-      <link rel="stylesheet" href="/assets/css/layouts/admin.css">
-    {% endblock %}
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9fafb;
+      color: #111827;
+    }
+
+    .admin-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar fixa */
+    .admin-header {
+      width: 240px;
+      background-color: #1f2937;
+      color: white;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+    }
+
+    .admin-nav {
+      flex: 1;
+    }
+
+    .admin-menu {
+      list-style: none;
+    }
+
+    .admin-menu li {
+      margin-bottom: 16px;
+    }
+
+    .admin-menu a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+      text-decoration: none;
+      padding: 8px;
+      border-radius: 6px;
+      transition: background-color 0.2s;
+    }
+
+    .admin-menu a:hover {
+      background-color: #374151;
+    }
+
+    .admin-menu i {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Conteúdo ao lado da sidebar */
+    .admin-content {
+      margin-left: 240px;
+      padding: 24px;
+      flex: 1;
+      width: calc(100% - 240px);
+    }
+  </style>
 </head>
-<body id="body">
 
-  {# ✅ Header (topo + menu lateral, se aplicável) #}
-  {% include 'layouts/partials_admin/header.twig' with {
-      'currentModule': currentModule|default(null),
-      'currentAction': currentAction|default(null),
-      'notifications': notifications|default(0),
-      'latestNotifications': latestNotifications|default([]),
-      'pendingFeedbacks': pendingFeedbacks|default(0)
-  } %}
+<body>
+  <div class="admin-layout">
 
-  {# ✅ Conteúdo principal da página #}
-  <main class="admin-main">
-    {% block content %}{% endblock %}
-  </main>
+    <!-- Sidebar -->
+    <header class="admin-header">
+      <nav class="admin-nav" aria-label="Administração">
+        <ul class="admin-menu">
+          <li>
+            <a href="/admin">
+              <i data-feather="home"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/users">
+              <i data-feather="users"></i>
+              <span>Usuários</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/events">
+              <i data-feather="calendar"></i>
+              <span>Eventos</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/support/chats">
+              <i data-feather="message-circle"></i>
+              <span>Suporte</span>
+            </a>
+          </li>
+          <li>
+            <a href="/">
+              <i data-feather="arrow-left-circle"></i>
+              <span>Voltar ao Site</span>
+            </a>
+          </li>
+          <li>
+            <a href="/logout">
+              <i data-feather="log-out"></i>
+              <span>Sair</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </header>
 
-  {# ✅ Footer separado #}
-  {% include 'layouts/partials_admin/footer.twig' %}
+    <!-- Conteúdo principal -->
+    <main class="admin-content">
+      {% block content %}{% endblock %}
+    </main>
 
-  <div id="modalContainer" class="modal-container">
-    <div id="modalOverlay" class="modal-overlay"></div>
   </div>
-  <div id="toastContainer" class="toast-container"></div>
 
-  <script src="/assets/js/global.js"></script>
-  <script src="/assets/js/layouts/admin.js"></script>
-  {% block scripts %}{% endblock %}
-
-  {% if app.environment == 'production' %}
-  <script>
-    (function(d,t){
-      var g=d.createElement(t), s=d.getElementsByTagName(t)[0];
-      g.src='https://analytics.exemplo.com.br/tracker.js';
-      s.parentNode.insertBefore(g,s);
-    }(document,'script'));
-  </script>
-  {% endif %}
+  <!-- Feather Icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script>feather.replace();</script>
 </body>
 </html>

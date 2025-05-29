@@ -292,7 +292,7 @@ $r->addRoute('POST','/teacher/courses', function($twig, $pdo) {
 $r->addRoute('GET', '/teacher/courses/{id}/edit', function($twig, $pdo, $id) {
     $cloud = new CloudinaryService();
     (new \Controller\pages\TeacherCourseController($twig, $pdo, $cloud))->edit((int)$id);
-});
+}); 
 $r->addRoute('POST','/teacher/courses/{id}/update', function($twig, $pdo, $id) {
     $cloud = new CloudinaryService();
     (new \Controller\pages\TeacherCourseController($twig, $pdo, $cloud))->update((int)$id);
@@ -561,4 +561,21 @@ $r->addRoute('POST', '/admin/support/chats/{chatId}/close', function($twig, $cha
     AuthMiddleware::handle();
     AdminMiddleware::handle();
     (new AdminController($twig))->supportChatClose($chatId);
+});
+
+// === NEWSLETTER ADMIN ===
+$r->addRoute('GET', '/admin/newsletter', function($twig) {
+    AuthMiddleware::handle();
+    AdminMiddleware::handle();
+    (new AdminController($twig))->newsletterIndex();
+});
+$r->addRoute('GET', '/admin/newsletter/send', function($twig) {
+    AuthMiddleware::handle();
+    AdminMiddleware::handle();
+    (new AdminController($twig))->newsletterSend();
+});
+$r->addRoute('POST', '/admin/newsletter/send', function($twig) {
+    AuthMiddleware::handle();
+    AdminMiddleware::handle();
+    (new AdminController($twig))->newsletterSendPost();
 });

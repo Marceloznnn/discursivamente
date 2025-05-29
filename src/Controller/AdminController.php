@@ -6,11 +6,15 @@ namespace Controller;
 use Infrastructure\Database\Connection;
 use Repositories\UserRepository;
 use Repositories\EventRepository;
+use Repositories\CourseRepository;
+use Repositories\NewsletterRepository;
 
 class AdminController {
     private $twig;
     private $userRepository; 
     private $eventRepository;
+    private $courseRepository;
+    private $newsletterRepository;
 
     public function __construct($twig)
     {
@@ -19,6 +23,8 @@ class AdminController {
 
         $this->userRepository         = new UserRepository($connection);
         $this->eventRepository        = new EventRepository($connection);
+        $this->courseRepository       = new CourseRepository($connection);
+        $this->newsletterRepository   = new NewsletterRepository($connection);
     }
 
     private function checkAdminAccess()
@@ -38,7 +44,85 @@ class AdminController {
     {
         $this->checkAdminAccess();
 
-        echo $this->twig->render('admin/index.twig');
+        // Buscar estatísticas
+        $userCount = $this->getUserCount();
+        $conversationCount = $this->getConversationCount();
+        $eventCount = $this->eventRepository->countAll();
+        $courseCount = $this->courseRepository->countAll();
+        $newsletterCount = $this->newsletterRepository->count();
+        $supportCallsCount = $this->getSupportCallsCount();
+
+        echo $this->twig->render('admin/index.twig', [
+            'userCount' => $userCount,
+            'conversationCount' => $conversationCount,
+            'eventCount' => $eventCount,
+            'courseCount' => $courseCount,
+            'newsletterCount' => $newsletterCount,
+            'supportCallsCount' => $supportCallsCount
+        ]);
+    }
+
+    // === NEWSLETTER ===
+    public function newsletterIndex()
+    {
+        $this->checkAdminAccess();
+        
+        $subscribers = $this->newsletterRepository->findAll();
+        $subscriberCount = $this->newsletterRepository->count();
+        
+        echo $this->twig->render('admin/newsletter/index.twig', [
+            'subscribers' => $subscribers,
+            'subscriberCount' => $subscriberCount
+        ]);
+    }
+
+    public function newsletterSend()
+    {
+        $this->checkAdminAccess();
+        echo $this->twig->render('admin/newsletter/send.twig');
+    }
+
+    public function newsletterSendPost()
+    {
+        $this->checkAdminAccess();
+
+        $subject = $_POST['subject'] ?? '';
+        $message = $_POST['message'] ?? '';
+        $sendTo = $_POST['send_to'] ?? 'all'; // all, cursos, eventos, conteudos
+
+        if (!$subject || !$message) {
+            echo $this->twig->render('admin/newsletter/send.twig', [
+                'error' => 'Assunto e mensagem são obrigatórios.',
+                'subject' => $subject,
+                'message' => $message,
+                'send_to' => $sendTo
+            ]);
+            return;
+        }
+
+        // Buscar emails baseado na preferência
+        $emails = $this->getEmailsByPreference($sendTo);
+        
+        if (empty($emails)) {
+            echo $this->twig->render('admin/newsletter/send.twig', [
+                'error' => 'Nenhum destinatário encontrado para a preferência selecionada.',
+                'subject' => $subject,
+                'message' => $message,
+                'send_to' => $sendTo
+            ]);
+            return;
+        }
+
+        // Enviar emails
+        $sent = $this->sendNewsletterEmails($emails, $subject, $message);
+
+        $_SESSION['flash_message'] = [
+            'type' => 'success',
+            'message' => "Newsletter enviada com sucesso para {$sent} destinatários."
+        ];
+        
+        header('Location: /admin/newsletter');
+        exit;
     }
 
     // === USUÁRIOS ===
@@ -171,28 +255,6 @@ class AdminController {
         header('Location: /admin/users');
         exit;
     }
-
-    // === CONVERSAS ===
-    /*
-    public function conversationsList()
-    {
-        $this->checkAdminAccess();
-        $conversations = $this->conversationRepository->findAll();
-        echo $this->twig->render('admin/conversations/index.twig', ['conversations' => $conversations]);
-    }
-
-    public function conversationView(int $id)
-    {
-        $this->checkAdminAccess();
-        $conversation = $this->conversationRepository->findById($id);
-        if (!$conversation) {
-            $_SESSION['flash_message'] = ['type'=>'error','message'=>'Conversa não encontrada.'];
-            header('Location: /admin/conversations');
-            exit;
-        }
-        echo $this->twig->render('admin/conversations/view.twig', compact('conversation'));
-    }
-    */
 
     // === EVENTOS ===
     public function eventsList()
@@ -333,9 +395,7 @@ class AdminController {
     public function supportChatView($chatId)
     {
         $this->checkAdminAccess();
-        // Log para debug
         error_log('DEBUG supportChatView $chatId: ' . print_r($chatId, true));
-        // Proteção extra: se vier um objeto, tenta extrair o chatId ou retorna erro amigável
         if (is_object($chatId)) {
             if (property_exists($chatId, 'chat_id')) {
                 $chatId = $chatId->chat_id;
@@ -369,7 +429,6 @@ class AdminController {
     {
         $this->checkAdminAccess();
         $pdo = \Infrastructure\Database\Connection::getInstance();
-        // Remove todas as mensagens do chat
         $stmt = $pdo->prepare("DELETE FROM support_messages WHERE chat_id = ?");
         $stmt->execute([$chatId]);
         $_SESSION['flash_message'] = ['type'=>'success','message'=>'Mensagens da conversa removidas com sucesso.'];
@@ -381,7 +440,6 @@ class AdminController {
     {
         $this->checkAdminAccess();
         $pdo = \Infrastructure\Database\Connection::getInstance();
-        // Marca o chat como encerrado (precisa de coluna status em support_chats ou similar)
         $stmt = $pdo->prepare("UPDATE support_chats SET status = 'closed' WHERE chat_id = ?");
         $stmt->execute([$chatId]);
         $_SESSION['flash_message'] = ['type'=>'success','message'=>'Atendimento encerrado com sucesso.'];
@@ -389,7 +447,105 @@ class AdminController {
         exit;
     }
 
-    // Métodos auxiliares para buscar chats e mensagens
+    // === MÉTODOS AUXILIARES ===
+    private function getUserCount(): int
+    {
+        $pdo = \Infrastructure\Database\Connection::getInstance();
+        return (int) $pdo->query('SELECT COUNT(*) FROM users')->fetchColumn();
+    }
+
+    private function getConversationCount(): int
+    {
+        $pdo = \Infrastructure\Database\Connection::getInstance();
+        // Assumindo que existe uma tabela conversations
+        $result = $pdo->query('SHOW TABLES LIKE "conversations"');
+        if ($result->rowCount() > 0) {
+            return (int) $pdo->query('SELECT COUNT(*) FROM conversations')->fetchColumn();
+        }
+        return 0;
+    }
+
+    private function getSupportCallsCount(): int
+    {
+        $pdo = \Infrastructure\Database\Connection::getInstance();
+        $result = $pdo->query('SHOW TABLES LIKE "support_messages"');
+        if ($result->rowCount() > 0) {
+            return (int) $pdo->query('SELECT COUNT(DISTINCT chat_id) FROM support_messages')->fetchColumn();
+        }
+        return 0;
+    }
+
+    private function getEmailsByPreference(string $preference): array
+    {
+        $pdo = \Infrastructure\Database\Connection::getInstance();
+        
+        switch ($preference) {
+            case 'cursos':
+                $stmt = $pdo->query('SELECT email FROM newsletter_subscribers WHERE pref_cursos = 1');
+                break;
+            case 'eventos':
+                $stmt = $pdo->query('SELECT email FROM newsletter_subscribers WHERE pref_eventos = 1');
+                break;
+            case 'conteudos':
+                $stmt = $pdo->query('SELECT email FROM newsletter_subscribers WHERE pref_conteudos = 1');
+                break;
+            default:
+                $stmt = $pdo->query('SELECT email FROM newsletter_subscribers');
+        }
+        
+        return $stmt->fetchAll(\PDO::FETCH_COLUMN);
+    }
+
+    private function sendNewsletterEmails(array $emails, string $subject, string $message): int
+    {
+        $sent = 0;
+        $headers = [
+            'MIME-Version: 1.0',
+            'Content-type: text/html; charset=UTF-8',
+            'From: newsletter@discursivamente.com',
+            'Reply-To: no-reply@discursivamente.com',
+            'X-Mailer: PHP/' . phpversion()
+        ];
+        
+        foreach ($emails as $email) {
+            $htmlMessage = $this->buildNewsletterHtml($message);
+            if (mail($email, $subject, $htmlMessage, implode("\r\n", $headers))) {
+                $sent++;
+            }
+        }
+        
+        return $sent;
+    }
+
+    private function buildNewsletterHtml(string $message): string
+    {
+        return "
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: #2c3e50; color: white; padding: 20px; text-align: center; }
+                .content { padding: 20px; background: #f9f9f9; }
+                .footer { padding: 10px; text-align: center; font-size: 12px; color: #666; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h1>Discursivamente</h1>
+                </div>
+                <div class='content'>
+                    " . nl2br(htmlspecialchars($message)) . "
+                </div>
+                <div class='footer'>
+                    <p>Esta é uma mensagem automática. Para cancelar sua inscrição, entre em contato conosco.</p>
+                </div>
+            </div>
+        </body>
+        </html>";
+    }
+
     private function getSupportChatsWithLastMessage()
     {
         $pdo = \Infrastructure\Database\Connection::getInstance();
@@ -404,7 +560,6 @@ class AdminController {
 
     private function getSupportMessagesByChatId($chatId)
     {
-        // Garante que não é objeto
         if (is_object($chatId)) {
             if (property_exists($chatId, 'chat_id')) {
                 $chatId = $chatId->chat_id;

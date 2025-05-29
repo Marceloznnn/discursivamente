@@ -20,11 +20,9 @@
           alt="Avatar de {{ user.name }}"
         >
         <form id="avatar-form" action="/profile/avatar" method="post" enctype="multipart/form-data">
-          <label for="avatar-upload" id="avatar-label" class="avatar-label-pro" title="Alterar foto">
-            <i class="fas fa-camera"></i>
             <input type="file" id="avatar-upload" name="avatar" accept="image/*" onchange="this.form.submit()">
           </label>
-        </form>
+        </form> 
       </div>
       <div id="user-info" class="user-info-pro">
         <h2 id="user-name">{{ user.name }}</h2>
