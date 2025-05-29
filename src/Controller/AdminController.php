@@ -345,7 +345,7 @@ class AdminController {
                 ]);
                 return;
             }
-        }
+        }  
         $messages = $this->getSupportMessagesByChatId($chatId);
         echo $this->twig->render('admin/support/chat.twig', [
             'chatId'   => $chatId,

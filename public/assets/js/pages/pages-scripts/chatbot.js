@@ -5,6 +5,8 @@ const chatWindow = document.getElementById("chatbot-window");
 const messagesContainer = document.querySelector(".chatbot-messages");
 let inputField = document.getElementById("chatbot-input");
 let sendButton = document.getElementById("chatbot-send");
+const notificationBadge = document.getElementById("chatbot-notification-badge");
+let unreadAdminMessages = 0;
 
 // Cria input e botão de envio se não existirem
 function ensureInputElements() {
@@ -147,8 +149,24 @@ function displayFaqs() {
   }
 }
 
+function renderSupportHistory() {
+  if (!window.supportMessages || !Array.isArray(window.supportMessages)) return;
+  window.supportMessages.forEach((msg) => {
+    if (msg.sender === "admin") {
+      displayMessage(msg.message, "admin", msg.user_name || "Atendente");
+    } else if (msg.sender === "user") {
+      displayMessage(msg.message, "user", currentUserName);
+    } else if (msg.sender === "system") {
+      displayMessage(msg.message, "system");
+    } else {
+      displayMessage(msg.message, msg.sender, msg.user_name || msg.sender);
+    }
+  });
+}
+
 function startChat() {
   messagesContainer.innerHTML = "";
+  renderSupportHistory();
   displayMessage(botFlow.welcome, "bot");
   displayOptions(botFlow.options);
 }
@@ -185,6 +203,15 @@ function processUserMessage(message) {
   }
 }
 
+function updateNotificationBadge() {
+  if (unreadAdminMessages > 0) {
+    notificationBadge.textContent = unreadAdminMessages;
+    notificationBadge.style.display = "inline-block";
+  } else {
+    notificationBadge.style.display = "none";
+  }
+}
+
 // ==== WebSocket ====
 socket.addEventListener("open", () => {
   socket.send(
@@ -202,6 +229,11 @@ socket.addEventListener("message", (event) => {
   if (data.type === "message" && data.chatId === chatId) {
     if (data.isSupport) {
       displayMessage(data.message, "admin", data.userName || "Atendente");
+      // Se o chat está fechado, contar como não lida
+      if (!chatWindow.classList.contains("open")) {
+        unreadAdminMessages++;
+        updateNotificationBadge();
+      }
     } else {
       displayMessage(data.message, "user", data.userName || "Você");
     }
@@ -299,6 +331,9 @@ function openChat() {
   chatWindow.setAttribute("aria-hidden", "false");
   toggleButton.setAttribute("aria-expanded", "true");
   startChat();
+  // Zera notificações ao abrir
+  unreadAdminMessages = 0;
+  updateNotificationBadge();
 }
 
 function closeChat() {
@@ -313,6 +348,9 @@ toggleButton.addEventListener("click", () => {
     closeChat();
   } else {
     openChat();
+    // Zera notificações ao abrir pelo balão
+    unreadAdminMessages = 0;
+    updateNotificationBadge();
   }
 });
 

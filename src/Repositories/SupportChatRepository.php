@@ -50,4 +50,19 @@ class SupportChatRepository
         $stmt->execute(['user_id' => $userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Retorna todas as mensagens de um chat de suporte (usuário + admin)
+     */
+    public function getMessagesByChatId(string $chatId): array
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT id, user_id, message, sender, created_at
+             FROM support_messages
+             WHERE chat_id = :chat_id
+             ORDER BY created_at ASC"
+        );
+        $stmt->execute(['chat_id' => $chatId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

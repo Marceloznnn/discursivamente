@@ -62,7 +62,8 @@ class HomeController
         if ($currentUser) {
             $userId         = (int) $currentUser['id'];
             $supportChatId   = 'support_user_' . $userId;
-            $supportMessages = $this->supportRepo->getMessagesByUserId($userId);
+            // Busca o histórico completo do chat (usuário + admin)
+            $supportMessages = $this->supportRepo->getMessagesByChatId($supportChatId);
         }
 
         // Renderiza a view
@@ -76,8 +77,8 @@ class HomeController
             'supportWsUrl'    => 'ws://localhost:8081'
         ]);
     }
- 
-    /**
+  
+    /** 
      * Faz upload de mídia para o Cloudinary
      *
      * @param array $file $_FILES['media']
