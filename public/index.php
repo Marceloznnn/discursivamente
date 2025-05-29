@@ -1,6 +1,11 @@
 <?php
 declare(strict_types=1);
 
+// Define timezone global para o projeto
+if (!ini_get('date.timezone') || ini_get('date.timezone') !== 'America/Sao_Paulo') {
+    date_default_timezone_set('America/Sao_Paulo');
+}
+
 // Importações de classes e funções
 use Dotenv\Dotenv;
 use Twig\Loader\FilesystemLoader;
