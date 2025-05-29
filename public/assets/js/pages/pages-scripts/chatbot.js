@@ -389,3 +389,79 @@ sendButton.addEventListener("click", sendMessage);
 inputField.addEventListener("keypress", (e) => {
   if (e.key === "Enter") sendMessage();
 });
+
+// ==== Responsividade aprimorada do Chatbot ====
+function adjustChatbotWindowHeight() {
+  if (!chatWindow) return;
+  const vh = Math.max(
+    document.documentElement.clientHeight || 0,
+    window.innerHeight || 0
+  );
+  if (window.innerWidth <= 400) {
+    chatWindow.style.height = Math.round(vh * 0.92) + "px";
+    chatWindow.style.width = "100vw";
+    chatWindow.style.left = "0";
+    chatWindow.style.right = "0";
+    chatWindow.style.maxWidth = "100vw";
+    chatWindow.style.borderRadius = "0";
+  } else if (window.innerWidth <= 600) {
+    chatWindow.style.height = Math.round(vh * 0.85) + "px";
+    chatWindow.style.width = "98vw";
+    chatWindow.style.left = "1vw";
+    chatWindow.style.right = "1vw";
+    chatWindow.style.maxWidth = "100vw";
+    chatWindow.style.borderRadius = "18px";
+  } else if (window.innerWidth <= 900) {
+    chatWindow.style.height = Math.round(vh * 0.7) + "px";
+    chatWindow.style.width = "400px";
+    chatWindow.style.left = "";
+    chatWindow.style.right = "0";
+    chatWindow.style.maxWidth = "95vw";
+    chatWindow.style.borderRadius = "18px";
+  } else {
+    chatWindow.style.height = "520px";
+    chatWindow.style.width = "370px";
+    chatWindow.style.left = "";
+    chatWindow.style.right = "0";
+    chatWindow.style.maxWidth = "95vw";
+    chatWindow.style.borderRadius = "18px";
+  }
+}
+window.addEventListener("resize", adjustChatbotWindowHeight);
+window.addEventListener("orientationchange", adjustChatbotWindowHeight);
+adjustChatbotWindowHeight();
+
+// Acessibilidade: foco automático no input ao abrir o chat
+function focusInputOnOpen() {
+  if (chatWindow.classList.contains("open") && inputField) {
+    setTimeout(() => inputField.focus(), 200);
+  }
+}
+chatWindow.addEventListener("transitionend", focusInputOnOpen);
+toggleButton.addEventListener("click", focusInputOnOpen);
+
+// Acessibilidade: fechar chat com ESC
+window.addEventListener("keydown", function (e) {
+  if (e.key === "Escape" && chatWindow.classList.contains("open")) {
+    closeChat();
+    toggleButton.focus();
+  }
+});
+
+// Melhoria: rolar para a última mensagem ao abrir
+function scrollToLastMessage() {
+  if (messagesContainer) {
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }
+}
+chatWindow.addEventListener("transitionend", scrollToLastMessage);
+
+// Melhoria: placeholder dinâmico para input
+function updateInputPlaceholder() {
+  if (window.currentUserId <= 0) {
+    inputField.placeholder = "Faça login para enviar mensagens";
+  } else {
+    inputField.placeholder = "Digite sua mensagem...";
+  }
+}
+updateInputPlaceholder();

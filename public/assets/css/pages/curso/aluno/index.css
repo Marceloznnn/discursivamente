@@ -20,6 +20,80 @@ body {
 }
 
 /* ========================
+   CABEÇALHO DO DASHBOARD (PROFESSOR)
+   ======================== */
+
+.course-dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, #7B1E3A 0%, #9d2448 50%, #7B1E3A 100%);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(123, 30, 58, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.course-dashboard-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+  animation: headerShimmer 8s ease-in-out infinite;
+}
+
+@keyframes headerShimmer {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+}
+
+.dashboard-title-group {
+  position: relative;
+  z-index: 1;
+}
+
+.page-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.dashboard-subtitle {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 400;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.course-dashboard-header .btn-primary {
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.course-dashboard-header .btn-primary:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+/* ========================
    SEÇÃO CURSOS MAIS BEM AVALIADOS
    ======================== */
 
@@ -254,31 +328,6 @@ body {
   font-weight: 500;
 }
 
-.participants {
-  font-size: 0.9rem;
-  color: #7B1E3A;
-  font-weight: 600;
-}
-
-.course-cta {
-  display: inline-block;
-  background: linear-gradient(45deg, #7B1E3A, #9d2448);
-  color: white;
-  padding: 0.8rem 1.5rem;
-  border-radius: 25px;
-  text-decoration: none;
-  font-size: 0.95rem;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(123, 30, 58, 0.3);
-}
-
-.course-cta:hover {
-  background: linear-gradient(45deg, #9d2448, #7B1E3A);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(123, 30, 58, 0.4);
-}
-
 /* ========================
    FORMULÁRIO DE BUSCA
    ======================== */
@@ -294,6 +343,11 @@ body {
   background: white;
   border-radius: 15px;
   box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.search-form:hover {
+  box-shadow: 0 12px 35px rgba(0,0,0,0.15);
 }
 
 .search-input {
@@ -313,8 +367,20 @@ body {
   box-shadow: 0 0 0 3px rgba(123, 30, 58, 0.1);
 }
 
+.search-input::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+/* ========================
+   BOTÕES
+   ======================== */
+
 .btn-primary,
 .btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   padding: 0.8rem 1.5rem;
   border-radius: 12px;
   font-size: 0.95rem;
@@ -323,12 +389,29 @@ body {
   text-decoration: none;
   border: none;
   transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .btn-primary {
   background: linear-gradient(45deg, #7B1E3A, #9d2448);
   color: white;
   box-shadow: 0 4px 15px rgba(123, 30, 58, 0.3);
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-primary:hover::before {
+  left: 100%;
 }
 
 .btn-primary:hover {
@@ -346,6 +429,12 @@ body {
 .btn-secondary:hover {
   background-color: #e0e0e0;
   transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.btn-sm {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
 }
 
 /* ========================
@@ -354,7 +443,7 @@ body {
 
 .course-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2.5rem;
   margin-top: 3rem;
   padding: 0;
@@ -397,9 +486,10 @@ body {
 
 .course-img {
   width: 100%;
-  height: 180px;
+  height: 200px;
   object-fit: cover;
   transition: transform 0.3s ease;
+  position: relative;
 }
 
 .course-item:hover .course-img {
@@ -408,52 +498,87 @@ body {
 
 /* Conteúdo do curso */
 .course-item .content {
-  padding: 1.5rem;
+  padding: 1.8rem;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  gap: 1rem;
+}
+
+.course-item .content a {
+  text-decoration: none;
+  transition: color 0.3s ease;
 }
 
 .course-item .content strong {
-  font-size: 1.2rem;
-  color: #7B1E3A;
-  margin-bottom: 0.8rem;
+  font-size: 1.25rem;
+  color: #333;
   line-height: 1.4;
   font-weight: 700;
+  transition: color 0.3s ease;
+}
+
+.course-item .content a:hover strong {
+  color: #7B1E3A;
 }
 
 .course-item .content p {
   font-size: 0.95rem;
-  color: #555;
+  color: #666;
   flex-grow: 1;
-  margin-bottom: 1.2rem;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
-/* Participantes */
+/* Estatísticas do curso */
+.stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin: 1rem 0;
+}
+
 .participants {
   font-size: 0.9rem;
   color: #7B1E3A;
   font-weight: 600;
-  margin-bottom: 1.2rem;
   padding: 0.5rem 0.8rem;
-  background-color: rgba(123, 30, 58, 0.1);
+  background: linear-gradient(135deg, rgba(123, 30, 58, 0.1), rgba(123, 30, 58, 0.05));
   border-radius: 8px;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-left: 3px solid #7B1E3A;
 }
 
-/* Botão saiba mais */
+/* Botão de ação */
 .course-cta {
   align-self: flex-start;
   background: linear-gradient(45deg, #7B1E3A, #9d2448);
   color: white;
-  padding: 0.6rem 1.2rem;
+  padding: 0.7rem 1.3rem;
   border-radius: 12px;
   font-size: 0.9rem;
   font-weight: 600;
   text-decoration: none;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(123, 30, 58, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.course-cta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.course-cta:hover::before {
+  left: 100%;
 }
 
 .course-cta:hover {
@@ -464,14 +589,20 @@ body {
 
 /* Estado vazio */
 .empty-state {
+  grid-column: 1 / -1;
   text-align: center;
-  color: #888;
+  color: #666;
   font-size: 1.1rem;
-  margin-top: 4rem;
-  padding: 3rem;
+  margin-top: 2rem;
+  padding: 4rem 2rem;
   background: white;
   border-radius: 16px;
   box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  border: 2px dashed #e0e0e0;
+}
+
+.empty-state .btn-primary {
+  margin-top: 1.5rem;
 }
 
 /* ========================
@@ -522,9 +653,35 @@ body {
    RESPONSIVIDADE
    ======================== */
 
+@media (max-width: 1024px) {
+  .course-dashboard-header {
+    flex-direction: column;
+    gap: 1.5rem;
+    text-align: center;
+  }
+  
+  .course-list {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 1rem;
+  }
+  
+  .course-dashboard-header {
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .page-title {
+    font-size: 1.8rem;
+  }
+  
+  .dashboard-subtitle {
+    font-size: 0.9rem;
   }
   
   .top-rated-section {
@@ -565,9 +722,17 @@ body {
   .crown {
     font-size: 2.5rem;
   }
+  
+  .course-item .content {
+    padding: 1.5rem;
+  }
 }
 
 @media (max-width: 480px) {
+  .page-title {
+    font-size: 1.6rem;
+  }
+  
   .section-title {
     font-size: 1.8rem;
   }
@@ -577,6 +742,14 @@ body {
   }
   
   .course-title a {
+    font-size: 1.1rem;
+  }
+  
+  .course-item .content {
+    padding: 1.2rem;
+  }
+  
+  .course-item .content strong {
     font-size: 1.1rem;
   }
 }

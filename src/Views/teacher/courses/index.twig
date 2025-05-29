@@ -3,144 +3,112 @@
 {% block title %}Painel de Cursos{% endblock %}
 
 {% block styles %}
-  <link rel="stylesheet" href="/assets/css/pages/curso/teacher/index.css">
+  <link rel="stylesheet" href="/assets/css/pages/curso/aluno/index.css">
 {% endblock %}
 
 {% block content %}
-  <section class="course-dashboard">
-    <div class="dashboard-topbar">
-      <div class="dashboard-title-group">
-        <h1 class="page-title">Painel de Cursos</h1>
-        <p class="dashboard-subtitle">Gerencie, organize e acompanhe seus cursos com facilidade</p>
-      </div>
-      <a href="/teacher/courses/create" class="btn btn-primary" aria-label="Criar novo curso">
-        <i class="fas fa-plus-circle"></i> Criar Curso
-      </a>
+  {# Cabeçalho com título e botão de criar curso #}
+  <div class="course-dashboard-header">
+    <div class="dashboard-title-group">
+      <h1 class="page-title">Painel de Cursos</h1>
+      <p class="dashboard-subtitle">Gerencie, organize e acompanhe seus cursos com facilidade</p>
     </div>
+    <a href="/teacher/courses/create" class="btn-primary btn-sm" aria-label="Criar novo curso">
+      <i class="fas fa-plus-circle"></i> Criar Curso
+    </a>
+  </div>
 
-    <div class="divider"></div>
+  {# Formulário de busca (mesmo padrão do aluno) #}
+  <form method="get" action="/teacher/courses" class="search-form">
+    <input
+      type="text"
+      name="q"
+      placeholder="Pesquisar meus cursos"
+      value="{{ q|e }}"
+      class="search-input"
+    />
+    <button type="submit" class="btn-primary btn-sm">Buscar</button>
+    {% if q %}
+      <a href="/teacher/courses" class="btn-secondary btn-sm">Limpar</a>
+    {% endif %}
+  </form>
 
-    <div class="course-grid">
-      {% if courses|length > 0 %}
-        {% for course in courses %}
-          <div class="course-card">
-            <div class="card-header">
-              <h2 class="course-name">{{ course.getTitle() }}</h2>
+  {# Lista de cursos em cards (mesmo padrão do aluno) #}
+  <ul class="course-list">
+    {% for course in courses %}
+      <li class="course-item">
+        <img
+          src="/assets/images/sliders/cursosimg.jpeg"
+          alt="{{ course.getTitle() }}"
+          class="course-img"
+        >
+        <div class="content">
+          <a href="/teacher/courses/{{ course.getId() }}">
+            <strong>{{ course.getTitle() }}</strong>
+          </a>
+          
+          <div class="stats">
+            <div class="participants">
+              👥 {{ participantCounts[course.getId()] ?? 0 }}
+              {{ (participantCounts[course.getId()] ?? 0) == 1
+                 ? 'participante'
+                 : 'participantes' }}
             </div>
-            <div class="card-footer">
-              <a href="/teacher/courses/{{ course.getId() }}" class="btn btn-view-details" aria-label="Ver detalhes do curso {{ course.getTitle() }}">
-                <i class="fas fa-eye"></i> Ver Detalhes
-              </a>
-            </div>
+            {% if courseRatings[course.getId()] %}
+              <div class="rating">
+                <span class="stars">
+                  {% set rating = courseRatings[course.getId()].average_rating %}
+                  {% for i in 1..5 %}
+                    {% if i <= rating %}
+                      ⭐
+                    {% else %}
+                      ☆
+                    {% endif %}
+                  {% endfor %}
+                </span>
+                <span class="rating-text">
+                  {{ courseRatings[course.getId()].average_rating }} ({{ courseRatings[course.getId()].total_ratings }})
+                </span>
+              </div>
+            {% endif %}
           </div>
-        {% endfor %}
-      {% else %}
-        <div class="no-courses">
-          <img src="/assets/images/empty-courses.png" alt="Nenhum curso disponível" style="width: 150px; margin: 0 auto; display: block;">
-          <p>Você ainda não criou nenhum curso.</p>
-          <a href="/teacher/courses/create" class="btn btn-primary mt-2">
-            <i class="fas fa-plus-circle"></i> Criar primeiro curso
+          
+          <a href="/teacher/courses/{{ course.getId() }}" class="course-cta">
+            Gerenciar Curso
           </a>
         </div>
-      {% endif %}
-    </div>
+      </li>
+    {% else %}
+      <li class="empty-state">
+        {% if q %}
+          Nenhum curso encontrado para "{{ q }}".
+          <br>
+          <a href="/teacher/courses/create" class="btn-primary btn-sm" style="margin-top: 10px;">
+            <i class="fas fa-plus-circle"></i> Criar primeiro curso
+          </a>
+        {% else %}
+          Você ainda não criou nenhum curso.
+          <br>
+          <a href="/teacher/courses/create" class="btn-primary btn-sm" style="margin-top: 10px;">
+            <i class="fas fa-plus-circle"></i> Criar primeiro curso
+          </a>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
 
-    {# Paginação - só exibe se houver mais de uma página #}
-    {% if pagination.total_pages > 1 %}
-      <div class="pagination-wrapper">
-        <div class="pagination-info">
-          Exibindo <strong>{{ ((pagination.current_page - 1) * pagination.per_page + 1) }}</strong> a 
-          <strong>{{ min(pagination.current_page * pagination.per_page, pagination.total_courses) }}</strong> 
-          de <strong>{{ pagination.total_courses }}</strong> cursos
-        </div>
-
-        {# Navegação completa (desktop/tablet) #}
-        <nav class="pagination-nav" aria-label="Navegação de páginas">
-          {# Botão Anterior #}
-          {% if pagination.has_prev %}
-            <a href="?page={{ pagination.prev_page }}" class="pagination-btn pagination-btn--nav" aria-label="Página anterior">
-              <i class="fas fa-chevron-left"></i> Anterior
+  {# Paginação (mesmo padrão do aluno) #}
+  {% if totalPages > 1 %}
+    <nav class="pagination">
+      <ul>
+        {% for p in 1..totalPages %}
+          <li class="{{ p == currentPage ? 'active' : '' }}">
+            <a href="/teacher/courses?page={{ p }}{% if q %}&q={{ q|url_encode }}{% endif %}">
+              {{ p }}
             </a>
-          {% else %}
-            <span class="pagination-btn pagination-btn--nav pagination-btn--disabled" aria-disabled="true">
-              <i class="fas fa-chevron-left"></i> Anterior
-            </span>
-          {% endif %}
-
-          {# Números das páginas #}
-          {% set start_page = max(1, pagination.current_page - 2) %}
-          {% set end_page = min(pagination.total_pages, pagination.current_page + 2) %}
-
-          {# Primeira página se não estiver no range #}
-          {% if start_page > 1 %}
-            <a href="?page=1" class="pagination-btn pagination-btn--number" aria-label="Página 1">1</a>
-            {% if start_page > 2 %}
-              <span class="pagination-separator">...</span>
-            {% endif %}
-          {% endif %}
-
-          {# Páginas do range atual #}
-          {% for page in start_page..end_page %}
-            {% if page == pagination.current_page %}
-              <span class="pagination-btn pagination-btn--number pagination-btn--current" aria-current="page" aria-label="Página atual, página {{ page }}">
-                {{ page }}
-              </span>
-            {% else %}
-              <a href="?page={{ page }}" class="pagination-btn pagination-btn--number" aria-label="Página {{ page }}">
-                {{ page }}
-              </a>
-            {% endif %}
-          {% endfor %}
-
-          {# Última página se não estiver no range #}
-          {% if end_page < pagination.total_pages %}
-            {% if end_page < pagination.total_pages - 1 %}
-              <span class="pagination-separator">...</span>
-            {% endif %}
-            <a href="?page={{ pagination.total_pages }}" class="pagination-btn pagination-btn--number" aria-label="Página {{ pagination.total_pages }}">
-              {{ pagination.total_pages }}
-            </a>
-          {% endif %}
-
-          {# Botão Próximo #}
-          {% if pagination.has_next %}
-            <a href="?page={{ pagination.next_page }}" class="pagination-btn pagination-btn--nav" aria-label="Próxima página">
-              Próximo <i class="fas fa-chevron-right"></i>
-            </a>
-          {% else %}
-            <span class="pagination-btn pagination-btn--nav pagination-btn--disabled" aria-disabled="true">
-              Próximo <i class="fas fa-chevron-right"></i>
-            </span>
-          {% endif %}
-        </nav>
-
-        {# Navegação compacta (mobile) #}
-        <nav class="pagination-nav pagination-nav--compact" aria-label="Navegação de páginas">
-          {% if pagination.has_prev %}
-            <a href="?page={{ pagination.prev_page }}" class="pagination-btn pagination-btn--nav" aria-label="Página anterior">
-              <i class="fas fa-chevron-left"></i> Anterior
-            </a>
-          {% else %}
-            <span class="pagination-btn pagination-btn--nav pagination-btn--disabled">
-              <i class="fas fa-chevron-left"></i> Anterior
-            </span>
-          {% endif %}
-
-          <div class="pagination-current-indicator">
-            {{ pagination.current_page }} / {{ pagination.total_pages }}
-          </div>
-
-          {% if pagination.has_next %}
-            <a href="?page={{ pagination.next_page }}" class="pagination-btn pagination-btn--nav" aria-label="Próxima página">
-              Próximo <i class="fas fa-chevron-right"></i>
-            </a>
-          {% else %}
-            <span class="pagination-btn pagination-btn--nav pagination-btn--disabled">
-              Próximo <i class="fas fa-chevron-right"></i>
-            </span>
-          {% endif %}
-        </nav>
-      </div>
-    {% endif %}
-  </section>
+          </li>
+        {% endfor %}
+      </ul>
+    </nav>
+  {% endif %}
 {% endblock %}
