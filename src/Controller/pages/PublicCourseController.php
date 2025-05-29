@@ -131,18 +131,8 @@ class PublicCourseController
                         : null;
 
         $userId        = $_SESSION['user']['id'] ?? null;
-        $rawComments   = $this->commentRepo->findByCourseId($courseId);
-        $comments      = [];
-        foreach ($rawComments as $comment) {
-            $user = $this->userRepo->findById($comment->getUserId());
-            $comments[] = [
-                'id' => $comment->getId(),
-                'text' => $comment->getComment(),
-                'rating' => $comment->getRating(),
-                'createdAt' => $comment->getCreatedAt(),
-                'user' => $user ? ['id' => $user->getId(), 'name' => $user->getName()] : null,
-            ];
-        }
+        // Buscar dados de avaliação
+        $ratingData = $this->commentRepo->getCourseRatingData($courseId); // retorna ['average_rating' => ..., 'total_ratings' => ...]
         $isParticipating = $userId
             ? $this->participationRepo->isParticipating($userId, $courseId)
             : false;
@@ -151,11 +141,12 @@ class PublicCourseController
         echo $this->twig->render('public/courses/show.twig', [
             'course'           => $course,
             'category'         => $category,
-            'comments'         => $comments,
+            'ratingData'       => $ratingData,
             'isParticipating'  => $isParticipating,
             'participantCount' => $participantCount,
             'modules'          => $modules,
             'modulesCount'     => $modulesCount,
+            // Não envia mais 'comments'
         ]);
     }
 
@@ -523,7 +514,7 @@ class PublicCourseController
         AuthMiddleware::handle();
         $userId = (int) $_SESSION['user']['id'];
 
-        $courses = $this->participationRepo->findCoursesByUser($userId);
+        $courses = $this->participationRepo->findCoursesByUser($userId); 
 
         echo $this->twig->render('public/courses/my-courses.twig', [
             'courses' => $courses,

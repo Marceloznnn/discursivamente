@@ -277,7 +277,10 @@ $r->addRoute('GET', '/cookies', [PagesController::class, 'cookies']);
 $r->addRoute('GET', '/privacy', [PagesController::class, 'privacy']);
 
 // Cursos do professor
-$r->addRoute('GET', '/teacher/courses', function($twig, $pdo) {
+$r->addRoute('GET', '/teacher/courses', function($twig) {
+    $dbConfig = require __DIR__ . '/../../config/database.php';
+    $dsn = "mysql:host={$dbConfig['host']};port={$dbConfig['port']};dbname={$dbConfig['database']};charset=utf8";
+    $pdo = new PDO($dsn, $dbConfig['username'], $dbConfig['password']);
     $cloud = new CloudinaryService();
     (new \Controller\pages\TeacherCourseController($twig, $pdo, $cloud))->index();
 });

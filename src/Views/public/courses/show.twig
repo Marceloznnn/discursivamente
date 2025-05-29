@@ -46,106 +46,27 @@
       </div>
     </section>
 
-    <!-- Materiais do Curso -->
-    {% if isParticipating %}
-      <section class="materials-section">
-        <h2>Materiais do Curso ({{ materialsCount }})</h2>
-        <div class="materials-list">
-          {% if materialsCount > 0 %}
-            {% for m in materials %}
-              <div class="material-item">
-                <span class="material-icon">📄</span>
-                <div class="material-info">
-                  <h3>{{ m.title }}</h3>
-                  <p class="material-type">{{ m.type|default('Documento') }}</p>
-                </div>
-              </div>
-            {% endfor %}
-          {% else %}
-            <p class="no-materials">Nenhum material disponível.</p>
-          {% endif %}
+    <!-- Avaliação do Curso -->
+    <section class="course-rating-section">
+      <h2>Média de Avaliação</h2>
+      {% if ratingData.total_ratings > 0 %}
+        <div class="course-rating-stars">
+          {% set avg = ratingData.average_rating %}
+          {% for i in 1..5 %}
+            {% if i <= avg|round(0, 'floor') %}
+              <span class="star filled">★</span>
+            {% elseif i - avg < 1 and i > avg %}
+              <span class="star half">★</span>
+            {% else %}
+              <span class="star">☆</span>
+            {% endif %}
+          {% endfor %}
+          <span class="rating-value">{{ avg|number_format(1, ',', '.') }} / 5</span>
+          <span class="rating-count">({{ ratingData.total_ratings }} avaliações)</span>
         </div>
-      </section>
-    {% endif %}
-
-    <!-- Comentários -->
-    <section class="comments-section">
-      <h2 id="comments">Comentários</h2>
-
-      <div class="comments-list">
-        {% for c in comments %}
-          <div class="comment-item">
-            <div class="comment-header">
-              <div class="comment-author-info">
-                <strong>{{ c.userName }}</strong>
-                <time>{{ c.createdAt|date("d/m/Y H:i") }}</time>
-              </div>
-              {% if session.user and session.user.id == c.userId %}
-                <form action="/courses/{{ course.id }}/comments/{{ c.id }}/delete" method="post" class="delete-form">
-                  <button type="submit" class="delete-button" title="Excluir comentário">
-                    🗑️
-                  </button>
-                </form>
-              {% endif %}
-            </div>
-            <div class="comment-rating">
-              {% for i in 1..5 %}
-                {% if i <= c.rating %}
-                  <span class="star filled">★</span>
-                {% else %}
-                  <span class="star">☆</span>
-                {% endif %}
-              {% endfor %}
-            </div>
-            <p class="comment-text">{{ c.comment }}</p>
-          </div>
-        {% else %}
-          <p class="no-comments">Seja o primeiro a comentar!</p>
-        {% endfor %}
-      </div>
-
-      <div class="comment-form-section">
-        {% if session.user %}
-          <form action="/courses/{{ course.id }}/comment" method="post" class="comment-form">
-            {% if session.flash.error %}
-              <div class="form-errors">
-                {% for msg in session.flash.error %}
-                  <p>{{ msg }}</p>
-                {% endfor %}
-              </div>
-            {% endif %}
-
-            <div class="form-group">
-              <label for="comment">Comentário:</label>
-              <textarea id="comment" name="comment" rows="4">{{ app.request.get('comment') }}</textarea>
-            </div>
-
-            <fieldset class="rating-input">
-              <legend>Avaliação:</legend>
-              <div class="stars">
-                {% for i in 5..1 %}
-                  <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}" />
-                  <label for="star{{ i }}" class="star">★</label>
-                {% endfor %}
-              </div>
-            </fieldset>
-
-            <button type="submit" class="submit-button">Enviar comentário</button>
-
-            {% if session.flash.success %}
-              <div class="form-success">
-                {% for msg in session.flash.success %}
-                  <p>{{ msg }}</p>
-                {% endfor %}
-              </div>
-            {% endif %}
-          </form>
-        {% else %}
-          <p class="login-prompt">
-            <a href="/login">Faça login para deixar um comentário.</a>
-          </p>
-        {% endif %}
-      </div>
+      {% else %}
+        <p class="no-rating">Ainda não há avaliações para este curso.</p>
+      {% endif %}
     </section>
 
     <div class="back-link">
