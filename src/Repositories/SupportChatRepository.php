@@ -50,7 +50,7 @@ class SupportChatRepository
         $stmt->execute(['user_id' => $userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
+ 
     /**
      * Retorna todas as mensagens de um chat de suporte (usuário + admin)
      */

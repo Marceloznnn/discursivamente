@@ -365,6 +365,30 @@ class AdminController {
         exit;
     }
 
+    public function supportChatClear($chatId)
+    {
+        $this->checkAdminAccess();
+        $pdo = \Infrastructure\Database\Connection::getInstance();
+        // Remove todas as mensagens do chat
+        $stmt = $pdo->prepare("DELETE FROM support_messages WHERE chat_id = ?");
+        $stmt->execute([$chatId]);
+        $_SESSION['flash_message'] = ['type'=>'success','message'=>'Mensagens da conversa removidas com sucesso.'];
+        header("Location: /admin/support/chats/{$chatId}");
+        exit;
+    }
+
+    public function supportChatClose($chatId)
+    {
+        $this->checkAdminAccess();
+        $pdo = \Infrastructure\Database\Connection::getInstance();
+        // Marca o chat como encerrado (precisa de coluna status em support_chats ou similar)
+        $stmt = $pdo->prepare("UPDATE support_chats SET status = 'closed' WHERE chat_id = ?");
+        $stmt->execute([$chatId]);
+        $_SESSION['flash_message'] = ['type'=>'success','message'=>'Atendimento encerrado com sucesso.'];
+        header("Location: /admin/support/chats/{$chatId}");
+        exit;
+    }
+
     // Métodos auxiliares para buscar chats e mensagens
     private function getSupportChatsWithLastMessage()
     {

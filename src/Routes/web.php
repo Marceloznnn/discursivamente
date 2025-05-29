@@ -552,3 +552,13 @@ $r->addRoute('POST', '/admin/support/chats/{chatId}/reply', function($twig, $cha
     AdminMiddleware::handle();
     (new AdminController($twig))->supportChatReply($chatId);
 });
+$r->addRoute('POST', '/admin/support/chats/{chatId}/clear', function($twig, $chatId) {
+    AuthMiddleware::handle();
+    AdminMiddleware::handle();
+    (new AdminController($twig))->supportChatClear($chatId);
+});
+$r->addRoute('POST', '/admin/support/chats/{chatId}/close', function($twig, $chatId) {
+    AuthMiddleware::handle();
+    AdminMiddleware::handle();
+    (new AdminController($twig))->supportChatClose($chatId);
+});

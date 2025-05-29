@@ -13,12 +13,20 @@
         {% else %}
             <div class="chat-message system">Nenhuma mensagem ainda.</div>
         {% endfor %}
-    </div>
+    </div> 
     <form method="post" action="/admin/support/chats/{{ chatId }}/reply" class="chat-reply-form">
         <textarea name="message" required placeholder="Digite sua resposta..."></textarea>
         <button type="submit" class="btn btn-primary">Enviar</button>
     </form>
-    <a href="/admin/support/chats" class="btn btn-outline">Voltar</a>
+    <div class="admin-support-actions" style="margin-top:1.5rem;display:flex;gap:1rem;">
+        <form method="post" action="/admin/support/chats/{{ chatId }}/clear" onsubmit="return confirm('Tem certeza que deseja limpar todas as mensagens desta conversa? Esta ação não pode ser desfeita.');">
+            <button type="submit" class="btn btn-outline btn-danger">Limpar conversa</button>
+        </form>
+        <form method="post" action="/admin/support/chats/{{ chatId }}/close" onsubmit="return confirm('Deseja encerrar o atendimento? O histórico será mantido, mas o chat será marcado como encerrado.');">
+            <button type="submit" class="btn btn-outline btn-warning">Encerrar atendimento</button>
+        </form>
+        <a href="/admin/support/chats" class="btn btn-outline">Voltar</a>
+    </div>
 </div>
 {% endblock %}
 

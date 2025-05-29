@@ -49,4 +49,4 @@ class SupportChat
             'created_at' => $this->createdAt,
         ];
     }
-}
+} 
