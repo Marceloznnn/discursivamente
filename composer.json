@@ -25,7 +25,8 @@
       "Controller\\": "src/Controller/",
       "Middleware\\": "src/Middleware/",
       "Src\\": "src/",
-      "Services\\": "src/Services/"
+      "Services\\": "src/Services/",
+      "Server\\": "src/Server/"
     }
   },
   "autoload-dev": {

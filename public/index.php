@@ -72,7 +72,19 @@ switch ($routeInfo[0]) {
         [$handler, $vars] = [$routeInfo[1], $routeInfo[2]];
 
         if (is_callable($handler)) {
-            echo $handler($twig, $pdo, ...array_values($vars));
+            // Detecta quantos parâmetros a closure espera
+            $ref = new ReflectionFunction($handler);
+            $params = $ref->getParameters();
+            if (count($params) === 2) {
+                // Ex: function($twig, $chatId)
+                echo $handler($twig, ...array_values($vars));
+            } elseif (count($params) === 3) {
+                // Ex: function($twig, $pdo, $id)
+                echo $handler($twig, $pdo, ...array_values($vars));
+            } else {
+                // fallback: passa tudo
+                echo $handler($twig, $pdo, ...array_values($vars));
+            }
         } else {
             [$controllerClass, $method] = $handler;
             $controller = new $controllerClass($twig, $pdo);

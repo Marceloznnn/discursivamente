@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
@@ -8,7 +8,7 @@ use Ratchet\WebSocket\WsServer;
 use Server\ChatServer;
 
 // Carrega as configurações do banco de dados
-$dbConfig = require __DIR__ . '/../config/database.php';
+$dbConfig = require __DIR__ . '/config/database.php';
 
 try {
     // Conecta ao banco de dados

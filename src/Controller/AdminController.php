@@ -333,6 +333,19 @@ class AdminController {
     public function supportChatView($chatId)
     {
         $this->checkAdminAccess();
+        // Log para debug
+        error_log('DEBUG supportChatView $chatId: ' . print_r($chatId, true));
+        // Proteção extra: se vier um objeto, tenta extrair o chatId ou retorna erro amigável
+        if (is_object($chatId)) {
+            if (property_exists($chatId, 'chat_id')) {
+                $chatId = $chatId->chat_id;
+            } else {
+                echo $this->twig->render('errors/500.twig', [
+                    'message' => 'Erro interno: parâmetro de chat inválido.'
+                ]);
+                return;
+            }
+        }
         $messages = $this->getSupportMessagesByChatId($chatId);
         echo $this->twig->render('admin/support/chat.twig', [
             'chatId'   => $chatId,
@@ -367,6 +380,14 @@ class AdminController {
 
     private function getSupportMessagesByChatId($chatId)
     {
+        // Garante que não é objeto
+        if (is_object($chatId)) {
+            if (property_exists($chatId, 'chat_id')) {
+                $chatId = $chatId->chat_id;
+            } else {
+                return [];
+            }
+        }
         $pdo = \Infrastructure\Database\Connection::getInstance();
         $stmt = $pdo->prepare("SELECT sm.*, u.name as user_name FROM support_messages sm LEFT JOIN users u ON sm.user_id = u.id WHERE chat_id = ? ORDER BY created_at ASC");
         $stmt->execute([$chatId]);

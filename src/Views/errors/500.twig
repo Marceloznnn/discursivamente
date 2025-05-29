@@ -1,0 +1,9 @@
+{% extends 'layouts/base.twig' %}
+
+{% block content %}
+  <div class="error-page error-500">
+    <h1>Erro Interno do Servidor (500)</h1>
+    <p>{{ message|default('Ocorreu um erro interno inesperado. Tente novamente mais tarde.') }}</p>
+    <a href="/admin/support/chats" class="btn btn-primary">Voltar para lista de atendimentos</a>
+  </div>
+{% endblock %}

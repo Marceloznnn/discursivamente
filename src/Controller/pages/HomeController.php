@@ -33,9 +33,6 @@ class HomeController
      */
     public function index(): void
     {
-        // Garante que o usuário está autenticado
-        AuthMiddleware::handle();
-
         $currentUser = $_SESSION['user'] ?? null;
 
         $connection = Connection::getInstance();
@@ -79,7 +76,7 @@ class HomeController
             'supportWsUrl'    => 'ws://localhost:8081'
         ]);
     }
-
+ 
     /**
      * Faz upload de mídia para o Cloudinary
      *

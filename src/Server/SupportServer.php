@@ -63,9 +63,9 @@ class SupportServer implements MessageComponentInterface
     {
         $this->clients[$conn->resourceId]['chatId']    = $data['chatId'] ?? null;
         $this->clients[$conn->resourceId]['userId']    = (int)($data['userId'] ?? 0);
-        $this->clients[$conn->resourceId]['isSupport'] = (bool)($data['isSupport'] ?? false);
+        $this->clients[$conn->resourceId]['isSupport'] = !empty($data['isSupport']);
 
-        error_log("Suporte WS: #{$conn->resourceId} entrou no chat '{$data['chatId']}'");
+        error_log("Suporte WS: #{$conn->resourceId} entrou no chat '{$data['chatId']}' (isSupport=" . ($this->clients[$conn->resourceId]['isSupport'] ? 'true' : 'false') . ")");
     }
 
     protected function handleMessage(ConnectionInterface $from, array $data): void
@@ -80,8 +80,8 @@ class SupportServer implements MessageComponentInterface
             throw new \Exception('Dados de mensagem inválidos');
         }
 
-        // Salvar no banco
-        $this->repository->saveMessage($chatId, $userId, $message);
+        // Salvar no banco (agora com chatId)
+        $this->repository->saveMessage($chatId, $userId, $message, $isSupport ? 'admin' : 'user');
 
         // Buscar nome e avatar do usuário
         $stmt = $this->pdo->prepare("SELECT name, avatar FROM users WHERE id = ?");
@@ -117,6 +117,9 @@ class SupportServer implements MessageComponentInterface
         if (!$chatId || $userId <= 0) {
             throw new \Exception('Dados inválidos na solicitação de suporte');
         }
+
+        // Salva a solicitação como mensagem do sistema
+        $this->repository->saveMessage($chatId, $userId, 'Usuário solicitou atendimento humano.', 'system');
 
         $payload = [
             'type'     => 'support-request',

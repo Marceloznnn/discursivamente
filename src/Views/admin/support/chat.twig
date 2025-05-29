@@ -21,3 +21,13 @@
     <a href="/admin/support/chats" class="btn btn-outline">Voltar</a>
 </div>
 {% endblock %}
+
+{% block scripts %}
+  <script>
+    const chatId = "support_user_{{ chatId|default(currentUser.id) }}";
+    window.chatId = chatId;
+    window.currentUserId = {{ session.user.id|default(0) }};
+    window.currentUserName = "{{ session.user.name|e('js') }}";
+  </script>
+  <script src="/assets/js/pages/pages-scripts/admin-support-chat.js" defer></script>
+{% endblock %}

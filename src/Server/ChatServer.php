@@ -124,3 +124,4 @@ class ChatServer implements MessageComponentInterface
         $conn->close();
     }
 }
+ 

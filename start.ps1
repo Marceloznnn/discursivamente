@@ -62,3 +62,4 @@ if (Test-Path "composer.json") {
 
 # Inicia os servidores
 Start-Servers
+ 

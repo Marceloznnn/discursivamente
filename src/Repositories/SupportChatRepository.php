@@ -16,14 +16,15 @@ class SupportChatRepository
     /**
      * Salva uma mensagem no chat de suporte
      */
-    public function saveMessage(int $userId, string $message, string $sender = 'user'): void
+    public function saveMessage(string $chatId, int $userId, string $message, string $sender = 'user'): void
     {
         $stmt = $this->pdo->prepare(
-            "INSERT INTO support_messages (user_id, message, sender, created_at)
-             VALUES (:user_id, :message, :sender, NOW())"
+            "INSERT INTO support_messages (chat_id, user_id, message, sender, created_at)
+             VALUES (:chat_id, :user_id, :message, :sender, NOW())"
         );
 
         $stmt->execute([
+            'chat_id' => $chatId,
             'user_id' => $userId,
             'message' => $message,
             'sender'  => $sender

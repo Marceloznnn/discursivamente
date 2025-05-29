@@ -269,29 +269,14 @@
         <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </div>
-
     <div class="chatbot-messages" id="chatbot-messages" aria-live="polite">
-      {% for msg in messages %}
-        {% set cssClass = '' %}
-        {% if msg.sender == 'user' %}
-          {% set cssClass = msg.user_id == currentUser.id ? 'chatbot-message--self' : 'chatbot-message--user' %}
-        {% elseif msg.sender == 'bot' %}
-          {% set cssClass = 'chatbot-message--bot' %}
-        {% elseif msg.sender == 'system' %}
-          {% set cssClass = 'chatbot-message--system' %}
-        {% endif %}
-
-        <div class="chatbot-message {{ cssClass }}">
-          {% if msg.sender != 'system' %}
-            <strong>
-              {{ msg.sender == 'user' ? (msg.user_name|default('Usuário')) : 'Atendente' }}:
-            </strong>
-          {% endif %}
-          <span>{{ msg.message }}</span>
+      {% if not currentUser or not currentUser.id %}
+        <div class="chatbot-message chatbot-message--system" style="margin-bottom: 1rem;">
+          <em>⚠️ Faça login para enviar mensagens ao suporte.</em>
         </div>
-      {% endfor %}
+      {% endif %}
+      <!-- As mensagens do chat serão renderizadas via JS -->
     </div>
-
     <div class="chatbot-input">
       <input 
         id="chatbot-input"
@@ -314,9 +299,13 @@
     const CHAT_USER = {
       id: {{ currentUser.id|default(0) }},
       name: "{{ currentUser.name|e('js') }}",
-      chatId: "{{ chatId }}", // Passado do backend para identificar a sala
-      isSupport: false // Mude para true se for painel de atendente
+      chatId: "support_user_{{ currentUser.id|default(0) }}",
+      isSupport: false
     };
+    window.currentUserId = {{ currentUser.id|default(0) }};
+    window.currentUserName = "{{ currentUser.name|e('js') }}";
+    window.chatId = "support_user_{{ currentUser.id|default(0) }}";
+    window.isSupport = false;
   </script>
 
   <script src="/assets/js/pages/pages-scripts/chatbot.js" defer></script>
