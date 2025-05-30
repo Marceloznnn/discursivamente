@@ -226,11 +226,11 @@
         Não há eventos em destaque no momento. Fique ligado!
       </div>
     {% else %}
-      <div class="eventos-slider">
-        <button class="slider-btn prev-btn">&larr;</button>
-        <div class="slider-wrapper">
+      <div class="eventos-slider" id="eventos-slider">
+        <button class="slider-btn prev-btn" id="eventos-prev-btn" aria-label="Evento anterior">&larr;</button>
+        <div class="slider-wrapper" id="eventos-slider-wrapper">
           {% for event in featuredEvents %}
-            <div class="evento-item">
+            <div class="evento-item{% if not loop.first %} d-none{% endif %}" data-index="{{ loop.index0 }}">
               <div class="evento-image">
                 {% if event.image %} 
                   <img src="{{ event.image }}" alt="{{ event.title }}">
@@ -249,7 +249,7 @@
             </div> 
           {% endfor %}
         </div>
-        <button class="slider-btn next-btn">&rarr;</button>
+        <button class="slider-btn next-btn" id="eventos-next-btn" aria-label="Próximo evento">&rarr;</button>
       </div>
     {% endif %}
 
@@ -257,6 +257,7 @@
       <a href="/events" class="btn-ver-todos">Ver todos os eventos</a>
     </div>
   </div>
+  
 {# Chatbot de Suporte #}
 <div class="chatbot-container" role="dialog" aria-labelledby="chatbot-heading">
   <button class="chatbot-toggle" aria-expanded="false" aria-controls="chatbot-window">
@@ -298,8 +299,34 @@
 {% endblock %}
 
 {% block scripts %}
-  <script src="/assets/js/pages/pages-scripts/faq.js" defer>
-  <script src="/assets/js/pages/pages-scripts/slider.js" defer>
-<script src="/assets/js/pages/pages-scripts/newsletter.js" defer>
+  <script src="/assets/js/pages/pages-scripts/faq.js" defer></script>
+  <script src="/assets/js/pages/pages-scripts/slider.js" defer></script>
+  <script src="/assets/js/pages/pages-scripts/newsletter.js" defer></script>
   <script src="/assets/js/pages/pages-scripts/chatbot.js" defer></script>
+  <script>
+    // Slider de eventos em destaque - mostra 1 por vez
+    document.addEventListener('DOMContentLoaded', function () {
+      const items = Array.from(document.querySelectorAll('.evento-item'));
+      if (!items.length) return;
+      let current = 0;
+      function show(idx) {
+        items.forEach((el, i) => {
+          el.classList.toggle('d-none', i !== idx);
+        });
+      }
+      document.getElementById('eventos-prev-btn').addEventListener('click', function () {
+        current = (current - 1 + items.length) % items.length;
+        show(current);
+      });
+      document.getElementById('eventos-next-btn').addEventListener('click', function () {
+        current = (current + 1) % items.length;
+        show(current);
+      });
+      // Acessibilidade: setas do teclado
+      document.getElementById('eventos-slider').addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft') document.getElementById('eventos-prev-btn').click();
+        if (e.key === 'ArrowRight') document.getElementById('eventos-next-btn').click();
+      });
+    });
+  </script>
 {% endblock %}

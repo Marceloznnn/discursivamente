@@ -7,7 +7,7 @@
   display: flex;
   flex-direction: column;
   gap: 30px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .eventos-header {
@@ -51,15 +51,20 @@
 }
 
 .evento-image {
-  flex: 0 0 200px;
-  height: 150px;
+  flex: 0 0 320px; /* Aumentado */
+  height: 220px; /* Aumentado */
   overflow: hidden;
+  background: #fff; /* Fundo branco para áreas não preenchidas */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .evento-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain; /* Mostra a imagem inteira, sem cortar */
+  background: #fff; /* Garante fundo branco atrás da imagem */
 }
 
 .evento-content {
@@ -102,7 +107,6 @@
 }
 
 .evento-link:hover {
-
-    color: #000000;
+  color: #000000;
   background-color: #2984b9;
 }
