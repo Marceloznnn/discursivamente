@@ -15,7 +15,7 @@
                     <p class="footer-description">Discursivamente é uma plataforma dedicada à educação transformadora, promovendo o pensamento crítico e o desenvolvimento pessoal através de conteúdos de qualidade.</p>
                 </div>
 
-                <div class="footer-navigation">
+                <div class="footer-navigation">  
                     <h3 class="footer-heading">Navegação</h3>
                     <ul class="navigation-list">
                         <li><a href="/about" class="nav-link">Sobre Nós</a></li>
@@ -36,9 +36,10 @@
                  <div class="footer-newsletter">
                     <h3 class="footer-heading">Assine nossa Newsletter</h3>
                     <p>Receba atualizações e novidades diretamente no seu e-mail.</p>
-                    <form action="#" method="post">
+                    <form action="#" method="post" id="footerNewsletterForm">
                         <input type="email" placeholder="Seu e-mail" required>
                         <button type="submit"><i data-feather="send"></i> Assinar</button>
+                        <div class="newsletter-feedback" style="display:none;"></div>
                     </form>
                 </div>
             </div>
@@ -96,6 +97,46 @@
 
     <script>
         feather.replace();
+        // Newsletter feedback profissional
+        const form = document.getElementById('footerNewsletterForm');
+        const feedback = form.querySelector('.newsletter-feedback');
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            feedback.style.display = 'none';
+            feedback.className = 'newsletter-feedback';
+            const email = form.querySelector('input[type="email"]').value.trim();
+            if (!email.match(/^[^@\s]+@[^@\s]+\.[^@\s]+$/)) {
+                feedback.textContent = 'Por favor, insira um e-mail válido.';
+                feedback.classList.add('error');
+                feedback.style.display = 'block';
+                return;
+            }
+            form.querySelector('button').disabled = true;
+            feedback.textContent = 'Enviando...';
+            feedback.classList.remove('error');
+            feedback.style.display = 'block';
+            try {
+                const res = await fetch('/newsletter/subscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ email })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    feedback.textContent = 'Inscrição realizada com sucesso! 🎉';
+                    feedback.classList.remove('error');
+                    feedback.classList.add('success');
+                } else {
+                    feedback.textContent = data.message || 'Erro ao inscrever. Tente novamente.';
+                    feedback.classList.add('error');
+                }
+            } catch (err) {
+                feedback.textContent = 'Erro de conexão. Tente novamente.';
+                feedback.classList.add('error');
+            }
+            feedback.style.display = 'block';
+            form.querySelector('button').disabled = false;
+        });
     </script>
     <script src="/assets/js/layouts/footer.js"></script>
 </body>

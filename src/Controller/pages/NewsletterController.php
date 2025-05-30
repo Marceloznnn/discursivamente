@@ -9,7 +9,7 @@ class NewsletterController
 {
     private NewsletterRepository $newsletterRepo;
 
-    public function __construct()
+    public function __construct() 
     {
         $pdo = Connection::getInstance();
         $this->newsletterRepo = new NewsletterRepository($pdo);

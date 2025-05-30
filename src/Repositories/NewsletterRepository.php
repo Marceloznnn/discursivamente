@@ -11,7 +11,7 @@ class NewsletterRepository
     public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
-    }
+    } 
 
     public function add(NewsletterSubscriber $subscriber): bool
     {

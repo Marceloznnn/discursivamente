@@ -200,17 +200,18 @@
                  </div>
                  <div class="newsletter-form">
                      <form action="/newsletter/subscribe" method="POST" id="newsletterForm">
-                         <div class="form-group">
-                             <label for="newsletter-email" class="sr-only">Email</label>
-                             <input type="email" id="newsletter-email" name="email" placeholder="Seu melhor e-mail" required aria-required="true">
-                             <div class="preference-checkboxes">
-                                 <label><input type="checkbox" name="pref_cursos" checked> Cursos</label>
-                                 <label><input type="checkbox" name="pref_eventos" checked> Eventos</label>
-                                 <label><input type="checkbox" name="pref_conteudos"> Conteúdos</label>
-                             </div>
-                             <button type="submit" class="btn btn-primary">Inscrever</button>
-                         </div>
-                     </form>
+        <div class="form-group">
+            <label for="newsletter-email" class="sr-only">Email</label>
+            <input type="email" id="newsletter-email" name="email" placeholder="Seu melhor e-mail" required aria-required="true">
+            <div class="preference-checkboxes">
+                <label><input type="checkbox" name="pref_cursos" checked> Cursos</label>
+                <label><input type="checkbox" name="pref_eventos" checked> Eventos</label>
+                <label><input type="checkbox" name="pref_conteudos"> Conteúdos</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Inscrever</button>
+            <div class="newsletter-feedback" style="display:none;"></div>
+        </div>
+    </form>
                  </div>
              </div>
          </div>
@@ -281,7 +282,7 @@
     </div>
     <div class="chatbot-input"> 
       <input 
-        id="chatbot-input"
+        id="chatbot-input" 
         type="text"
         placeholder="Digite sua mensagem..."
         aria-label="Digite sua mensagem"
@@ -297,25 +298,8 @@
 {% endblock %}
 
 {% block scripts %}
-  <script>
-    const CHAT_USER = {
-      id: {{ currentUser.id|default(0) }},
-      name: "{{ currentUser.name|e('js') }}",
-      chatId: "support_user_{{ currentUser.id|default(0) }}",
-      isSupport: false
-    };
-    window.currentUserId = {{ currentUser.id|default(0) }};
-    window.currentUserName = "{{ currentUser.name|e('js') }}";
-    window.chatId = "support_user_{{ currentUser.id|default(0) }}";
-    window.isSupport = false;
-    window.supportMessages = {{ supportMessages|json_encode|raw }};
-  </script>
-
+  <script src="/assets/js/pages/pages-scripts/faq.js" defer>
+  <script src="/assets/js/pages/pages-scripts/slider.js" defer>
+<script src="/assets/js/pages/pages-scripts/newsletter.js" defer>
   <script src="/assets/js/pages/pages-scripts/chatbot.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"
-    integrity="sha512-fzff82+8pzHnwA1mQ0dzz9/E0B+ZRizq08yZfya66INZBz86qKTCt9MLU0NCNIgaMJCgeyhujhasnFUsYMsi0Q=="
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-    async>
-  </script>
 {% endblock %}

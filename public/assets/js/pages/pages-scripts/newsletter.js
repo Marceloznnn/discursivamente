@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     }
-    
+     
     // Cria elemento de feedback
     function createFeedbackElement() {
         const feedback = document.createElement('div');
