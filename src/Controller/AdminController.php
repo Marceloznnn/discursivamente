@@ -15,6 +15,7 @@ class AdminController {
     private $eventRepository;
     private $courseRepository;
     private $newsletterRepository;
+    private $cloudinaryService;
 
     public function __construct($twig)
     {
@@ -25,6 +26,7 @@ class AdminController {
         $this->eventRepository        = new EventRepository($connection);
         $this->courseRepository       = new CourseRepository($connection);
         $this->newsletterRepository   = new NewsletterRepository($connection);
+        $this->cloudinaryService      = new \Services\CloudinaryService();
     }
 
     private function checkAdminAccess()
@@ -53,7 +55,7 @@ class AdminController {
 
         echo $this->twig->render('admin/index.twig', [
             'userCount' => $userCount,
-            'eventCount' => $eventCount,
+            'eventCount' => $eventCount, 
             'courseCount' => $courseCount,
             'newsletterCount' => $newsletterCount,
             'supportCallsCount' => $supportCallsCount
@@ -288,13 +290,20 @@ class AdminController {
         }
 
         $imageUrl = null;
+        $imagePublicId = null;
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = __DIR__ . '/../../public/uploads/events/';
-            if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-            $fileName = time() . '_' . basename($_FILES['image']['name']);
-            $filePath = $uploadDir . $fileName;
-            if (move_uploaded_file($_FILES['image']['tmp_name'], $filePath)) {
-                $imageUrl = '/uploads/events/' . $fileName;
+            $tmpPath = $_FILES['image']['tmp_name'];
+            $fileType = $this->cloudinaryService->determineFileType($tmpPath);
+            try {
+                $uploadResult = $this->cloudinaryService->uploadFile($tmpPath, $fileType, 'events');
+                $imageUrl = $uploadResult['url'] ?? null;
+                $imagePublicId = $uploadResult['public_id'] ?? null;
+            } catch (\Exception $e) {
+                echo $this->twig->render('admin/events/form.twig', [
+                    'error' => 'Erro ao fazer upload da imagem: ' . $e->getMessage(),
+                    'event' => compact('title','description','dateTime','visibility','isFeatured','featurePriority')
+                ]);
+                return;
             }
         }
 
@@ -305,7 +314,11 @@ class AdminController {
             $visibility,
             $imageUrl,
             $isFeatured,
-            $featurePriority
+            $featurePriority,
+            null,
+            null,
+            null,
+            $imagePublicId
         );
         $this->eventRepository->save($event);
 
@@ -345,18 +358,26 @@ class AdminController {
             return;
         }
 
-        $imageUrl = null;
+        $imageUrl = $event ? $event->getImage() : null;
+        $imagePublicId = $event ? $event->getImagePublicId() : null;
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = __DIR__ . '/../../public/uploads/events/';
-            if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-            $fileName = time() . '_' . basename($_FILES['image']['name']);
-            $filePath = $uploadDir . $fileName;
-            if (move_uploaded_file($_FILES['image']['tmp_name'], $filePath)) {
-                $imageUrl = '/uploads/events/' . $fileName;
+            // Se já existe imagem, remove do Cloudinary
+            if ($imagePublicId) {
+                $this->cloudinaryService->deleteFile($imagePublicId, 'image');
             }
-        }
-        if ($imageUrl === null) {
-            $imageUrl = $event ? $event->getImage() : null;
+            $tmpPath = $_FILES['image']['tmp_name'];
+            $fileType = $this->cloudinaryService->determineFileType($tmpPath);
+            try {
+                $uploadResult = $this->cloudinaryService->uploadFile($tmpPath, $fileType, 'events');
+                $imageUrl = $uploadResult['url'] ?? null;
+                $imagePublicId = $uploadResult['public_id'] ?? null;
+            } catch (\Exception $e) {
+                echo $this->twig->render('admin/events/form.twig', [
+                    'error' => 'Erro ao fazer upload da imagem: ' . $e->getMessage(),
+                    'event' => compact('id','title','description','dateTime','visibility','isFeatured','featurePriority')
+                ]);
+                return;
+            }
         }
 
         $updatedEvent = new \App\Models\Event(
@@ -367,7 +388,10 @@ class AdminController {
             $imageUrl,
             $isFeatured,
             $featurePriority,
-            $id
+            $id,
+            $event ? $event->getCreatedAt() : null,
+            null,
+            $imagePublicId
         );
         $this->eventRepository->save($updatedEvent);
         $_SESSION['flash_message'] = ['type'=>'success','message'=>'Evento atualizado com sucesso.'];
@@ -377,6 +401,10 @@ class AdminController {
     public function eventDelete(int $id)
     {
         $this->checkAdminAccess();
+        $event = $this->eventRepository->findById($id);
+        if ($event && $event->getImagePublicId()) {
+            $this->cloudinaryService->deleteFile($event->getImagePublicId(), 'image');
+        }
         $this->eventRepository->delete($id);
         $_SESSION['flash_message'] = ['type'=>'success','message'=>'Evento excluído com sucesso.'];
         header('Location: /admin/events'); exit;

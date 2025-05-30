@@ -9,7 +9,7 @@ use Config\UploadConfig;
 use Config\Logger;
 
 class CloudinaryService
-{
+{ 
     private Cloudinary $cloudinaryImages;
     private Cloudinary $cloudinaryVideos;
     

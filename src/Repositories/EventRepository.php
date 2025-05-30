@@ -40,6 +40,7 @@ class EventRepository
                       event_date = :dateTime,
                       visibility = :visibility,
                       image = :image,
+                      image_public_id = :imagePublicId,
                       is_featured = :isFeatured,
                       feature_priority = :featurePriority,
                       updated_at = NOW()
@@ -50,16 +51,17 @@ class EventRepository
                 ':dateTime'        => $event->getDateTime(),
                 ':visibility'      => $event->getVisibility(),
                 ':image'           => $event->getImage(),
+                ':imagePublicId'   => $event->getImagePublicId(),
                 ':isFeatured'      => $event->getIsFeatured() ? 1 : 0,
                 ':featurePriority' => $event->getFeaturePriority(),
                 ':id'              => $event->getId(),
             ];
         } else {
             $sql = "INSERT INTO events
-                      (title, description, event_date, visibility, image,
+                      (title, description, event_date, visibility, image, image_public_id,
                        is_featured, feature_priority, created_at, updated_at)
                     VALUES
-                      (:title, :description, :dateTime, :visibility, :image,
+                      (:title, :description, :dateTime, :visibility, :image, :imagePublicId,
                        :isFeatured, :featurePriority, NOW(), NOW())";
             $params = [
                 ':title'           => $event->getTitle(),
@@ -67,6 +69,7 @@ class EventRepository
                 ':dateTime'        => $event->getDateTime(),
                 ':visibility'      => $event->getVisibility(),
                 ':image'           => $event->getImage(),
+                ':imagePublicId'   => $event->getImagePublicId(),
                 ':isFeatured'      => $event->getIsFeatured() ? 1 : 0,
                 ':featurePriority' => $event->getFeaturePriority(),
             ];
@@ -95,14 +98,15 @@ class EventRepository
         return new Event(
             $row['title'],
             $row['description'],
-            $row['event_date'],
+            $row['event_date'], 
             $row['visibility'],
             $row['image'],
             (bool)$row['is_featured'],
             (int)$row['feature_priority'],
             (int)$row['id'],            
             $row['created_at'],
-            $row['updated_at']
+            $row['updated_at'],
+            $row['image_public_id'] ?? null
         );
     }
 }

@@ -14,6 +14,7 @@ class Event
     private int $featurePriority;
     private ?string $createdAt;
     private ?string $updatedAt;
+    private ?string $imagePublicId;
 
     public function __construct(
         string $title,
@@ -25,7 +26,8 @@ class Event
         int $featurePriority = 0,
         ?int $id = null,
         ?string $createdAt = null,
-        ?string $updatedAt = null
+        ?string $updatedAt = null,
+        ?string $imagePublicId = null
     ) {
         $this->id = $id;
         $this->title = $title;
@@ -37,6 +39,7 @@ class Event
         $this->featurePriority = $featurePriority;
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
+        $this->imagePublicId = $imagePublicId;
     }
 
     // Getters ...
@@ -50,6 +53,7 @@ class Event
     public function getFeaturePriority(): int { return $this->featurePriority; }
     public function getCreatedAt(): ?string { return $this->createdAt; }
     public function getUpdatedAt(): ?string { return $this->updatedAt; }
+    public function getImagePublicId(): ?string { return $this->imagePublicId; }
 
     // Setters ...
     public function setTitle(string $t): void { $this->title = $t; }
@@ -60,6 +64,7 @@ class Event
     public function setIsFeatured(bool $f): void { $this->isFeatured = $f; }
     public function setFeaturePriority(int $p): void { $this->featurePriority = $p; }
     public function setUpdatedAt(string $u): void { $this->updatedAt = $u; }
+    public function setImagePublicId(?string $id): void { $this->imagePublicId = $id; }
 
     public function toArray(): array
     {
@@ -74,6 +79,7 @@ class Event
             'feature_priority' => $this->featurePriority,
             'created_at' => $this->createdAt,
             'updated_at' => $this->updatedAt,
+            'image_public_id' => $this->imagePublicId,
         ];
     }
 }
