@@ -2,6 +2,39 @@
 
 {% block styles %}
   <link rel="stylesheet" href="/assets/css/pages/curso/aluno/show.css">
+  <style>
+    /* Estilo simples para esconder comentários inicialmente */
+    .course-comments-section { display: none; }
+    .course-comments-section.active { display: block; }
+    .show-comments-btn { 
+      display: block; 
+      margin: 2rem auto 1rem auto; 
+      padding: 0.8rem 2rem; 
+      background: var(--primary-wine, #722f37); 
+      color: #fff; 
+      border: none; 
+      border-radius: 8px; 
+      font-size: 1.1rem; 
+      font-weight: 600; 
+      cursor: pointer; 
+      transition: background 0.2s;
+    }
+    .show-comments-btn:hover { background: #5a252b; }
+    .see-more-comments-btn {
+      display: block;
+      margin: 1.5rem auto 0 auto;
+      padding: 0.7rem 1.5rem;
+      background: var(--neutral-medium, #e9ecef);
+      color: var(--primary-wine, #722f37);
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .see-more-comments-btn:hover { background: #d4af37; color: #fff; }
+  </style>
 {% endblock %}
 
 {% block content %}
@@ -69,12 +102,85 @@
       {% endif %}
     </section>
 
+    <!-- Botão para mostrar comentários -->
+    <button id="show-comments-btn" class="show-comments-btn" type="button">Ver comentários</button>
+
+    <!-- Comentários dos alunos -->
+    <section class="course-comments-section" id="course-comments-section">
+      <h2>Comentários dos alunos</h2>
+      {% if comments is not empty %}
+        <ul class="course-comments-list" id="course-comments-list">
+          {# Os comentários serão controlados via JS #}
+          {% for comment in comments %}
+            <li class="course-comment" style="display: none;">
+              <div class="comment-header">
+                <span class="comment-user">
+                  {{ commentUserNames[comment.getUserId()]|default('Usuário') }}
+                </span>
+                <span class="comment-rating">
+                  {% for i in 1..5 %}
+                    {% if i <= comment.getRating() %}
+                      <span class="star filled">★</span>
+                    {% else %}
+                      <span class="star">☆</span>
+                    {% endif %}
+                  {% endfor %}
+                </span>
+                <span class="comment-date">
+                  {{ comment.getCreatedAt()|date('d/m/Y H:i') }}
+                </span>
+              </div>
+              <div class="comment-body">
+                {{ comment.getComment()|e }}
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+        <button id="see-more-comments-btn" class="see-more-comments-btn" type="button" style="display:none;">Ver mais</button>
+      {% else %}
+        <p class="no-comments">Nenhum comentário ainda.</p>
+      {% endif %}
+    </section>
+
     <div class="back-link">
       <a href="/courses">← Voltar a todos os cursos</a>
     </div>
-
   </div>
 {% endblock %}
 
 {% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const showBtn = document.getElementById('show-comments-btn');
+  const section = document.getElementById('course-comments-section');
+  const comments = Array.from(document.querySelectorAll('.course-comment'));
+  const seeMoreBtn = document.getElementById('see-more-comments-btn');
+  const COMMENTS_PER_PAGE = 5;
+  let shown = 0;
+
+  function showCommentsChunk() {
+    const next = shown + COMMENTS_PER_PAGE;
+    for (let i = shown; i < next && i < comments.length; i++) {
+      comments[i].style.display = '';
+    }
+    shown = next;
+    if (shown < comments.length) {
+      seeMoreBtn.style.display = '';
+    } else {
+      seeMoreBtn.style.display = 'none';
+    }
+  }
+
+  if (showBtn && section && comments.length) {
+    showBtn.addEventListener('click', function() {
+      section.classList.add('active');
+      showBtn.style.display = 'none';
+      showCommentsChunk();
+    });
+    seeMoreBtn.addEventListener('click', function() {
+      showCommentsChunk();
+    });
+  }
+});
+</script>
 {% endblock %}

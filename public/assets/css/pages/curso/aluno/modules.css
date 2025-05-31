@@ -1,17 +1,17 @@
 :root {
   /* Paleta de Cores Limpa */
-  --wine-primary: #722F37;
-  --wine-secondary: #8B3A3A;
-  --wine-light: #F8F4F4;
-  
-  --white: #FFFFFF;
-  --gray-50: #F9FAFB;
-  --gray-100: #F3F4F6;
-  --gray-200: #E5E7EB;
-  --gray-300: #D1D5DB;
-  --gray-600: #4B5563;
+  --wine-primary: #722f37;
+  --wine-secondary: #8b3a3a;
+  --wine-light: #f8f4f4;
+
+  --white: #ffffff;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-600: #4b5563;
   --gray-900: #111827;
-  
+
   /* Espaçamentos */
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -20,17 +20,18 @@
   --space-6: 1.5rem;
   --space-8: 2rem;
   --space-12: 3rem;
-  
+
   /* Bordas e Sombras */
   --radius: 0.5rem;
   --radius-lg: 0.75rem;
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   line-height: 1.6;
   color: var(--gray-900);
   background-color: var(--gray-50);
@@ -43,40 +44,57 @@ body {
   padding: var(--space-8) var(--space-6);
 }
 
-/* Breadcrumb */
+/* ===== BREADCRUMB ===== */
 .breadcrumb {
-  margin-bottom: var(--space-6);
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  padding: 1rem 0 1.5rem 0;
+  background: none;
+  margin-bottom: 1.5rem;
+  list-style: none;
 }
 
 .breadcrumb ol {
   display: flex;
-  align-items: center;
-  list-style: none;
-  margin: 0;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   padding: 0;
-  font-size: 0.875rem;
-  color: var(--gray-600);
+  margin: 0;
+  list-style: none;
+}
+
+.breadcrumb li {
+  color: #722f37;
+  font-weight: 500;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
 }
 
 .breadcrumb li:not(:last-child)::after {
-  content: '/';
-  margin: 0 var(--space-2);
-  color: var(--gray-300);
+  content: "›";
+  color: #bfae9c;
+  margin: 0 0.5rem;
+  font-size: 1.1em;
+  font-weight: 700;
 }
 
 .breadcrumb a {
-  color: var(--wine-primary);
+  color: #722f37;
   text-decoration: none;
   transition: color 0.2s;
 }
 
 .breadcrumb a:hover {
-  color: var(--wine-secondary);
+  color: #d4af37;
+  text-decoration: underline;
 }
 
 .breadcrumb .current {
-  color: var(--gray-600);
-  font-weight: 500;
+  color: #bfae9c;
+  font-weight: 600;
+  cursor: default;
 }
 
 /* Título da Página */
@@ -166,7 +184,7 @@ body {
 }
 
 .material-item:hover a::before {
-  content: '→';
+  content: "→";
   position: absolute;
   left: var(--space-6);
   color: var(--wine-primary);
@@ -189,23 +207,23 @@ body {
   .container {
     padding: var(--space-6) var(--space-4);
   }
-  
+
   .page-heading {
     font-size: 1.75rem;
   }
-  
+
   .module-header {
     padding: var(--space-5);
   }
-  
+
   .material-item a {
     padding: var(--space-3) var(--space-5);
   }
-  
+
   .material-item:hover a {
     padding-left: calc(var(--space-5) + var(--space-3));
   }
-  
+
   .material-item:hover a::before {
     left: var(--space-5);
   }

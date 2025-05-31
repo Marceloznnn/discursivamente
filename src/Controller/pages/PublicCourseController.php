@@ -131,12 +131,24 @@ class PublicCourseController
                         : null;
 
         $userId        = $_SESSION['user']['id'] ?? null;
-        // Buscar dados de avaliação
-        $ratingData = $this->commentRepo->getCourseRatingData($courseId); // retorna ['average_rating' => ..., 'total_ratings' => ...]
+        $ratingData = $this->commentRepo->getCourseRatingData($courseId);
         $isParticipating = $userId
             ? $this->participationRepo->isParticipating($userId, $courseId)
             : false;
         $participantCount = $this->participationRepo->countActiveByCourse($courseId);
+
+        // Buscar comentários do curso
+        $comments = $this->commentRepo->findByCourseId($courseId);
+
+        // Buscar nomes dos usuários dos comentários
+        $userNames = [];
+        foreach ($comments as $comment) {
+            $uid = $comment->getUserId();
+            if (!isset($userNames[$uid])) {
+                $user = $this->userRepo->findById($uid);
+                $userNames[$uid] = $user ? $user->getName() : 'Usuário';
+            }
+        }
 
         echo $this->twig->render('public/courses/show.twig', [
             'course'           => $course,
@@ -146,7 +158,8 @@ class PublicCourseController
             'participantCount' => $participantCount,
             'modules'          => $modules,
             'modulesCount'     => $modulesCount,
-            // Não envia mais 'comments'
+            'comments'         => $comments,
+            'commentUserNames' => $userNames, // Adicionado
         ]);
     }
 
@@ -158,7 +171,7 @@ class PublicCourseController
         $this->participationRepo->joinCourse($userId, $courseId);
         header("Location: /courses/{$courseId}");
         exit;
-    }
+    } 
 
     public function leave($id): void
     {

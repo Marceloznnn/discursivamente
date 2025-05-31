@@ -12,13 +12,13 @@
     <nav class="breadcrumb" aria-label="Breadcrumb">
       <ol>
         <li><a href="/courses">Cursos</a></li>
-        <li><a href="/courses/{{ course.getId() }}">{{ course.getTitle() }}</a></li>
-        <li class="current">Módulos</li>
+        /<li><a href="/courses/{{ course.getId() }}">{{ course.getTitle() }}</a></li>
+        /<li class="current">Módulos</li>
       </ol>
     </nav>
 
     <h1 class="page-heading">Módulos de {{ course.getTitle() }}</h1>
-
+    {# Nenhum filtro, apenas lista de módulos e materiais #}
     {% if modules is empty %}
       <p class="empty-message">Este curso ainda não possui módulos.</p>
     {% else %}

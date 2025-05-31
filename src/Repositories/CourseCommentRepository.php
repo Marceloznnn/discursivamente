@@ -13,7 +13,7 @@ class CourseCommentRepository
     {
         $this->pdo = $pdo;
     }
-
+ 
     public function findById(int $id): ?CourseComment
     {
         $stmt = $this->pdo->prepare('SELECT * FROM course_comments WHERE id = :id LIMIT 1');
