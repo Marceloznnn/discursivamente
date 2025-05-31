@@ -135,10 +135,10 @@ body {
 }
 
 .top-rated-courses {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
-  justify-content: center;
-  flex-wrap: wrap;
+  justify-items: center;
   position: relative;
   z-index: 1;
 }
@@ -146,8 +146,7 @@ body {
 .top-rated-course {
   position: relative;
   max-width: 320px;
-  flex: 1;
-  min-width: 300px;
+  width: 100%;
   animation: fadeInUp 0.6s ease-out forwards;
   opacity: 0;
 }
@@ -653,7 +652,22 @@ body {
    RESPONSIVIDADE
    ======================== */
 
-@media (max-width: 1024px) {
+/* Desktop grande (acima de 1200px) - 4 cursos por linha */
+@media (min-width: 1200px) {
+  .top-rated-courses {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Desktop médio (1024px - 1199px) - 3 cursos por linha */
+@media (max-width: 1199px) and (min-width: 1024px) {
+  .top-rated-courses {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Tablet (768px - 1023px) - 3 cursos por linha */
+@media (max-width: 1023px) and (min-width: 768px) {
   .course-dashboard-header {
     flex-direction: column;
     gap: 1.5rem;
@@ -664,9 +678,19 @@ body {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
   }
+  
+  .top-rated-courses {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .top-rated-course {
+    max-width: 100%;
+  }
 }
 
-@media (max-width: 768px) {
+/* Celular grande (481px - 767px) - 2 cursos por linha */
+@media (max-width: 767px) and (min-width: 481px) {
   .container {
     padding: 1rem;
   }
@@ -674,6 +698,9 @@ body {
   .course-dashboard-header {
     padding: 1.5rem;
     margin-bottom: 1.5rem;
+    flex-direction: column;
+    gap: 1.5rem;
+    text-align: center;
   }
   
   .page-title {
@@ -695,7 +722,7 @@ body {
   }
   
   .top-rated-courses {
-    flex-direction: column;
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
   }
   
@@ -715,19 +742,24 @@ body {
   }
   
   .course-list {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
   }
   
   .crown {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
   }
   
   .course-item .content {
     padding: 1.5rem;
   }
+  
+  .course-info {
+    padding: 1.5rem;
+  }
 }
 
+/* Celular pequeno (até 480px) - 2 cursos por linha, mas com layout mais compacto */
 @media (max-width: 480px) {
   .page-title {
     font-size: 1.6rem;
@@ -737,8 +769,17 @@ body {
     font-size: 1.8rem;
   }
   
+  .top-rated-courses {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .crown {
+    font-size: 2.5rem;
+  }
+  
   .course-info {
-    padding: 1.5rem;
+    padding: 1.2rem;
   }
   
   .course-title a {
@@ -751,5 +792,10 @@ body {
   
   .course-item .content strong {
     font-size: 1.1rem;
+  } 
+  
+  .course-list {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 }
