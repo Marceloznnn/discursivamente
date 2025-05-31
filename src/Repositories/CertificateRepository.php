@@ -5,7 +5,7 @@ use App\Models\Certificate;
 use PDO;
 
 class CertificateRepository
-{
+{ 
     private PDO $pdo;
     
     public function __construct(PDO $pdo) 
