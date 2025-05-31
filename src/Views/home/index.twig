@@ -328,5 +328,31 @@
         if (e.key === 'ArrowRight') document.getElementById('eventos-next-btn').click();
       });
     });
+
+    // Testimonials slider
+    document.addEventListener('DOMContentLoaded', function () {
+      const testimonials = Array.from(document.querySelectorAll('.testimonial-item'));
+      const prevTestBtn = document.getElementById('test-prev');
+      const nextTestBtn = document.getElementById('test-next');
+      let currentTest = testimonials.findIndex(el => el.classList.contains('active'));
+      if (currentTest === -1) currentTest = 0;
+
+      function showTestimonial(idx) {
+        testimonials.forEach((el, i) => {
+          el.classList.toggle('active', i === idx);
+        });
+      }
+
+      if (prevTestBtn && nextTestBtn && testimonials.length > 0) {
+        prevTestBtn.addEventListener('click', function () {
+          currentTest = (currentTest - 1 + testimonials.length) % testimonials.length;
+          showTestimonial(currentTest);
+        });
+        nextTestBtn.addEventListener('click', function () {
+          currentTest = (currentTest + 1) % testimonials.length;
+          showTestimonial(currentTest);
+        });
+      }
+    });
   </script>
 {% endblock %}
