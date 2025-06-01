@@ -12,7 +12,7 @@ class MaterialEntry
     private string $publicId;
     private ?string $subtitleUrl;      // nova propriedade
     private \DateTime $createdAt;
-
+ 
     public function __construct(
         int $materialId,
         string $title,

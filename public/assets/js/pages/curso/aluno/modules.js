@@ -91,33 +91,81 @@ function loadStudentProgress() {
       if (moduleProgress[materialId] && moduleProgress[materialId].viewed) {
         completedCount++;
         item.parentElement.classList.add("completed");
-        item.innerHTML +=
-          '<span style="margin-left: auto; color: var(--success-600);">✔</span>';
+        if (!item.querySelector(".material-completed-check")) {
+          item.innerHTML +=
+            '<span class="material-completed-check" style="margin-left: auto; color: var(--success-600);">✔</span>';
+        }
       }
+      // Marcar progresso ao clicar no material
+      item.addEventListener("click", function () {
+        markMaterialAsViewed(courseId, moduleId, materialId, card);
+      });
     });
 
     // Atualiza barra de progresso, se existir
-    const progressBar = card.querySelector(".progress-bar");
-    if (progressBar && materialItems.length > 0) {
-      const pct = (completedCount / materialItems.length) * 100;
-      progressBar.style.width = `${pct}%`;
-
-      // Badge de status (opcional)
-      const moduleTitle = card.querySelector(".module-title");
-      const statusBadge = document.createElement("span");
-      statusBadge.className = "module-status";
-      if (pct === 100) {
-        statusBadge.textContent = "Concluído";
-        statusBadge.classList.add("status-completed");
-      } else if (pct > 0) {
-        statusBadge.textContent = "Em andamento";
-        statusBadge.classList.add("status-in-progress");
-      }
-      if (pct > 0) {
-        moduleTitle.appendChild(statusBadge);
-      }
-    }
+    updateModuleProgressBar(card, completedCount, materialItems.length);
   });
+}
+
+// Função para marcar material como visto e atualizar progresso
+function markMaterialAsViewed(courseId, moduleId, materialId, card) {
+  const progressKey = `course-${courseId}-progress`;
+  const progress = JSON.parse(localStorage.getItem(progressKey) || "{}");
+  if (!progress[moduleId]) progress[moduleId] = {};
+  if (
+    !progress[moduleId][materialId] ||
+    !progress[moduleId][materialId].viewed
+  ) {
+    progress[moduleId][materialId] = {
+      viewed: true,
+      completedAt: new Date().toISOString(),
+    };
+    localStorage.setItem(progressKey, JSON.stringify(progress));
+    // Atualiza visualmente
+    const materialLinks = card.querySelectorAll(".materials-list li a");
+    let completedCount = 0;
+    materialLinks.forEach((item) => {
+      const mid = item.getAttribute("href").split("/").pop();
+      if (progress[moduleId][mid] && progress[moduleId][mid].viewed) {
+        item.parentElement.classList.add("completed");
+        if (!item.querySelector(".material-completed-check")) {
+          item.innerHTML +=
+            '<span class="material-completed-check" style="margin-left: auto; color: var(--success-600);">✔</span>';
+        }
+        completedCount++;
+      }
+    });
+    updateModuleProgressBar(card, completedCount, materialLinks.length);
+  }
+}
+
+// Atualiza barra de progresso e badge do módulo
+function updateModuleProgressBar(card, completedCount, total) {
+  const progressBar = card.querySelector(".progress-bar");
+  const pct = total > 0 ? (completedCount / total) * 100 : 0;
+  if (progressBar) {
+    progressBar.style.width = `${pct}%`;
+  }
+  // Badge de status
+  const moduleTitle = card.querySelector(".module-title");
+  let statusBadge = card.querySelector(".module-status");
+  if (!statusBadge) {
+    statusBadge = document.createElement("span");
+    statusBadge.className = "module-status";
+    moduleTitle.appendChild(statusBadge);
+  }
+  if (pct === 100) {
+    statusBadge.textContent = "Concluído";
+    statusBadge.classList.add("status-completed");
+    statusBadge.classList.remove("status-in-progress");
+  } else if (pct > 0) {
+    statusBadge.textContent = "Em andamento";
+    statusBadge.classList.add("status-in-progress");
+    statusBadge.classList.remove("status-completed");
+  } else {
+    statusBadge.textContent = "";
+    statusBadge.classList.remove("status-in-progress", "status-completed");
+  }
 }
 
 function addCardInteractivity() {

@@ -147,28 +147,17 @@ class CourseParticipationRepository
      */
     public function getCompletedIdsByUser(int $userId, int $courseId): array
     {
-        try {
-            $sql = "
-                SELECT up.material_id
+        $sql = "SELECT up.material_id
                 FROM user_progress up
-                JOIN material_entries me ON up.material_id = me.id
-                JOIN modules m ON me.material_id = m.id
-                WHERE up.user_id = :userId
-                AND m.course_id = :courseId
-            ";
-            
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute([
-                ':userId' => $userId,
-                ':courseId' => $courseId
-            ]);
-            
-            return $stmt->fetchAll(PDO::FETCH_COLUMN);
-        } catch (\PDOException $e) {
-            // Log do erro e retorno de array vazio
-            error_log("Erro ao buscar materiais completados: " . $e->getMessage());
-            return [];
-        }
+                INNER JOIN material_entries me ON me.id = up.material_id
+                INNER JOIN modules m ON m.id = me.material_id
+                WHERE up.user_id = :userId AND m.course_id = :courseId";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':userId' => $userId,
+            ':courseId' => $courseId
+        ]);
+        return array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'material_id');
     }
 
     /**

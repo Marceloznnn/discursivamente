@@ -10,6 +10,11 @@ class AuthMiddleware
             session_start();
         }
 
+        // Forçar a leitura dos cookies de sessão
+        if (empty($_SESSION) && isset($_COOKIE['PHPSESSID'])) {
+            session_start();
+        }
+
         // Se não houver usuário logado, manda para /login
         if (empty($_SESSION['user'])) {
             header('Location: /login');
@@ -19,3 +24,4 @@ class AuthMiddleware
         // Caso contrário, deixa continuar ao controller
     }
 }
+ 

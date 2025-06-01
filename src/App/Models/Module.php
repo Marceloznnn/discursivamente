@@ -12,7 +12,7 @@ class Module
     private ?string $updatedAt;
 
     public function __construct(
-        int $courseId,
+        int $courseId, 
         string $title,
         ?string $description = null,
         int $position = 1,

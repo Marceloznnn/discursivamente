@@ -21,7 +21,6 @@ class CloudinaryService
                 Logger::init();
             } catch (\Exception $e) {
                 // Silenciar erro de inicialização do logger
-                error_log("Erro ao inicializar o logger: " . $e->getMessage());
             }
         }
         
@@ -117,7 +116,7 @@ class CloudinaryService
                     'opções' => $options
                 ]);
             } catch (\Exception $e) {
-                error_log("Erro ao registrar log: " . $e->getMessage());
+                // Removido: error_log("Erro ao registrar log: " . $e->getMessage());
             }
         }
         
@@ -133,7 +132,7 @@ class CloudinaryService
                             'tamanho' => UploadConfig::formatBytes(filesize($filePath))
                         ]);
                     } catch (\Exception $e) {
-                        error_log("Erro ao registrar log: " . $e->getMessage());
+                        // Removido: error_log("Erro ao registrar log: " . $e->getMessage());
                     }
                 }
             }
@@ -153,7 +152,7 @@ class CloudinaryService
                         'formato' => $result['format'] ?? 'N/A'
                     ]);
                 } catch (\Exception $e) {
-                    error_log("Erro ao registrar log: " . $e->getMessage());
+                    // Removido: error_log("Erro ao registrar log: " . $e->getMessage());
                 }
             }
 
@@ -194,7 +193,7 @@ class CloudinaryService
                         ]);
                     }
                 } catch (\Exception $loggerEx) {
-                    error_log("Erro ao registrar log: " . $loggerEx->getMessage());
+                    // Removido: error_log("Erro ao registrar log: " . $loggerEx->getMessage());
                 }
             }
             
@@ -215,7 +214,7 @@ class CloudinaryService
             try {
                 Logger::init();
             } catch (\Exception $e) {
-                error_log("Erro ao inicializar o logger: " . $e->getMessage());
+                // Silenciar erro de inicialização do logger
             }
         }
         
@@ -226,7 +225,7 @@ class CloudinaryService
                     try {
                         Logger::error($error);
                     } catch (\Exception $e) {
-                        error_log("Erro ao registrar log: " . $e->getMessage());
+                        // Removido: error_log("Erro ao registrar log: " . $e->getMessage());
                     }
                 }
                 throw new \Exception($error);
@@ -258,7 +257,7 @@ class CloudinaryService
                         'limite_php' => UploadConfig::formatBytes($phpMaxUpload)
                     ]);
                 } catch (\Exception $e) {
-                    error_log("Erro ao registrar log: " . $e->getMessage());
+                    // Removido: error_log("Erro ao registrar log: " . $e->getMessage());
                 }
             }
               // Verificar se o arquivo está dentro do limite do PHP
@@ -276,7 +275,7 @@ class CloudinaryService
                             'limite_php' => UploadConfig::formatBytes($phpMaxUpload)
                         ]);
                     } catch (\Exception $e) {
-                        error_log("Erro ao registrar log: " . $e->getMessage());
+                        // Removido: error_log("Erro ao registrar log: " . $e->getMessage());
                     }
                 }
                 throw new \Exception($error);
@@ -296,7 +295,7 @@ class CloudinaryService
                             'limite_app' => UploadConfig::formatBytes($maxSize)
                         ]);
                     } catch (\Exception $e) {
-                        error_log("Erro ao registrar log: " . $e->getMessage());
+                        // Removido: error_log("Erro ao registrar log: " . $e->getMessage());
                     }
                 }                throw new \Exception($error);
             }
@@ -309,7 +308,7 @@ class CloudinaryService
                         'tamanho' => UploadConfig::formatBytes($fileSize)
                     ]);
                 } catch (\Exception $e) {
-                    error_log("Erro ao registrar log: " . $e->getMessage());
+                    // Removido: error_log("Erro ao registrar log: " . $e->getMessage());
                 }
             }
             
@@ -323,7 +322,7 @@ class CloudinaryService
                         'stack' => $e->getTraceAsString()
                     ]);
                 } catch (\Exception $loggerEx) {
-                    error_log("Erro ao registrar log: " . $loggerEx->getMessage());
+                    // Removido: error_log("Erro ao registrar log: " . $loggerEx->getMessage());
                 }
             }
             throw $e;

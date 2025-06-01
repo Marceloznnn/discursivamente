@@ -80,7 +80,6 @@ class TeacherModuleMaterialController
         if (session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
         }
-        error_log('DEBUG: Entrou no método store do upload de material');
 
         $course = $this->courseRepo->findById($courseId);
         $this->authorize($course);
@@ -94,7 +93,6 @@ class TeacherModuleMaterialController
 
         if (empty($_FILES['file']['tmp_name']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
             $_SESSION['flash']['error'][] = "Selecione um arquivo válido.";
-            error_log('DEBUG: Falha no upload - arquivo não selecionado ou erro no upload.');
             header("Location: /teacher/courses/{$courseId}/modules/{$moduleId}/materials/create");
             exit;
         }
@@ -103,7 +101,6 @@ class TeacherModuleMaterialController
             $uploadResult = $this->handleFileUpload($_FILES['file'], $courseId, $moduleId);
         } catch (\Exception $e) {
             $_SESSION['flash']['error'][] = "Falha no upload: " . $e->getMessage();
-            error_log('DEBUG: Exceção no upload Cloudinary: ' . $e->getMessage());
             header("Location: /teacher/courses/{$courseId}/modules/{$moduleId}/materials/create");
             exit;
         }
@@ -120,7 +117,6 @@ class TeacherModuleMaterialController
             $this->entryRepo->save($entry);
         } catch (\Exception $e) {
             $_SESSION['flash']['error'][] = "Erro ao salvar material no banco: " . $e->getMessage();
-            error_log('DEBUG: Exceção ao salvar no banco: ' . $e->getMessage());
             header("Location: /teacher/courses/{$courseId}/modules/{$moduleId}/materials/create");
             exit;
         }
@@ -185,8 +181,6 @@ class TeacherModuleMaterialController
         try {
             return $this->cloudinary->uploadFile($tmpPath, $type, $folder);
         } catch (\Exception $e) {
-            error_log("Falha no upload para Cloudinary: " . $e->getMessage());
-            error_log("Stack trace: " . $e->getTraceAsString());
             throw $e;
         }    }
 }

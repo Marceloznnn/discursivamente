@@ -12,7 +12,7 @@ class ModuleRepository
     { 
         $this->pdo = $pdo; 
     }
-
+ 
     public function findById(int $id): ?Module
     {
         $stmt = $this->pdo->prepare('SELECT * FROM modules WHERE id = :id');

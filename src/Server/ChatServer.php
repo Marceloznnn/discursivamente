@@ -24,8 +24,6 @@ class ChatServer implements MessageComponentInterface
             'courseId' => null,
             'userId' => null
         ];
-        
-        error_log("Nova conexão WebSocket: {$conn->resourceId}");
     }
 
     public function onMessage(ConnectionInterface $from, $msg)
@@ -49,7 +47,6 @@ class ChatServer implements MessageComponentInterface
                     throw new \Exception('Tipo de mensagem desconhecido');
             }
         } catch (\Exception $e) {
-            error_log("Erro no WebSocket: " . $e->getMessage());
             $from->send(json_encode([
                 'type' => 'error',
                 'message' => 'Erro ao processar mensagem'
@@ -61,8 +58,6 @@ class ChatServer implements MessageComponentInterface
     {
         $courseId = (int)$data['courseId'];
         $this->clients[$conn->resourceId]['courseId'] = $courseId;
-        
-        error_log("Cliente {$conn->resourceId} entrou no curso {$courseId}");
     }
 
     protected function handleMessage(ConnectionInterface $from, array $data)
@@ -112,16 +107,13 @@ class ChatServer implements MessageComponentInterface
     {
         $clientInfo = $this->clients[$conn->resourceId] ?? null;
         if ($clientInfo) {
-            error_log("Cliente {$conn->resourceId} desconectou (Curso: {$clientInfo['courseId']})");
         }
-        
+         
         unset($this->clients[$conn->resourceId]);
     }
 
     public function onError(ConnectionInterface $conn, \Exception $e)
     {
-        error_log("Erro WebSocket: " . $e->getMessage());
         $conn->close();
     }
 }
- 

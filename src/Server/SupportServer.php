@@ -12,7 +12,7 @@ class SupportServer implements MessageComponentInterface
     /** @var array<int, array{conn:ConnectionInterface, chatId:string|null, userId:int|null, isSupport:bool}> */
     protected array $clients = [];
 
-    private PDO $pdo;
+    private PDO $pdo; 
     private SupportChatRepository $repository;
 
     public function __construct(PDO $pdo)
@@ -29,7 +29,6 @@ class SupportServer implements MessageComponentInterface
             'userId'    => null,
             'isSupport' => false
         ];
-        error_log("Suporte WS: nova conexão #{$conn->resourceId}");
     }
 
     public function onMessage(ConnectionInterface $from, $msg)
@@ -51,7 +50,6 @@ class SupportServer implements MessageComponentInterface
                     throw new \Exception('Tipo de mensagem desconhecido');
             }
         } catch (\Throwable $e) {
-            error_log("Suporte WS erro: " . $e->getMessage());
             $from->send(json_encode([
                 'type'    => 'error',
                 'message' => 'Erro ao processar sua requisição'
@@ -64,8 +62,6 @@ class SupportServer implements MessageComponentInterface
         $this->clients[$conn->resourceId]['chatId']    = $data['chatId'] ?? null;
         $this->clients[$conn->resourceId]['userId']    = (int)($data['userId'] ?? 0);
         $this->clients[$conn->resourceId]['isSupport'] = !empty($data['isSupport']);
-
-        error_log("Suporte WS: #{$conn->resourceId} entrou no chat '{$data['chatId']}' (isSupport=" . ($this->clients[$conn->resourceId]['isSupport'] ? 'true' : 'false') . ")");
     }
 
     protected function handleMessage(ConnectionInterface $from, array $data): void
@@ -136,19 +132,15 @@ class SupportServer implements MessageComponentInterface
                 $client['conn']->send(json_encode($payload));
             }
         }
-
-        error_log("Suporte WS: Usuário {$userName} solicitou atendimento.");
     }
 
     public function onClose(ConnectionInterface $conn)
     {
         unset($this->clients[$conn->resourceId]);
-        error_log("Suporte WS: conexão #{$conn->resourceId} fechada");
     }
 
     public function onError(ConnectionInterface $conn, \Exception $e)
     {
-        error_log("Suporte WS erro fatal: " . $e->getMessage());
         $conn->close();
     }
 }

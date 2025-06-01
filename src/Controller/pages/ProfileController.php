@@ -57,30 +57,20 @@ class ProfileController {
             exit;
         }
 
-        // Log inicial de debug
-        error_log('===== ProfileController::update Iniciado =====');
-        error_log('POST: ' . print_r($_POST, true));
-        error_log('FILES: ' . print_r($_FILES, true));
-
         // 1) AÇÃO DE REMOÇÃO DE AVATAR
         if (!empty($_POST['remove_avatar']) && $_POST['remove_avatar'] === '1') {
-            error_log('Remoção de avatar solicitada');
             if ($avatar = $user->getAvatar()) {
-                error_log('Avatar atual para remoção: ' . $avatar);
                 if (strpos($avatar, 'cloudinary') !== false) {
                     $publicId = $this->extractPublicId($avatar);
-                    error_log('Public ID extraído para remoção: ' . $publicId);
                     if ($publicId) {
                         try {
                             $result = $this->cloudinaryService->deleteFile($publicId);
-                            error_log('Resultado deleteFile: ' . print_r($result, true));
                         } catch (\Exception $e) {
-                            error_log('Erro ao excluir avatar do Cloudinary: ' . $e->getMessage());
+                            // Tratar erro de exclusão de avatar no Cloudinary se necessário
                         }
                     }
                 }
                 $user->setAvatar(null);
-                error_log('Avatar setado como null no objeto User');
             }
             $this->userRepository->save($user);
             $_SESSION['user']['avatar'] = null;
@@ -91,19 +81,16 @@ class ProfileController {
 
         // 2) AÇÃO DE UPLOAD DE NOVO AVATAR (antes de validar nome/bio)
         if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
-            error_log('Upload de avatar solicitado');
 
             // Excluir avatar antigo
             $oldAvatar = $user->getAvatar();
             if ($oldAvatar && strpos($oldAvatar, 'cloudinary') !== false) {
                 $oldPublicId = $this->extractPublicId($oldAvatar);
-                error_log('Public ID antigo para exclusão: ' . $oldPublicId);
                 if ($oldPublicId) {
                     try {
                         $del = $this->cloudinaryService->deleteFile($oldPublicId);
-                        error_log('Resultado deleteFile antigo: ' . print_r($del, true));
                     } catch (\Exception $e) {
-                        error_log('Falha ao excluir avatar antigo: ' . $e->getMessage());
+                        // Tratar erro de exclusão de avatar antigo se necessário
                     }
                 }
             }
@@ -114,7 +101,6 @@ class ProfileController {
                     $_FILES['avatar']['tmp_name'], 
                     'avatars'
                 );
-                error_log('Resultado upload: ' . print_r($uploadResult, true));
                 if (!empty($uploadResult['url'])) {
                     $user->setAvatar($uploadResult['url']);
                     $this->userRepository->save($user);
@@ -124,7 +110,6 @@ class ProfileController {
                     exit;
                 }
             } catch (\Exception $e) {
-                error_log('Erro no upload do avatar: ' . $e->getMessage());
                 echo $this->twig->render('profile/edit.twig', [
                     'user'  => $user,
                     'error' => 'Erro ao fazer upload do avatar: ' . $e->getMessage()
@@ -137,7 +122,6 @@ class ProfileController {
         $name = $_POST['name'] ?? '';
         $bio  = $_POST['bio']  ?? '';
         if (!$name) {
-            error_log('Falha: nome vazio');
             echo $this->twig->render('profile/edit.twig', [
                 'user'  => $user,
                 'error' => 'Nome é obrigatório.'
@@ -146,14 +130,12 @@ class ProfileController {
         }
         $user->setName($name);
         $user->setBio($bio);
-        error_log('Nome e bio atualizados: ' . $name . ' / ' . $bio);
 
         // 4) SALVAR PERFIL COMPLETO
         $this->userRepository->save($user);
         $_SESSION['user']['name']   = $user->getName();
         $_SESSION['user']['avatar'] = $user->getAvatar();
         $_SESSION['flash_message']  = ['type' => 'success', 'message' => 'Perfil atualizado com sucesso.'];
-        error_log('Perfil salvo e redirecionando para /profile');
         header('Location: /profile');
         exit;
     }

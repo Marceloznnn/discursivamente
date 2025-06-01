@@ -34,6 +34,54 @@
       transition: background 0.2s;
     }
     .see-more-comments-btn:hover { background: #d4af37; color: #fff; }
+
+    .user-progress-section {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(114,47,55,0.07);
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+      border: 1px solid #e9ecef;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+    }
+    .user-progress-title {
+      color: var(--primary-wine, #722f37);
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+    }
+    .user-progress-bar-bg {
+      width: 100%;
+      height: 22px;
+      background: #f0f0f0;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 0.7rem;
+      border: 1px solid #e9ecef;
+      position: relative;
+    }
+    .user-progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #d4af37 0%, #722f37 100%);
+      border-radius: 12px 0 0 12px;
+      transition: width 0.7s cubic-bezier(.4,1,.7,1);
+      text-align: right;
+      color: #fff;
+      font-weight: bold;
+      font-size: 1rem;
+      line-height: 22px;
+      padding-right: 10px;
+      min-width: 40px;
+    }
+    .user-progress-label {
+      font-size: 1.05rem;
+      color: #495057;
+      font-weight: 500;
+      margin-bottom: 0.2rem;
+    }
   </style>
 {% endblock %}
 
@@ -92,7 +140,7 @@
               <span class="star half">★</span>
             {% else %}
               <span class="star">☆</span>
-            {% endif %}
+            {% endif %} 
           {% endfor %}
           <span class="rating-value">{{ avg|number_format(1, ',', '.') }} / 5</span>
           <span class="rating-count">({{ ratingData.total_ratings }} avaliações)</span>
@@ -142,6 +190,33 @@
       {% endif %}
     </section>
 
+    {# ===== PROGRESSO DO USUÁRIO NO CURSO ===== #}
+    {% if session.user and isParticipating and modulesCount > 0 %}
+      {% set totalMaterials = 0 %}
+      {% set completedMaterials = 0 %}
+      {% for m in modules %}
+        {% set entries = entryRepo.findByMaterialId(m.getId()) %}
+        {% set totalMaterials = totalMaterials + entries|length %}
+        {% for e in entries %}
+          {% if completedMaterialsIds is defined and completedMaterialsIds is iterable and e.getId() in completedMaterialsIds %}
+            {% set completedMaterials = completedMaterials + 1 %}
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+      {% set progressPercent = totalMaterials > 0 ? (completedMaterials / totalMaterials * 100)|round(0, 'floor') : 0 %}
+      <section class="user-progress-section">
+        <div class="user-progress-title">Seu progresso neste curso</div>
+        <div class="user-progress-bar-bg">
+          <div class="user-progress-bar-fill" style="width: {{ progressPercent }}%;">
+            {{ progressPercent }}%
+          </div>
+        </div>
+        <div class="user-progress-label">
+          {{ completedMaterials }}/{{ totalMaterials }} materiais concluídos
+        </div>
+      </section>
+    {% endif %}
+
     <div class="back-link">
       <a href="/courses">← Voltar a todos os cursos</a>
     </div>
@@ -182,5 +257,24 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
+
+// === Atualização dinâmica da barra de progresso do curso ===
+function updateCourseProgressBar() {
+  const bar = document.querySelector('.user-progress-bar-fill');
+  const label = document.querySelector('.user-progress-label');
+  fetch(`/courses/{{ course.getId() }}/progress-json`)
+    .then(r => r.json())
+    .then(data => {
+      if (bar && label && data && typeof data.percent !== 'undefined') {
+        bar.style.width = data.percent + '%';
+        bar.textContent = data.percent + '%';
+        label.textContent = `${data.completed}/${data.total} materiais concluídos`;
+      }
+    });
+}
+// Permite chamada global (ex: via iframe ou outros scripts)
+window.updateCourseProgress = updateCourseProgressBar;
+// Opcional: escutar evento customizado
+window.addEventListener('materialCompleted', updateCourseProgressBar);
 </script>
 {% endblock %}

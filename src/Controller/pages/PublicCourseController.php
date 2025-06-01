@@ -16,6 +16,10 @@ use App\Models\CourseComment;
 use App\Models\UserProgress;
 use PDO;
 use Twig\Environment;
+use Illuminate\Http\Request;
+use App\Models\CourseMaterial;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Response;
 
 class PublicCourseController
 {
@@ -150,6 +154,12 @@ class PublicCourseController
             }
         }
 
+        // Buscar materiais concluídos do usuário neste curso
+        $completedMaterialsIds = [];
+        if ($userId && $isParticipating) {
+            $completedMaterialsIds = $this->participationRepo->getCompletedIdsByUser($userId, $courseId);
+        }
+
         echo $this->twig->render('public/courses/show.twig', [
             'course'           => $course,
             'category'         => $category,
@@ -160,9 +170,10 @@ class PublicCourseController
             'modulesCount'     => $modulesCount,
             'comments'         => $comments,
             'commentUserNames' => $userNames, // Adicionado
+            'completedMaterialsIds' => $completedMaterialsIds,
         ]);
     }
-
+ 
     public function join($id): void
     {
         AuthMiddleware::handle();
@@ -352,34 +363,26 @@ class PublicCourseController
      */
     private function isPdfAccessible(string $url): bool {
         try {
-            error_log("[PDF-CHECK] Verificando acessibilidade do PDF: " . $url);
             
             if (strpos($url, '/') === 0) {
                 $filePath = $_SERVER['DOCUMENT_ROOT'] . $url;
-                error_log("[PDF-CHECK] Caminho local do arquivo: " . $filePath);
                 
                 if (!file_exists($filePath)) {
-                    error_log("[PDF-ERROR] Arquivo não existe: " . $filePath);
                     return false;
                 }
                 
                 if (!is_readable($filePath)) {
-                    error_log("[PDF-ERROR] Arquivo não pode ser lido: " . $filePath);
                     return false;
                 }
                 
                 $fileSize = filesize($filePath);
-                error_log("[PDF-INFO] Tamanho do arquivo: " . ($fileSize / 1024 / 1024) . "MB");
                 
                 // Verifica se é realmente um PDF
                 $finfo = finfo_open(FILEINFO_MIME_TYPE);
                 $mimeType = finfo_file($finfo, $filePath);
                 finfo_close($finfo);
                 
-                error_log("[PDF-INFO] Mime Type: " . $mimeType);
-                
                 if ($mimeType !== 'application/pdf') {
-                    error_log("[PDF-ERROR] Arquivo não é um PDF válido");
                     return false;
                 }
                 
@@ -388,24 +391,19 @@ class PublicCourseController
             
             // Para URLs externas
             $headers = get_headers($url, 1);
-            error_log("[PDF-CHECK] Headers da URL externa: " . json_encode($headers));
             
             if ($headers === false) {
-                error_log("[PDF-ERROR] Não foi possível obter headers da URL");
                 return false;
             }
             
             $statusCode = substr($headers[0], 9, 3);
-            error_log("[PDF-INFO] Status code: " . $statusCode);
             
             if (isset($headers['Content-Type'])) {
-                error_log("[PDF-INFO] Content-Type: " . $headers['Content-Type']);
             }
             
             return $statusCode >= 200 && $statusCode < 400;
             
         } catch (\Exception $e) {
-            error_log("[PDF-ERROR] Exceção ao verificar PDF: " . $e->getMessage());
             return false;
         }
     }
@@ -415,43 +413,34 @@ class PublicCourseController
      */
     public function servePdf(int $courseId, int $moduleId, int $entryId): void {
         try {
-            // Registrar informações detalhadas de debug sobre o caminho
-            error_log("[PDF-DEBUG] Request URI: " . $_SERVER['REQUEST_URI']);
-            error_log("[PDF-DEBUG] servePdf chamado com: courseId=$courseId, moduleId=$moduleId, entryId=$entryId");
             
             $entry = $this->entryRepo->findById($entryId);
             
             if (!$entry) {
-                error_log("[PDF-ERROR] Entry não encontrada: " . $entryId);
                 http_response_code(404);
                 echo json_encode(['error' => 'PDF não encontrado']);
                 exit;
             }
             
             if ($entry->getContentType() !== 'pdf') {
-                error_log("[PDF-ERROR] Tipo de conteúdo inválido: " . $entry->getContentType());
                 http_response_code(400);
                 echo json_encode(['error' => 'Tipo de arquivo inválido']);
                 exit;
             }
             
             $pdfPath = $entry->getContentUrl();
-            error_log("[PDF-INFO] URL do PDF: " . $pdfPath);
             
             // Caminho local no servidor
             if (strpos($pdfPath, '/') === 0) {
                 $fullPath = $_SERVER['DOCUMENT_ROOT'] . $pdfPath;
-                error_log("[PDF-INFO] Caminho completo: " . $fullPath);
                 
                 if (!file_exists($fullPath)) {
-                    error_log("[PDF-ERROR] Arquivo não encontrado: " . $fullPath);
                     http_response_code(404);
                     echo json_encode(['error' => 'Arquivo não encontrado no servidor']);
                     exit;
                 }
                 
                 $fileSize = filesize($fullPath);
-                error_log("[PDF-INFO] Tamanho do arquivo: " . ($fileSize / 1024 / 1024) . "MB");
                 
                 // Headers simplificados para máxima compatibilidade
                 header('Content-Type: application/pdf');
@@ -467,33 +456,30 @@ class PublicCourseController
             }
             
             // URL externa - redirecionar diretamente
-            error_log("[PDF-INFO] Redirecionando para URL externa: " . $pdfPath);
             header("Location: $pdfPath");
             exit;
             
         } catch (\Exception $e) {
-            error_log("[PDF-ERROR] Erro fatal ao servir PDF: " . $e->getMessage() . "\n" . $e->getTraceAsString());
             http_response_code(500);
             echo json_encode(['error' => 'Erro interno ao tentar exibir o PDF']);
             exit;
         }
     }
 
-    public function complete(int $courseId): void
+    public function complete($courseId, $moduleId): void
     {
+        $courseId = (int)$courseId;
+        $moduleId = (int)$moduleId;
+        $logFile = __DIR__ . '/../../logs/user_progress.log';
+        file_put_contents($logFile, date('Y-m-d H:i:s') . " [controller-complete] chamada para courseId={$courseId}, moduleId={$moduleId} body=" . file_get_contents('php://input') . "\n", FILE_APPEND);
         AuthMiddleware::handle();
         $userId = (int)($_SESSION['user']['id'] ?? 0);
         $data = json_decode(file_get_contents('php://input'), true);
         $entryId = $data['entryId'] ?? null;
         
         if ($userId && $entryId) {
-            // Verificar se o progresso já existe para evitar duplicatas
-            $existingProgress = $this->progressRepo->findByUserAndMaterial($userId, (int)$entryId);
-            
-            if (!$existingProgress) {
-                $progress = new UserProgress($userId, (int)$entryId, date('Y-m-d H:i:s'));
-                $this->progressRepo->save($progress);
-            }
+            $progress = new UserProgress($userId, (int)$entryId, date('Y-m-d H:i:s'));
+            $this->progressRepo->save($progress);
             
             http_response_code(200);
             echo json_encode(['status' => 'ok', 'message' => 'Material marcado como concluído']);
@@ -532,5 +518,85 @@ class PublicCourseController
         echo $this->twig->render('public/courses/my-courses.twig', [
             'courses' => $courses,
         ]);
+    }
+
+    /**
+     * Retorna o progresso do usuário no curso em JSON (para AJAX)
+     */
+    public function progressJson($id): void
+    {
+        AuthMiddleware::handle();
+        $courseId = (int) $id;
+        $userId = $_SESSION['user']['id'] ?? null;
+        if (!$userId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Não autenticado']);
+            exit;
+        }
+        $modules = $this->moduleRepo->findByCourse($courseId);
+        $totalMaterials = 0;
+        $completedMaterials = 0;
+        $completedMaterialsIds = $this->participationRepo->getCompletedIdsByUser($userId, $courseId);
+        foreach ($modules as $m) {
+            $entries = $this->entryRepo->findByMaterialId($m->getId());
+            $totalMaterials += count($entries);
+            foreach ($entries as $e) {
+                if (in_array($e->getId(), $completedMaterialsIds)) {
+                    $completedMaterials++;
+                }
+            }
+        }
+        $progressPct = $totalMaterials > 0 ? round(($completedMaterials / $totalMaterials) * 100) : 0;
+        echo json_encode([
+            'total' => $totalMaterials,
+            'completed' => $completedMaterials,
+            'percent' => $progressPct
+        ]);
+        exit;
+    }
+
+    public function toggleProgress($id)
+    {
+        // Logar o ID da sessão e os dados da sessão para depuração
+
+        // Verificar se o usuário está autenticado
+        if (empty($_SESSION['user_id'])) {
+            return json_encode(['success' => false, 'error' => 'Usuário não autenticado']);
+        }
+
+        // Logar o ID do usuário autenticado
+
+        // Obter o usuário autenticado manualmente
+        $userId = $_SESSION['user_id'] ?? null;
+        if (!$userId) {
+            return json_encode(['success' => false, 'error' => 'Usuário não autenticado']);
+        }
+
+        // Obter o material do curso
+        $db = new \PDO('mysql:host=localhost;dbname=discursivamente', 'root', '');
+        $stmt = $db->prepare('SELECT * FROM course_materials WHERE id = :id');
+        $stmt->execute(['id' => $id]);
+        $material = $stmt->fetch();
+
+        if (!$material) {
+            return json_encode(['success' => false, 'error' => 'Material não encontrado']);
+        }
+
+        // Alternar o status de conclusão
+        $stmt = $db->prepare('SELECT * FROM user_materials WHERE user_id = :user_id AND material_id = :material_id');
+        $stmt->execute(['user_id' => $userId, 'material_id' => $id]);
+        $completed = $stmt->fetch();
+
+        if ($completed) {
+            $stmt = $db->prepare('DELETE FROM user_materials WHERE user_id = :user_id AND material_id = :material_id');
+            $stmt->execute(['user_id' => $userId, 'material_id' => $id]);
+            $isCompleted = false;
+        } else {
+            $stmt = $db->prepare('INSERT INTO user_materials (user_id, material_id) VALUES (:user_id, :material_id)');
+            $stmt->execute(['user_id' => $userId, 'material_id' => $id]);
+            $isCompleted = true;
+        }
+
+        return json_encode(['success' => true, 'completed' => $isCompleted]);
     }
 }

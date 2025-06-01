@@ -8,7 +8,7 @@ class UserProgress
     private int $materialId;
     private ?string $completedAt;
 
-    public function __construct(
+    public function __construct( 
         int $userId,
         int $materialId,
         ?string $completedAt = null

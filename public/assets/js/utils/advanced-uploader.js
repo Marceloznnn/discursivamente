@@ -4,7 +4,8 @@
  * visual de progresso e validação do lado do cliente.
  */
 class AdvancedUploader {
-  constructor(options = {}) {    this.options = {
+  constructor(options = {}) {
+    this.options = {
       maxImageSize: 50 * 1024 * 1024, // 50MB
       maxVideoSize: 200 * 1024 * 1024, // 200MB
       allowedImageTypes: [
@@ -218,9 +219,10 @@ class AdvancedUploader {
               video.currentTime = 0;
             }, 3000); // Reproduz por 3 segundos e pausa
           })
-          .catch((e) =>
-            console.log("Não foi possível reproduzir o vídeo automaticamente")
-          );
+          .catch((e) => {
+            console.log("Não foi possível reproduzir o vídeo automaticamente");
+          });
+      });
     }
 
     // Adicionar informações do arquivo
@@ -331,7 +333,9 @@ class AdvancedUploader {
 
     // Se o arquivo não for grande o suficiente, use o método padrão
     if (file.size < 10 * 1024 * 1024) {
-      console.log("Arquivo não é grande o suficiente para upload em chunks, usando método padrão");
+      console.log(
+        "Arquivo não é grande o suficiente para upload em chunks, usando método padrão"
+      );
       return this.uploadFile(file);
     }
 
@@ -340,12 +344,16 @@ class AdvancedUploader {
     this.progressElement.style.display = "block";
 
     const totalChunks = Math.ceil(file.size / chunkSize);
-    console.log(`Arquivo será enviado em ${totalChunks} partes de ${this.formatBytes(chunkSize)}`);
+    console.log(
+      `Arquivo será enviado em ${totalChunks} partes de ${this.formatBytes(
+        chunkSize
+      )}`
+    );
 
     // Criar array para armazenar IDs dos chunks
     const chunkIds = [];
     let currentChunk = 0;
-    
+
     // Função para upload de um chunk
     const uploadNextChunk = () => {
       if (currentChunk >= totalChunks) {
@@ -353,12 +361,12 @@ class AdvancedUploader {
         this.finalizeChunkedUpload(chunkIds, file);
         return;
       }
-      
+
       // Calcular o início e fim do chunk atual
       const start = currentChunk * chunkSize;
       const end = Math.min(start + chunkSize, file.size);
       const chunk = file.slice(start, end);
-      
+
       // Criar FormData para o chunk
       const formData = new FormData();
       formData.append("chunk", chunk);
@@ -367,73 +375,84 @@ class AdvancedUploader {
       formData.append("fileName", file.name);
       formData.append("fileSize", file.size);
       formData.append("fileType", file.type);
-      
+
       if (this.options.extraData) {
         Object.entries(this.options.extraData).forEach(([key, value]) => {
           formData.append(key, value);
         });
       }
-      
+
       // URL para o endpoint de upload de chunks
-      const url = this.options.chunkUploadUrl || (this.options.uploadUrl + "/chunk");
-      
+      const url =
+        this.options.chunkUploadUrl || this.options.uploadUrl + "/chunk";
+
       // Enviar chunk
       const xhr = new XMLHttpRequest();
-      
+
       xhr.open("POST", url);
-      
+
       xhr.onload = () => {
         if (xhr.status >= 200 && xhr.status < 300) {
           try {
             const response = JSON.parse(xhr.responseText);
             chunkIds.push(response.chunkId);
-            
+
             // Atualizar progresso
-            const progress = Math.round(((currentChunk + 1) / totalChunks) * 100);
+            const progress = Math.round(
+              ((currentChunk + 1) / totalChunks) * 100
+            );
             this.updateProgress(
-              progress, 
+              progress,
               `Parte ${currentChunk + 1} de ${totalChunks} (${progress}%)`
             );
-            
+
             // Ir para próximo chunk
             currentChunk++;
             uploadNextChunk();
           } catch (e) {
-            this.showError("Erro ao processar resposta do servidor: " + e.message);
+            this.showError(
+              "Erro ao processar resposta do servidor: " + e.message
+            );
             this.uploading = false;
           }
         } else {
-          this.showError(`Erro ao enviar parte ${currentChunk + 1}: ${xhr.status} ${xhr.statusText}`);
+          this.showError(
+            `Erro ao enviar parte ${currentChunk + 1}: ${xhr.status} ${
+              xhr.statusText
+            }`
+          );
           this.uploading = false;
         }
       };
-      
+
       xhr.onerror = () => {
         this.showError(`Falha de conexão ao enviar parte ${currentChunk + 1}`);
         this.uploading = false;
       };
-      
+
       xhr.upload.onprogress = (e) => {
         if (e.lengthComputable) {
           const chunkProgress = Math.round((e.loaded / e.total) * 100);
           const overallProgress = Math.round(
             ((currentChunk * chunkSize + e.loaded) / file.size) * 100
           );
-          
+
           this.updateProgress(
             overallProgress,
-            `Parte ${currentChunk + 1}/${totalChunks}: ${chunkProgress}% (Total: ${overallProgress}%)`
+            `Parte ${
+              currentChunk + 1
+            }/${totalChunks}: ${chunkProgress}% (Total: ${overallProgress}%)`
           );
         }
       };
-      
+
       xhr.send(formData);
     };
-    
+
     // Iniciar o upload
     uploadNextChunk();
   }
-  
+
   /**
    * Finaliza um upload em chunks
    * @param {Array} chunkIds - Array com os IDs dos chunks
@@ -441,35 +460,36 @@ class AdvancedUploader {
    */
   finalizeChunkedUpload(chunkIds, file) {
     this.updateProgress(100, "Finalizando upload...");
-    
+
     const formData = new FormData();
     formData.append("chunkIds", JSON.stringify(chunkIds));
     formData.append("fileName", file.name);
     formData.append("fileType", file.type);
     formData.append("fileSize", file.size);
-    
+
     if (this.options.extraData) {
       Object.entries(this.options.extraData).forEach(([key, value]) => {
         formData.append(key, value);
       });
     }
-    
+
     // URL para finalizar o upload
-    const url = this.options.finalizeUrl || (this.options.uploadUrl + "/finalize");
-    
+    const url =
+      this.options.finalizeUrl || this.options.uploadUrl + "/finalize";
+
     const xhr = new XMLHttpRequest();
     xhr.open("POST", url);
-    
+
     xhr.onload = () => {
       if (xhr.status >= 200 && xhr.status < 300) {
         try {
           const response = JSON.parse(xhr.responseText);
           this.updateProgress(100, "Upload concluído com sucesso!");
-          
+
           setTimeout(() => {
             this.progressElement.style.display = "none";
           }, 2000);
-          
+
           if (this.options.onSuccess) {
             this.options.onSuccess(response);
           }
@@ -477,17 +497,19 @@ class AdvancedUploader {
           this.showError("Erro ao finalizar upload: " + e.message);
         }
       } else {
-        this.showError(`Erro ao finalizar upload: ${xhr.status} ${xhr.statusText}`);
+        this.showError(
+          `Erro ao finalizar upload: ${xhr.status} ${xhr.statusText}`
+        );
       }
-      
+
       this.uploading = false;
     };
-    
+
     xhr.onerror = () => {
       this.showError("Falha de conexão ao finalizar upload");
       this.uploading = false;
     };
-    
+
     xhr.send(formData);
   }
 
@@ -497,13 +519,13 @@ class AdvancedUploader {
    */
   enableDebugLogs(enabled = true) {
     this.debugEnabled = enabled;
-    
+
     if (enabled) {
       this.debug("Debug logs ativados");
       this.debug("Configurações:", this.options);
     }
   }
-  
+
   /**
    * Registra mensagens de debug no console
    */

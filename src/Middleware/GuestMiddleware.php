@@ -16,6 +16,5 @@ class GuestMiddleware
             exit;
         }
 
-        // Caso contrário, deixa continuar ao controller
     }
 }

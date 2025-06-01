@@ -34,7 +34,6 @@ class ResetPasswordMailer
             $mail->send();
             return true;
         } catch (Exception $e) {
-            error_log('Erro ao enviar e-mail de recuperação: ' . $mail->ErrorInfo);
             return false;
         }
     }

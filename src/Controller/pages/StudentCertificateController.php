@@ -12,7 +12,7 @@ class StudentCertificateController
 {    private Environment $twig;
     private CertificateRepository $certificateRepo;
     private CourseRepository $courseRepo;    public function __construct(Environment $twig, PDO $pdo)
-    {
+    { 
         $this->twig = $twig;
         $this->certificateRepo = new CertificateRepository($pdo);
         $this->courseRepo = new CourseRepository($pdo);

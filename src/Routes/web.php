@@ -291,7 +291,7 @@ $r->addRoute('GET', '/teacher/courses/create', function($twig, $pdo) {
 $r->addRoute('POST','/teacher/courses', function($twig, $pdo) {
     $cloud = new CloudinaryService();
     (new \Controller\pages\TeacherCourseController($twig, $pdo, $cloud))->store();
-});
+}); 
 $r->addRoute('GET', '/teacher/courses/{id}/edit', function($twig, $pdo, $id) {
     $cloud = new CloudinaryService();
     (new \Controller\pages\TeacherCourseController($twig, $pdo, $cloud))->edit((int)$id);
@@ -582,3 +582,16 @@ $r->addRoute('POST', '/admin/newsletter/send', function($twig) {
     AdminMiddleware::handle();
     (new AdminController($twig))->newsletterSendPost();
 });
+
+// Marcar material de módulo como concluído (progresso do aluno)
+$r->addRoute(
+    'POST',
+    '/courses/{courseId:\d+}/modules/{moduleId:\d+}/complete',
+    [\Controller\pages\PublicCourseController::class, 'complete']
+);
+
+// Progresso do curso em JSON (AJAX)
+$r->addRoute('GET', '/courses/{id:\d+}/progress-json', [PublicCourseController::class, 'progressJson']);
+
+// Toggle de progresso (AJAX)
+$r->addRoute('POST', '/user/progress/toggle/{id}', [\Controller\pages\PublicCourseController::class, 'toggleProgress']);

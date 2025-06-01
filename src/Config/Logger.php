@@ -47,7 +47,6 @@ class Logger
             'data' => $data,
             'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
             'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
-            'session_id' => session_id() ?: 'no-session'
         ];
 
         // Formato do log: [DATA] [NÍVEL] Mensagem: dados_json
